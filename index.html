@@ -691,8 +691,22 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .logo-mark { width: 168px; height: 142px; }
   .theme { grid-template-columns: 1fr; gap: 4px; }
   .theme .t-index { padding-top: 0; font-size: 20px; }
-  .site-top { padding-left: 20px; padding-right: 20px; }
-  .site-top nav { gap: 16px; }
+
+  /* stack the header so brand and nav don't crush together */
+  .site-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 20px 20px 0;
+  }
+  .site-top .home-link .mini-word { white-space: nowrap; }
+  .site-top nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+  }
+  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
 }
 
 </style>
