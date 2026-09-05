@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Past Dinners · Wine with Kai</title>
 <meta name="description" content="An archive of Wine with Kai dinner themes, from Napa Valley Cabernet to the Bordeaux Right Bank.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23e11048'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
@@ -24,8 +24,9 @@
   --ink-faint: #8c7d71;
   --gold:      #c9a24b;
   --gold-soft: #d8bd7e;
-  --crimson:   #e11048;
-  --crimson-2: #e6134e;
+  /* red removed from the palette; these now carry the gold accent */
+  --crimson:   #c9a24b;
+  --crimson-2: #c9a24b;
   --line:      rgba(236, 227, 214, 0.11);
   --line-soft: rgba(236, 227, 214, 0.06);
 
@@ -53,7 +54,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--crimson); color: #fff; }
+::selection { background: var(--gold); color: #201013; }
 
 a { color: inherit; }
 
@@ -79,18 +80,20 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Thin rules ---------- */
 .rule-crimson {
-  height: 2px;
-  background: var(--crimson);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 14%, var(--gold) 86%, transparent);
   border: 0;
+  opacity: 0.72;
   max-width: var(--maxw);
   margin: 0 auto;
   width: calc(100% - 56px);
 }
 .tick {
-  width: 46px;
-  height: 2px;
-  background: var(--crimson);
+  width: 44px;
+  height: 1px;
+  background: var(--gold);
   border: 0;
+  opacity: 0.85;
   margin: 0 0 20px;
 }
 
@@ -254,23 +257,26 @@ img { max-width: 100%; display: block; }
    EVENT FOOTER BAR
    ========================================================= */
 .event-bar {
-  background: var(--crimson-2);
-  color: #fff;
+  background: var(--bg-2);
+  border-top: 1px solid rgba(201, 162, 75, 0.5);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.5);
+  color: var(--ink);
   text-align: center;
-  padding: 26px 24px;
+  padding: 30px 24px;
   margin-top: 54px;
 }
 .event-bar .when {
   font-family: var(--display);
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--gold-soft);
   font-size: clamp(21px, 3.4vw, 27px);
-  margin: 0 0 4px;
-  letter-spacing: 0.01em;
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
 }
 .event-bar .where {
   font-family: var(--serif);
   font-size: 18px;
-  color: #ffe6ec;
+  color: var(--ink-soft);
   margin: 0;
   letter-spacing: 0.02em;
 }
@@ -526,27 +532,27 @@ strong, .b { font-weight: 600; color: var(--ink); }
 .home-inner { padding-top: 54px; }
 
 .logo-mark {
-  width: 210px;
-  height: 176px;
-  margin: 0 auto 10px;
+  width: 168px;
+  height: 139px;
+  margin: 0 auto 18px;
   background: var(--kai-mark) center/contain no-repeat;
 }
 
 .brand-title {
   font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(44px, 8vw, 66px);
-  line-height: 1.04;
-  margin: 6px 0 10px;
+  font-weight: 500;
+  font-size: clamp(26px, 3.6vw, 37px);
+  line-height: 1.14;
+  margin: 4px 0 14px;
   color: var(--ink);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.05em;
 }
 .brand-eyebrow {
   font-family: var(--serif);
   color: var(--gold);
   text-transform: uppercase;
-  letter-spacing: 0.32em;
-  font-size: 13px;
+  letter-spacing: 0.30em;
+  font-size: 12px;
   margin: 0;
 }
 
