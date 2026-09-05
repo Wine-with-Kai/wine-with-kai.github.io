@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Wines — Eight Cabernets of Napa Valley</title>
+<meta name="description" content="Tasting notes and what to look for — eight Napa Valley Cabernets, from Stag's Leap Artemis to Caymus.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23e11048'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   Eight Cabernets of Napa Valley — shared styles
+   A private wine dinner · So Good Seafood, Takashimaya
+   ========================================================= */
+
+:root {
+  --bg:        #160a0c;
+  --bg-2:      #1d1013;
+  --panel:     #201215;
+  --ink:       #ece3d6;
+  --ink-soft:  #bdae9f;
+  --ink-faint: #8c7d71;
+  --gold:      #c9a24b;
+  --gold-soft: #d8bd7e;
+  --crimson:   #e11048;
+  --crimson-2: #e6134e;
+  --line:      rgba(236, 227, 214, 0.11);
+  --line-soft: rgba(236, 227, 214, 0.06);
+
+  --serif:   'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  --maxw: 820px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.72;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--crimson); color: #fff; }
+
+a { color: inherit; }
+
+img { max-width: 100%; display: block; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Eyebrow / small-caps kicker ---------- */
+.eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Thin rules ---------- */
+.rule-crimson {
+  height: 2px;
+  background: var(--crimson);
+  border: 0;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: calc(100% - 56px);
+}
+.tick {
+  width: 46px;
+  height: 2px;
+  background: var(--crimson);
+  border: 0;
+  margin: 0 0 20px;
+}
+
+/* =========================================================
+   HERO (landing)
+   ========================================================= */
+.hero-scene {
+  position: relative;
+  height: 40vh;
+  min-height: 300px;
+  max-height: 440px;
+  overflow: hidden;
+  background: #0d0708;
+}
+.hero-scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-scene::after {
+  /* fade the bottom of the scene into the page */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 46%;
+  background: linear-gradient(to bottom, rgba(22,10,12,0) 0%, var(--bg) 96%);
+}
+
+.hero-body { padding: 46px 0 8px; }
+
+.masthead {
+  text-align: center;
+  padding-top: 30px;
+}
+.masthead .kick { margin-bottom: 26px; }
+
+.title-display {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: 0;
+  font-size: clamp(46px, 9vw, 74px);
+}
+.title-connector {
+  display: block;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.2;
+  margin: 2px 0;
+  letter-spacing: 0.01em;
+}
+
+.gold-divider {
+  width: min(560px, 82%);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 18%, var(--gold) 82%, transparent);
+  border: 0;
+  margin: 30px auto 26px;
+  opacity: 0.85;
+}
+
+.lede {
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(21px, 3.1vw, 27px);
+  color: var(--ink);
+  margin: 0 auto 8px;
+  max-width: 640px;
+  line-height: 1.35;
+}
+.lede-sub {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 auto 4px;
+  max-width: 560px;
+}
+
+/* =========================================================
+   WINE LINEUP (landing list)
+   ========================================================= */
+.lineup { margin: 6px 0 4px; }
+
+.flight {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 6px 22px;
+  align-items: baseline;
+  padding: 22px 4px;
+  border-top: 1px solid var(--line-soft);
+}
+.flight:last-child { border-bottom: 1px solid var(--line-soft); }
+
+.flight-yr {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.flight-main { }
+.flight-name {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.18;
+  margin: 0 0 4px;
+}
+.flight-sub {
+  color: var(--ink-faint);
+  font-size: 16.5px;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+.flight-order {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+}
+
+/* ---------- CTA ---------- */
+.cta-row { text-align: center; margin: 40px 0 8px; }
+.btn {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 15px 34px;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  transition: background .25s ease, color .25s ease;
+}
+.btn:hover { background: var(--gold); color: #201013; }
+.btn .arw { color: var(--gold); margin-left: 8px; transition: color .25s ease; }
+.btn:hover .arw { color: #201013; }
+
+.note-line {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 620px;
+  margin: 26px auto 0;
+}
+
+/* =========================================================
+   EVENT FOOTER BAR
+   ========================================================= */
+.event-bar {
+  background: var(--crimson-2);
+  color: #fff;
+  text-align: center;
+  padding: 26px 24px;
+  margin-top: 54px;
+}
+.event-bar .when {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(21px, 3.4vw, 27px);
+  margin: 0 0 4px;
+  letter-spacing: 0.01em;
+}
+.event-bar .where {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: #ffe6ec;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.page-foot {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-style: italic;
+  padding: 26px 20px 40px;
+}
+
+/* =========================================================
+   WINES PAGE
+   ========================================================= */
+.topnav {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 22px 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+}
+.topnav a { color: var(--ink-soft); text-decoration: none; letter-spacing: 0.04em; }
+.topnav a:hover { color: var(--gold); }
+.topnav .brand {
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 15px;
+}
+
+.page-head { text-align: center; padding: 40px 0 6px; }
+.page-head .eyebrow { margin-bottom: 20px; }
+.page-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(40px, 7vw, 60px);
+  line-height: 1.05;
+  margin: 0;
+}
+.page-title .it {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(19px, 3vw, 26px);
+  margin-top: 4px;
+}
+
+.section { padding: 20px 0; }
+.section h2 {
+  font-family: var(--display);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 27px;
+  margin: 30px 0 14px;
+  letter-spacing: 0.01em;
+}
+.section p { margin: 0 0 18px; color: var(--ink); }
+.section p.muted { color: var(--ink-soft); }
+.section .lead-first::first-letter {
+  /* subtle emphasis, no drop cap gimmick */
+}
+em, .i { font-style: italic; }
+strong, .b { font-weight: 600; color: var(--ink); }
+
+/* ---------- Wine entries ---------- */
+.wines { margin-top: 8px; }
+
+.wine {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  scroll-margin-top: 20px;
+}
+.wine-head {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 4px 20px;
+  align-items: start;
+}
+.wine-num {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  padding-top: 6px;
+}
+.wine-titles { }
+.wine-name {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.16;
+  margin: 0 0 2px;
+  color: var(--ink);
+}
+.wine-vintage {
+  color: var(--crimson);
+  font-weight: 600;
+  font-style: normal;
+}
+.wine-producer {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 2px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 14px 0 4px;
+  padding-left: 94px;
+}
+.tag {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border: 1px solid rgba(201,162,75,0.4);
+  border-radius: 2px;
+  padding: 4px 11px;
+  white-space: nowrap;
+}
+
+.wine-body { padding-left: 94px; margin-top: 14px; }
+.wine-body p { margin: 0 0 16px; }
+
+.lookfor {
+  padding-left: 94px;
+  margin-top: 6px;
+}
+.lookfor .lf-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+.lookfor p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.source-note {
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  font-style: italic;
+  padding-left: 94px;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 620px) {
+  body { font-size: 18px; }
+  .wrap, .topnav { padding-left: 20px; padding-right: 20px; }
+
+  .flight { grid-template-columns: 66px 1fr; gap: 4px 16px; padding: 18px 2px; }
+  .flight-yr { font-size: 26px; }
+  .flight-name { font-size: 21px; }
+  .flight-sub { font-size: 15px; }
+
+  .wine-head { grid-template-columns: 54px 1fr; gap: 4px 14px; }
+  .wine-num { font-size: 24px; }
+  .wine-name { font-size: 23px; }
+  .meta, .wine-body, .lookfor, .source-note { padding-left: 0; }
+  .meta { margin-top: 16px; }
+}
+
+@media (max-width: 420px) {
+  .title-display { font-size: 44px; }
+}
+
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html">&larr; Back</a>
+  <span class="brand">Eight Cabernets of Napa Valley</span>
+</nav>
+
+<hr class="rule-crimson" style="margin-top:22px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow">Napa Valley &nbsp;&middot;&nbsp; Cabernet Sauvignon</p>
+    <h1 class="page-title">
+      The Wines
+      <span class="it">notes for the table</span>
+    </h1>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="section wrap">
+    <hr class="tick">
+    <h2>Why these eight</h2>
+    <p>
+      Eight bottles, six vintages, one grape &mdash; a portrait of Napa Valley Cabernet from a single
+      table. Every wine here is Cabernet Sauvignon or a Cabernet-led blend, yet no two are built the
+      same way. Between them they take in the valley floor and the mountain benches, the historic
+      Rutherford houses and the modern cult labels, and vintages stretching from a mature
+      2012 back-half to the ripe, exuberant 2019s.
+    </p>
+    <p class="muted">
+      They are arranged below in a suggested tasting order &mdash; the most restrained and aromatic first,
+      building toward the fullest and most opulent. The idea is not to crown a winner but to follow one
+      grape as it moves from elegance to power. On the night, the host may pour them however the evening runs.
+    </p>
+
+    <hr class="tick" style="margin-top:34px;">
+    <h2>What to look for</h2>
+    <p>
+      Napa Cabernet has a house accent &mdash; ripe blackcurrant and dark berry, a warmth the cooler
+      corners of Bordeaux rarely reach &mdash; but the interest is in how each estate shapes it.
+      Watch three things as you move down the table.
+    </p>
+    <p>
+      <strong>Where it was grown.</strong> Mountain fruit (Antica, from Atlas Peak) tends to be darker,
+      firmer and more mineral; valley-floor and bench sites (Stag&rsquo;s Leap, Rutherford) lean rounder
+      and more perfumed. <strong>How it was blended.</strong> Some are nearly pure Cabernet; Opus One and
+      Orin Swift&rsquo;s Papillon fold in the other Bordeaux grapes for breadth and lift.
+      <strong>And the finish.</strong> The younger, riper wines close sweet and plush with soft tannin;
+      the more classical bottles &mdash; and the mature 2012 &mdash; finish drier, savoury and longer,
+      with structure that keeps going after the fruit fades.
+    </p>
+    <p class="muted">
+      The notes that follow are drawn from the wineries&rsquo; own descriptions and published critic
+      reviews for each specific wine and vintage. Treat them as signposts, not a script &mdash; trust your own glass first.
+    </p>
+  </section>
+
+  <!-- ============ THE WINES ============ -->
+  <section class="wines wrap">
+
+    <!-- 1 -->
+    <article class="wine" id="artemis">
+      <div class="wine-head">
+        <div class="wine-num">1</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Stag&rsquo;s Leap Wine Cellars &mdash; Artemis <span class="wine-vintage">2018</span></h3>
+          <p class="wine-producer">Napa Valley, with its heart in the Stags Leap District</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Napa Valley</span>
+        <span class="tag">Cabernet Sauvignon</span>
+        <span class="tag">Elegant &middot; Aromatic</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          The estate whose 1973 Cabernet famously bettered Bordeaux at the 1976 Judgment of Paris, and
+          &ldquo;Artemis&rdquo; is its Napa Valley Cabernet &mdash; named for the Greek goddess of the hunt.
+          The 2018 comes from a long, even growing season, and it shows the vintage&rsquo;s fresher, more
+          elegant register: expressive aromas of ripe raspberry, dark cherry and blackberry, with cedar,
+          spice and, as it opens, violets, nutmeg and truffle. Medium-bodied and finely textured, with
+          present but polished tannins and a savoury close.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Perfume and lift rather than sheer weight &mdash; a gentle, aromatic start to the table that sets the mark for elegance.</p>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="wine" id="phelps">
+      <div class="wine-head">
+        <div class="wine-num">2</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Joseph Phelps &mdash; Napa Valley Cabernet Sauvignon <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Estate Grown, Napa Valley &mdash; the house behind Insignia</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Napa Valley</span>
+        <span class="tag">Cabernet Sauvignon</span>
+        <span class="tag">Classic &middot; Seamless</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          From one of the valley&rsquo;s benchmark estates, drawn across its own vineyards in a
+          celebrated, balanced 2016 vintage. Deep garnet-purple, it sings of crushed blackcurrant,
+          blackberry and blueberry with cigar box, menthol and baking spice; the palate is a seamless,
+          medium-bodied effort with a genuinely Bordeaux-like frame &mdash; cassis, leafy herb, green
+          tobacco and violet over a fine graphite line. Built to reward another decade and more in the cellar.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Poise and proportion &mdash; nothing exaggerated. The most &ldquo;claret-like&rdquo; wine of the first half, and a study in restraint.</p>
+      </div>
+    </article>
+
+    <!-- 3 -->
+    <article class="wine" id="antica">
+      <div class="wine-head">
+        <div class="wine-num">3</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Antica &mdash; Mountain Select <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Atlas Peak, Napa Valley &mdash; the Antinori family&rsquo;s California estate</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Atlas Peak</span>
+        <span class="tag">Mountain-grown</span>
+        <span class="tag">Dark &middot; Structured</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          A selection of high-elevation mountain blocks on Atlas Peak from the Antinori family &mdash;
+          six centuries of Tuscan winemaking, planted above the Napa fog. The 2019 is juicy and
+          inviting, with succulent plum, cherry and boysenberry lined with violet and red liquorice;
+          critics find blackberry jam, spice, new leather and chocolate in an inky, opulent frame
+          (James Suckling, 94 pts), balanced by tobacco, cedar, earth and silky tannins with real
+          length (Jeb Dunnuck, 91 pts).
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>The mountain signature &mdash; darker fruit, a firmer, more mineral grip and a cool freshness the valley-floor wines don&rsquo;t quite have.</p>
+      </div>
+    </article>
+
+    <!-- 4 -->
+    <article class="wine" id="bv">
+      <div class="wine-head">
+        <div class="wine-num">4</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Beaulieu Vineyard &mdash; Georges de Latour Private Reserve <span class="wine-vintage">2017</span></h3>
+          <p class="wine-producer">Rutherford, Napa Valley &mdash; first made in 1936</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Rutherford</span>
+        <span class="tag">Cabernet Sauvignon</span>
+        <span class="tag">Historic &middot; Age-worthy</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          The most historic wine on the table &mdash; the reserve André Tchelistcheff shaped into the
+          template for age-worthy Napa Cabernet, made since 1936. The 2017 is ripe, fruit-forward and
+          voluptuous: brawny blackberry, dark plum and cassis with violet and black-pepper spice, then a
+          rich, full palate of mocha and molasses framed by new French oak. Its calling card is the
+          signature &ldquo;Rutherford dust&rdquo; &mdash; a round, cocoa-powder tannin that lends firm
+          presence and a long, savoury finish.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>That famous dusty, cocoa-powder tannin on the finish &mdash; the taste of Rutherford, and of Napa&rsquo;s history.</p>
+      </div>
+    </article>
+
+    <!-- 5 -->
+    <article class="wine" id="opus">
+      <div class="wine-head">
+        <div class="wine-num">5</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Opus One <span class="wine-vintage">2012</span></h3>
+          <p class="wine-producer">Oakville, Napa Valley &mdash; Mondavi &amp; Baron Philippe de Rothschild</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Oakville</span>
+        <span class="tag">Bordeaux blend</span>
+        <span class="tag">Mature &middot; Polished</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          The centrepiece: the Napa&ndash;Bordeaux joint venture founded in 1979, and the one true
+          five-grape blend of the first half &mdash; 79% Cabernet Sauvignon with Cabernet Franc, Petit
+          Verdot, Merlot and a touch of Malbec, aged eighteen months in French oak. The 2012 is a
+          generous California vintage now showing beautifully: blackberry, cassis and forest floor with
+          tobacco leaf, graphite and cedar, then a layered, precise palate of dark cherry, mocha and
+          anise. Silky tannins, a polished texture and a long, graceful finish.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>The gift of age &mdash; tertiary notes of cedar, tobacco and forest floor beside the fruit, and a seamlessness the young wines can&rsquo;t fake.</p>
+      </div>
+    </article>
+
+    <!-- 6 -->
+    <article class="wine" id="vaso">
+      <div class="wine-head">
+        <div class="wine-num">6</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Vaso &mdash; Cabernet Sauvignon <span class="wine-vintage">2014</span></h3>
+          <p class="wine-producer">Napa Valley &mdash; by Dana Estates</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Napa Valley</span>
+        <span class="tag">Cabernet Sauvignon</span>
+        <span class="tag">Ripe &middot; Supple</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          The second-label Cabernet from Dana Estates, one of the valley&rsquo;s serious small houses,
+          from a warm, early 2014 vintage that gave ripe, generous wines. Generous and nicely built,
+          with classic aromas and flavours of bright currant and gentle oak, lovely berry-and-chocolate
+          character, soft tannins and a fine, precise texture &mdash; medium to full-bodied and pretty.
+          For all its early charm it keeps a core of freshness and the structure to hold a decade.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Easy, open generosity &mdash; ripe fruit and soft tannin. A change of pace after the mature Opus, and a bridge into the richer finish.</p>
+      </div>
+    </article>
+
+    <!-- 7 -->
+    <article class="wine" id="papillon">
+      <div class="wine-head">
+        <div class="wine-num">7</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Orin Swift &mdash; Papillon <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Napa Valley &mdash; Dave Phinney&rsquo;s red blend</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Napa Valley</span>
+        <span class="tag">Five-grape blend</span>
+        <span class="tag">Opulent &middot; Bold</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          Dave Phinney&rsquo;s theatrical Napa red &mdash; &ldquo;Papillon,&rdquo; the butterfly &mdash;
+          a full house of all five Bordeaux grapes (Cabernet Sauvignon, Malbec, Merlot, Petit Verdot,
+          Cabernet Franc), aged thirteen months in French oak. It pours an almost neon crimson into a
+          dark core, opening with blackberry, kirsch and coastal sage over ripe pluot and roasted fig,
+          then a more elegant palate of black plum, blackcurrant and toffee with muddled mint and orange
+          peel, closing on ripe but firm tannin. Robert Parker, 92 pts.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Sheer drama and depth of colour, and the breadth the blend brings &mdash; more moving parts than the single-varietal wines, and unashamedly opulent.</p>
+      </div>
+    </article>
+
+    <!-- 8 -->
+    <article class="wine" id="caymus">
+      <div class="wine-head">
+        <div class="wine-num">8</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Caymus &mdash; Napa Valley Cabernet Sauvignon <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Napa Valley &mdash; the Wagner family, since 1972</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Napa Valley</span>
+        <span class="tag">Cabernet Sauvignon</span>
+        <span class="tag">Lush &middot; Crowd-pleaser</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          The valley&rsquo;s great crowd-pleaser and a fitting finale &mdash; the Wagner family&rsquo;s
+          benchmark, made since 1972 in a rich, showy style. Dark and near-opaque, it is fruit-driven and
+          creamy: warmed vanilla, plum and boysenberry purée with melted black liquorice and a swirl of
+          mocha on the finish. The palate is lush and rounded, with soft, barely-there tannins and a
+          smooth glide of cassis and blackberry jam. Wine Spectator, 92 pts; drinking well now.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Pure hedonism &mdash; sweet, creamy fruit and a velvety, low-tannin finish. The softest, most immediately pleasurable wine of the eight, and the note to end on.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="cta-row" style="margin-bottom:10px;">
+    <a class="btn" href="index.html"><span class="arw" style="margin:0 8px 0 0;">&larr;</span> Back to the invitation</a>
+  </div>
+
+  <!-- ============ EVENT BAR ============ -->
+  <div class="event-bar">
+    <p class="when">Thursday 1 October &nbsp;&middot;&nbsp; 7:00 pm</p>
+    <p class="where">So Good Seafood &middot; Takashimaya, Singapore</p>
+  </div>
+
+  <p class="page-foot">
+    Tasting notes compiled from winery descriptions and published critic reviews for each wine and vintage.
+  </p>
+</main>
+
+</body>
+</html>
