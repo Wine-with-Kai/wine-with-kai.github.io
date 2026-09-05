@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Wines — Eight Cabernets of Napa Valley</title>
-<meta name="description" content="Tasting notes and what to look for — eight Napa Valley Cabernets, listed by vintage, poured blind.">
+<title>The Wines · Eight Cabernets of Napa Valley</title>
+<meta name="description" content="Tasting notes and what to look for. Eight Napa Valley Cabernets, listed by vintage, poured blind.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23e11048'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
-   Eight Cabernets of Napa Valley — shared styles
-   A private wine dinner · So Good Seafood, Takashimaya
+   Wine with Kai · shared styles
+   Curated wine dinners, Singapore
    ========================================================= */
 
 :root {
@@ -473,16 +473,233 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .title-display { font-size: 44px; }
 }
 
+/* =========================================================
+   BRAND NAV (home link on sub-pages)
+   ========================================================= */
+.site-top {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.site-top .home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.site-top .home-link .mini-mark {
+  font-family: 'Kaiti SC','STKaiti','KaiTi','Songti SC', serif;
+  font-size: 26px;
+  color: var(--ink);
+  line-height: 1;
+}
+.site-top .home-link .mini-word {
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+.site-top nav { display: flex; gap: 22px; }
+.site-top nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.site-top nav a:hover { color: var(--gold); }
+
+/* =========================================================
+   HOME / LANDING
+   ========================================================= */
+.home {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 28px 0;
+  text-align: center;
+}
+.home-inner { padding-top: 54px; }
+
+.logo-mark {
+  width: 200px;
+  height: 168px;
+  margin: 0 auto 6px;
+}
+.logo-mark svg { width: 100%; height: 100%; display: block; }
+
+.brand-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(44px, 8vw, 66px);
+  line-height: 1.04;
+  margin: 6px 0 10px;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.brand-eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 13px;
+  margin: 0;
+}
+
+.about-text {
+  margin: 6px auto 0;
+  max-width: 620px;
+}
+.about-text p {
+  font-size: 19.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+.about-text p.soft { color: var(--ink-soft); }
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 34px 0 8px;
+}
+
+/* next-dinner teaser */
+.next-card {
+  max-width: 620px;
+  margin: 40px auto 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 22px 26px;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  transition: border-color .25s ease, background .25s ease;
+}
+.next-card:hover { border-color: var(--gold); background: rgba(201,162,75,0.05); }
+.next-card .nc-kick {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+.next-card .nc-title {
+  font-family: var(--display);
+  font-size: 25px;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.next-card .nc-meta {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  margin: 0;
+  font-style: italic;
+}
+.next-card .nc-go {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 12px 0 0;
+}
+
+/* =========================================================
+   ARCHIVE / PAST DINNERS
+   ========================================================= */
+.themes { margin-top: 8px; }
+
+.theme {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 6px 26px;
+}
+.theme:last-child { border-bottom: 1px solid var(--line); }
+.theme .t-index {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  padding-top: 4px;
+}
+.theme .t-index span {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+.theme .t-body { }
+.theme .t-title {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+  line-height: 1.18;
+}
+.theme .t-sub {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0 0 12px;
+}
+.theme .t-venue {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  margin: 0;
+}
+.archive-note {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  margin: 34px auto 0;
+  max-width: 560px;
+}
+
+@media (max-width: 620px) {
+  .logo-mark { width: 168px; height: 142px; }
+  .theme { grid-template-columns: 1fr; gap: 4px; }
+  .theme .t-index { padding-top: 0; font-size: 20px; }
+  .site-top { padding-left: 20px; padding-right: 20px; }
+  .site-top nav { gap: 16px; }
+}
+
 </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <a href="index.html">&larr; Back</a>
-  <span class="brand">Eight Cabernets of Napa Valley</span>
-</nav>
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark">&#20975;</span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="napa.html">The invitation</a>
+    <a href="archive.html">Past dinners</a>
+  </nav>
+</div>
 
-<hr class="rule-crimson" style="margin-top:22px;">
+<hr class="rule-crimson" style="margin-top:18px;">
 
 <main>
   <header class="page-head wrap">
@@ -498,16 +715,16 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <hr class="tick">
     <h2>Why these eight</h2>
     <p>
-      Eight bottles, six vintages, one grape &mdash; a portrait of Napa Valley Cabernet from a single
+      Eight bottles, six vintages, one grape: a portrait of Napa Valley Cabernet from a single
       table. Every wine here is Cabernet Sauvignon or a Cabernet-led blend, yet no two are built the
       same way. Between them they take in the valley floor and the mountain benches, the historic
       Rutherford houses and the modern cult labels, and vintages stretching from a mature
       2012 back to the ripe, exuberant 2019s.
     </p>
     <p class="muted">
-      They are set out below in one simple order &mdash; by vintage, oldest to youngest &mdash; so you
-      have the full field in front of you. But on the night the wines are poured <strong>blind</strong>,
-      in undisclosed order, with nothing on the glass to tell you the label or the year. The notes here
+      They are set out below in one simple order, by vintage, oldest to youngest, so you have the full
+      field in front of you. But on the night the wines are poured <strong>blind</strong>, in
+      undisclosed order, with nothing on the glass to tell you the label or the year. The notes here
       are for afterwards as much as before: read them now for the lay of the land, then again once the
       bottles are revealed.
     </p>
@@ -515,9 +732,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <hr class="tick" style="margin-top:34px;">
     <h2>What to look for</h2>
     <p>
-      Napa Cabernet has a house accent &mdash; ripe blackcurrant and dark berry, a warmth the cooler
-      corners of Bordeaux rarely reach &mdash; but the game tonight is telling these eight apart.
-      Three things are worth chasing in each glass.
+      Napa Cabernet has a house accent of ripe blackcurrant and dark berry, a warmth the cooler
+      corners of Bordeaux rarely reach. But the game tonight is telling these eight apart, and three
+      things are worth chasing in each glass.
     </p>
     <p>
       <strong>Where it was grown.</strong> Mountain fruit (Antica, from Atlas Peak) tends to run darker,
@@ -525,15 +742,15 @@ strong, .b { font-weight: 600; color: var(--ink); }
       and more perfumed. <strong>How it was blended.</strong> Some are nearly pure Cabernet; Opus One and
       Orin Swift&rsquo;s Papillon fold in the other Bordeaux grapes for breadth and lift.
       <strong>And the finish.</strong> Younger, riper wines tend to close sweet and plush with soft tannin;
-      the more classical bottles &mdash; and the mature 2012 &mdash; finish drier, savoury and longer,
-      with structure that carries on after the fruit fades. None of it is a rule, and at least one wine
-      will break your read. That is the point.
+      the more classical bottles, and the mature 2012, finish drier, savoury and longer, with structure
+      that carries on after the fruit fades. None of it is a rule, and at least one wine will break your
+      read. That is the point.
     </p>
     <p class="muted">
       Each note is drawn from the winery&rsquo;s own description and critics&rsquo; published tasting
       notes for that specific wine and vintage. The community scores are the crowd&rsquo;s verdict, not
       ours: <em>Vivino</em> on a five-point scale, <em>CellarTracker</em> out of one hundred. Signposts,
-      not a script &mdash; trust your own glass first.
+      not a script; trust your own glass first.
     </p>
   </section>
 
@@ -546,7 +763,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="wine-num">1</div>
         <div class="wine-titles">
           <h3 class="wine-name">Opus One <span class="wine-vintage">2012</span></h3>
-          <p class="wine-producer">Oakville, Napa Valley &mdash; Mondavi &amp; Baron Philippe de Rothschild</p>
+          <p class="wine-producer">Oakville, Napa Valley &middot; Mondavi and Baron Philippe de Rothschild</p>
         </div>
       </div>
       <div class="meta">
@@ -556,8 +773,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="wine-body">
         <p>
-          The oldest wine on the table: the Napa&ndash;Bordeaux joint venture founded in 1979, and the one
-          true five-grape blend of the flight &mdash; 79% Cabernet Sauvignon with Cabernet Franc, Petit
+          The oldest wine on the table: the Napa and Bordeaux joint venture founded in 1979, and the one
+          true five-grape blend of the flight, 79% Cabernet Sauvignon with Cabernet Franc, Petit
           Verdot, Merlot and a touch of Malbec, aged eighteen months in French oak. The 2012 is a
           generous California vintage now showing beautifully: blackberry, cassis and forest floor with
           tobacco leaf, graphite and cedar, then a layered, precise palate of dark cherry, mocha and
@@ -571,7 +788,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>The gift of age &mdash; tertiary notes of cedar, tobacco and forest floor beside the fruit, and a seamlessness the younger wines can&rsquo;t fake. If a glass smells older and more &ldquo;claret&rdquo; than the rest, this is your suspect.</p>
+        <p>The gift of age: tertiary notes of cedar, tobacco and forest floor beside the fruit, and a seamlessness the younger wines cannot fake. If a glass smells older and more &ldquo;claret&rdquo; than the rest, this is your suspect.</p>
       </div>
     </article>
 
@@ -580,8 +797,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">2</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Vaso &mdash; Cabernet Sauvignon <span class="wine-vintage">2014</span></h3>
-          <p class="wine-producer">Napa Valley &mdash; by Dana Estates</p>
+          <h3 class="wine-name">Vaso, Cabernet Sauvignon <span class="wine-vintage">2014</span></h3>
+          <p class="wine-producer">Napa Valley &middot; by Dana Estates</p>
         </div>
       </div>
       <div class="meta">
@@ -594,7 +811,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
           The second-label Cabernet from Dana Estates, one of the valley&rsquo;s serious small houses,
           from a warm, early 2014 vintage that gave ripe, generous wines. Generous and nicely built,
           with classic aromas and flavours of bright currant and gentle oak, lovely berry-and-chocolate
-          character, soft tannins and a fine, precise texture &mdash; medium to full-bodied and pretty.
+          character, soft tannins and a fine, precise texture, medium to full-bodied and pretty.
           For all its early charm it keeps a core of freshness and the structure to hold a decade.
         </p>
       </div>
@@ -605,7 +822,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Easy, open generosity &mdash; ripe fruit and soft tannin, with a little more mellowing than the youngest wines but less savoury age than the 2012.</p>
+        <p>Easy, open generosity: ripe fruit and soft tannin, with a little more mellowing than the youngest wines but less savoury age than the 2012.</p>
       </div>
     </article>
 
@@ -614,8 +831,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">3</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Joseph Phelps &mdash; Napa Valley Cabernet Sauvignon <span class="wine-vintage">2016</span></h3>
-          <p class="wine-producer">Estate Grown, Napa Valley &mdash; the house behind Insignia</p>
+          <h3 class="wine-name">Joseph Phelps, Napa Valley Cabernet Sauvignon <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Estate Grown, Napa Valley &middot; the house behind Insignia</p>
         </div>
       </div>
       <div class="meta">
@@ -628,7 +845,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
           From one of the valley&rsquo;s benchmark estates, drawn across its own vineyards in a
           celebrated, balanced 2016 vintage. Deep garnet-purple, it sings of crushed blackcurrant,
           blackberry and blueberry with cigar box, menthol and baking spice; the palate is a seamless,
-          medium-bodied effort with a genuinely Bordeaux-like frame &mdash; cassis, leafy herb, green
+          medium-bodied effort with a genuinely Bordeaux-like frame of cassis, leafy herb, green
           tobacco and violet over a fine graphite line. Built to reward another decade and more in the cellar.
         </p>
       </div>
@@ -639,7 +856,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Poise and proportion &mdash; nothing exaggerated. The most &ldquo;claret-like&rdquo; of the younger wines, and a study in restraint that can read older than it is.</p>
+        <p>Poise and proportion, nothing exaggerated. The most &ldquo;claret-like&rdquo; of the younger wines, and a study in restraint that can read older than it is.</p>
       </div>
     </article>
 
@@ -648,8 +865,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">4</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Beaulieu Vineyard &mdash; Georges de Latour Private Reserve <span class="wine-vintage">2017</span></h3>
-          <p class="wine-producer">Rutherford, Napa Valley &mdash; first made in 1936</p>
+          <h3 class="wine-name">Beaulieu Vineyard, Georges de Latour Private Reserve <span class="wine-vintage">2017</span></h3>
+          <p class="wine-producer">Rutherford, Napa Valley &middot; first made in 1936</p>
         </div>
       </div>
       <div class="meta">
@@ -659,11 +876,11 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="wine-body">
         <p>
-          The most historic wine on the table &mdash; the reserve André Tchelistcheff shaped into the
+          The most historic wine on the table: the reserve André Tchelistcheff shaped into the
           template for age-worthy Napa Cabernet, made since 1936. The 2017 is ripe, fruit-forward and
           voluptuous: brawny blackberry, dark plum and cassis with violet and black-pepper spice, then a
           rich, full palate of mocha and molasses framed by new French oak. Its calling card is the
-          signature &ldquo;Rutherford dust&rdquo; &mdash; a round, cocoa-powder tannin that lends firm
+          signature &ldquo;Rutherford dust,&rdquo; a round, cocoa-powder tannin that lends firm
           presence and a long, savoury finish.
         </p>
       </div>
@@ -674,7 +891,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>That famous dusty, cocoa-powder tannin on the finish &mdash; the taste of Rutherford. If a glass grips with a fine, earthy chalkiness, look here.</p>
+        <p>That famous dusty, cocoa-powder tannin on the finish, the taste of Rutherford. If a glass grips with a fine, earthy chalkiness, look here.</p>
       </div>
     </article>
 
@@ -683,7 +900,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">5</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Stag&rsquo;s Leap Wine Cellars &mdash; Artemis <span class="wine-vintage">2018</span></h3>
+          <h3 class="wine-name">Stag&rsquo;s Leap Wine Cellars, Artemis <span class="wine-vintage">2018</span></h3>
           <p class="wine-producer">Napa Valley, with its heart in the Stags Leap District</p>
         </div>
       </div>
@@ -709,7 +926,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Perfume and lift rather than sheer weight &mdash; the most aromatic, red-fruited glass of the field, lighter on its feet than the powerhouses.</p>
+        <p>Perfume and lift rather than sheer weight: the most aromatic, red-fruited glass of the field, lighter on its feet than the powerhouses.</p>
       </div>
     </article>
 
@@ -718,8 +935,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">6</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Antica &mdash; Mountain Select <span class="wine-vintage">2019</span></h3>
-          <p class="wine-producer">Atlas Peak, Napa Valley &mdash; the Antinori family&rsquo;s California estate</p>
+          <h3 class="wine-name">Antica, Mountain Select <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Atlas Peak, Napa Valley &middot; the Antinori family&rsquo;s California estate</p>
         </div>
       </div>
       <div class="meta">
@@ -729,8 +946,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="wine-body">
         <p>
-          A selection of high-elevation mountain blocks on Atlas Peak from the Antinori family &mdash;
-          six centuries of Tuscan winemaking, planted above the Napa fog. The 2019 is juicy and
+          A selection of high-elevation mountain blocks on Atlas Peak from the Antinori family, six
+          centuries of Tuscan winemaking, planted above the Napa fog. The 2019 is juicy and
           inviting, with succulent plum, cherry and boysenberry lined with violet and red liquorice;
           critics find blackberry jam, spice, new leather and chocolate in an inky frame, balanced by
           tobacco, cedar, earth and silky tannins with real length.
@@ -743,7 +960,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>The mountain signature &mdash; darker fruit, a firmer, more mineral grip and a cool freshness the valley-floor wines don&rsquo;t quite have.</p>
+        <p>The mountain signature: darker fruit, a firmer, more mineral grip and a cool freshness the valley-floor wines do not quite have.</p>
       </div>
     </article>
 
@@ -752,8 +969,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">7</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Caymus &mdash; Napa Valley Cabernet Sauvignon <span class="wine-vintage">2019</span></h3>
-          <p class="wine-producer">Napa Valley &mdash; the Wagner family, since 1972</p>
+          <h3 class="wine-name">Caymus, Napa Valley Cabernet Sauvignon <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Napa Valley &middot; the Wagner family, since 1972</p>
         </div>
       </div>
       <div class="meta">
@@ -763,7 +980,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="wine-body">
         <p>
-          The valley&rsquo;s great crowd-pleaser &mdash; the Wagner family&rsquo;s benchmark, made since
+          The valley&rsquo;s great crowd-pleaser: the Wagner family&rsquo;s benchmark, made since
           1972 in a rich, showy style. Dark and near-opaque, it is fruit-driven and creamy: warmed
           vanilla, plum and boysenberry purée with melted black liquorice and a swirl of mocha on the
           finish. The palate is lush and rounded, with soft, barely-there tannins and a smooth glide of
@@ -777,7 +994,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Pure hedonism &mdash; sweet, creamy fruit and a velvety, low-tannin finish. The softest, most immediately pleasurable glass, and often the easiest to pick out.</p>
+        <p>Pure hedonism: sweet, creamy fruit and a velvety, low-tannin finish. The softest, most immediately pleasurable glass, and often the easiest to pick out.</p>
       </div>
     </article>
 
@@ -786,8 +1003,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">8</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Orin Swift &mdash; Papillon <span class="wine-vintage">2019</span></h3>
-          <p class="wine-producer">Napa Valley &mdash; Dave Phinney&rsquo;s red blend</p>
+          <h3 class="wine-name">Orin Swift, Papillon <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Napa Valley &middot; Dave Phinney&rsquo;s red blend</p>
         </div>
       </div>
       <div class="meta">
@@ -797,12 +1014,12 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="wine-body">
         <p>
-          Dave Phinney&rsquo;s theatrical Napa red &mdash; &ldquo;Papillon,&rdquo; the butterfly &mdash;
-          a full house of all five Bordeaux grapes (Cabernet Sauvignon, Malbec, Merlot, Petit Verdot,
-          Cabernet Franc), aged thirteen months in French oak. It pours an almost neon crimson into a
-          dark core, opening with blackberry, kirsch and coastal sage over ripe pluot and roasted fig,
-          then a more elegant palate of black plum, blackcurrant and toffee with muddled mint and orange
-          peel, closing on ripe but firm tannin.
+          Dave Phinney&rsquo;s theatrical Napa red, &ldquo;Papillon,&rdquo; the butterfly: a full house
+          of all five Bordeaux grapes (Cabernet Sauvignon, Malbec, Merlot, Petit Verdot, Cabernet Franc),
+          aged thirteen months in French oak. It pours an almost neon crimson into a dark core, opening
+          with blackberry, kirsch and coastal sage over ripe pluot and roasted fig, then a more elegant
+          palate of black plum, blackcurrant and toffee with muddled mint and orange peel, closing on
+          ripe but firm tannin.
         </p>
       </div>
       <div class="scores">
@@ -812,14 +1029,14 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Sheer depth of colour and the breadth the blend brings &mdash; more moving parts than the single-varietal wines, unashamedly opulent, with a firm tannic edge under the plush.</p>
+        <p>Sheer depth of colour and the breadth the blend brings: more moving parts than the single-varietal wines, unashamedly opulent, with a firm tannic edge under the plush.</p>
       </div>
     </article>
 
   </section>
 
   <div class="cta-row" style="margin-bottom:10px;">
-    <a class="btn" href="index.html"><span class="arw" style="margin:0 8px 0 0;">&larr;</span> Back to the invitation</a>
+    <a class="btn" href="napa.html"><span class="arw" style="margin:0 8px 0 0;">&larr;</span> Back to the invitation</a>
   </div>
 
   <!-- ============ EVENT BAR ============ -->
