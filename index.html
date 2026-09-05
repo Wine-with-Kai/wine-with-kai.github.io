@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Eight Cabernets of Napa Valley</title>
-<meta name="description" content="A private Napa Cabernet dinner — eight bottles, six vintages, one grape. Thursday 1 October, So Good Seafood, Takashimaya.">
+<meta name="description" content="A private blind tasting of Napa Valley Cabernet — eight bottles, six vintages, poured blind. Thursday 1 October, So Good Seafood, Takashimaya.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23e11048'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -420,6 +420,28 @@ strong, .b { font-weight: 600; color: var(--ink); }
   line-height: 1.6;
 }
 
+.scores {
+  padding-left: 94px;
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.scores .sc-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+}
+.scores .sc {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+.scores .sc b { color: var(--ink); font-weight: 600; }
+.scores .sc .star { color: var(--crimson); }
+
 .source-note {
   color: var(--ink-faint);
   font-size: 13.5px;
@@ -443,7 +465,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .wine-head { grid-template-columns: 54px 1fr; gap: 4px 14px; }
   .wine-num { font-size: 24px; }
   .wine-name { font-size: 23px; }
-  .meta, .wine-body, .lookfor, .source-note { padding-left: 0; }
+  .meta, .wine-body, .lookfor, .source-note, .scores { padding-left: 0; }
   .meta { margin-top: 16px; }
 }
 
@@ -517,7 +539,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 <main>
   <section class="wrap hero-body">
     <div class="masthead">
-      <p class="eyebrow kick">Napa Valley &nbsp;&middot;&nbsp; Cabernet Sauvignon</p>
+      <p class="eyebrow kick">Napa Valley &nbsp;&middot;&nbsp; Cabernet &nbsp;&middot;&nbsp; Blind</p>
 
       <h1 class="title-display">
         Eight Cabernets
@@ -527,21 +549,29 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
       <hr class="gold-divider">
 
-      <p class="lede">Eight bottles. Six vintages. One noble grape.</p>
+      <p class="lede">Eight bottles. Six vintages. Poured blind.</p>
       <p class="lede-sub">
-        From the Stags Leap benches to the Atlas Peak heights &mdash;<br>
-        the valley&rsquo;s icons, poured from the most restrained to the most opulent.
+        Nothing on the glass to help you &mdash; not the label, not the year.<br>
+        You taste first, and decide for yourself what is in front of you.
       </p>
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="The eight wines, in suggested tasting order">
+    <div class="lineup" aria-label="The eight wines, listed by vintage">
 
       <div class="flight">
-        <div class="flight-yr">2018</div>
+        <div class="flight-yr">2012</div>
         <div class="flight-main">
-          <p class="flight-name">Stag&rsquo;s Leap Wine Cellars &mdash; Artemis</p>
-          <p class="flight-sub">Napa Valley &middot; the elegant, perfumed opener</p>
+          <p class="flight-name">Opus One</p>
+          <p class="flight-sub">Oakville &middot; the Napa&ndash;Bordeaux blend</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2014</div>
+        <div class="flight-main">
+          <p class="flight-name">Vaso</p>
+          <p class="flight-sub">Napa Valley &middot; by Dana Estates</p>
         </div>
       </div>
 
@@ -549,15 +579,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Joseph Phelps &mdash; Napa Valley Cabernet</p>
-          <p class="flight-sub">Estate Grown &middot; seamless, Bordeaux-like structure</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2019</div>
-        <div class="flight-main">
-          <p class="flight-name">Antica &mdash; Mountain Select</p>
-          <p class="flight-sub">Atlas Peak &middot; high-elevation grip and dark fruit</p>
+          <p class="flight-sub">Estate Grown, Napa Valley</p>
         </div>
       </div>
 
@@ -565,31 +587,23 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2017</div>
         <div class="flight-main">
           <p class="flight-name">Beaulieu Vineyard &mdash; Georges de Latour Private Reserve</p>
-          <p class="flight-sub">Rutherford &middot; the historic benchmark, &ldquo;Rutherford dust&rdquo;</p>
+          <p class="flight-sub">Rutherford &middot; the historic reserve</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2012</div>
+        <div class="flight-yr">2018</div>
         <div class="flight-main">
-          <p class="flight-name">Opus One</p>
-          <p class="flight-sub">Oakville &middot; the mature Bordeaux blend &mdash; centrepiece of the table</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2014</div>
-        <div class="flight-main">
-          <p class="flight-name">Vaso &mdash; by Dana Estates</p>
-          <p class="flight-sub">Napa Valley &middot; ripe, pure-fruited, soft-textured</p>
+          <p class="flight-name">Stag&rsquo;s Leap Wine Cellars &mdash; Artemis</p>
+          <p class="flight-sub">Napa Valley &middot; Stags Leap District</p>
         </div>
       </div>
 
       <div class="flight">
         <div class="flight-yr">2019</div>
         <div class="flight-main">
-          <p class="flight-name">Orin Swift &mdash; Papillon</p>
-          <p class="flight-sub">Napa Valley &middot; all five Bordeaux grapes, opulent and dark</p>
+          <p class="flight-name">Antica &mdash; Mountain Select</p>
+          <p class="flight-sub">Atlas Peak &middot; high-elevation Napa</p>
         </div>
       </div>
 
@@ -597,7 +611,15 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2019</div>
         <div class="flight-main">
           <p class="flight-name">Caymus &mdash; Napa Valley Cabernet</p>
-          <p class="flight-sub">Napa Valley &middot; lush, sweet-fruited &mdash; the finale</p>
+          <p class="flight-sub">Napa Valley</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2019</div>
+        <div class="flight-main">
+          <p class="flight-name">Orin Swift &mdash; Papillon</p>
+          <p class="flight-sub">Napa Valley &middot; five Bordeaux grapes</p>
         </div>
       </div>
 
@@ -608,8 +630,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      A suggested order only &mdash; the pouring on the night is the host&rsquo;s to decide.
-      Everything worth knowing about each glass waits on the next page.
+      Listed here by vintage, oldest to youngest. On the night they are poured blind,
+      in undisclosed order &mdash; nothing revealed until the end, then bottle by bottle.
     </p>
   </section>
 
@@ -619,7 +641,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <p class="where">So Good Seafood &middot; Takashimaya, Singapore</p>
   </div>
 
-  <p class="page-foot">A private dinner among friends &middot; Napa Valley Cabernet</p>
+  <p class="page-foot">A private blind tasting among friends &middot; Napa Valley Cabernet</p>
 </main>
 
 </body>
