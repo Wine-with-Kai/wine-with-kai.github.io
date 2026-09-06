@@ -727,6 +727,37 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav a { font-size: 13.5px; white-space: nowrap; }
 }
 
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 400px;
+  margin: 42px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 13px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
 </style>
 </head>
 <body>
@@ -869,6 +900,28 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
 
     </div>
+
+    <!-- Region map: Piedmont & the Veneto -->
+    <figure class="map-fig">
+      <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of northern Italy showing Piedmont in the north-west and the Veneto in the north-east">
+        <path d="M150 100 C176 84 214 82 244 86 C266 89 280 92 288 104 C295 116 291 130 286 142 C280 156 268 160 272 176 C278 196 292 208 300 226 C306 238 301 247 290 244 C278 241 270 244 264 252 C256 262 250 272 242 280 C233 289 225 300 216 306 C210 310 205 306 208 298 C212 286 218 278 224 268 C231 256 236 246 233 232 C229 212 216 202 210 184 C205 168 205 156 200 142 C195 128 178 122 168 110 C160 102 146 106 150 100 Z"
+              fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.4)" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M198 312 C210 308 224 312 232 316 C224 324 208 324 199 320 C193 318 193 314 198 312 Z"
+              fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.3)" stroke-width="1.2" stroke-linejoin="round"/>
+        <ellipse cx="118" cy="196" rx="13" ry="21" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.3)" stroke-width="1.2"/>
+        <circle cx="172" cy="108" r="12" fill="rgba(201,162,75,0.16)"/>
+        <circle cx="172" cy="108" r="5" fill="#c9a24b"/>
+        <circle cx="256" cy="110" r="12" fill="rgba(201,162,75,0.16)"/>
+        <circle cx="256" cy="110" r="5" fill="#c9a24b"/>
+        <line x1="152" y1="72" x2="171" y2="101" stroke="rgba(201,162,75,0.5)" stroke-width="1"/>
+        <line x1="292" y1="72" x2="258" y2="103" stroke="rgba(201,162,75,0.5)" stroke-width="1"/>
+        <text class="rl" x="150" y="48" text-anchor="middle">Piedmont</text>
+        <text class="wl" x="150" y="65" text-anchor="middle">Barolo</text>
+        <text class="rl" x="292" y="48" text-anchor="middle">the Veneto</text>
+        <text class="wl" x="292" y="65" text-anchor="middle">Amarone</text>
+      </svg>
+      <figcaption class="map-cap">Piedmont in the north-west, the Veneto in the north-east: the two ends of Italy&rsquo;s north.</figcaption>
+    </figure>
 
     <div class="cta-row">
       <a class="btn" href="kings-wines.html">Read the tasting notes <span class="arw">&rarr;</span></a>
