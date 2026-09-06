@@ -619,6 +619,24 @@ strong, .b { font-weight: 600; color: var(--ink); }
   text-transform: uppercase;
   margin: 12px 0 0;
 }
+.next-card .nc-list {
+  list-style: none;
+  margin: 14px 0 2px;
+  padding: 0;
+}
+.next-card .nc-list li {
+  position: relative;
+  padding-left: 16px;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.next-card .nc-list li::before {
+  content: "\00B7";
+  color: var(--gold);
+  position: absolute;
+  left: 2px;
+}
 
 /* =========================================================
    ARCHIVE / PAST DINNERS
@@ -745,6 +763,20 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <p class="nc-meta">Thursday 1 October, 7:00 pm &middot; So Good Seafood, Takashimaya</p>
         <p class="nc-go">View the invitation &rarr;</p>
       </a>
+
+      <!-- Second upcoming dinner -->
+      <div class="next-card" style="margin-top:20px;">
+        <p class="nc-kick">Also coming up</p>
+        <p class="nc-title">Kings of the North</p>
+        <p class="nc-meta">Two Barolos and two Amarones, the noble reds of Italy&rsquo;s north, poured side by side.</p>
+        <ul class="nc-list">
+          <li>Boroli Barolo Cerequio 2016</li>
+          <li>Boroli Barolo Brunella 2016</li>
+          <li>Cesari Amarone della Valpolicella Classico, Il Bosco 2016</li>
+          <li>Cesari Amarone della Valpolicella 2018</li>
+        </ul>
+        <p class="nc-go">Date and venue to follow</p>
+      </div>
 
       <div class="home-actions">
         <a class="btn" href="upcoming.html">Upcoming themes</a>
