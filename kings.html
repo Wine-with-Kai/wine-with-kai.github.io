@@ -749,47 +749,68 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <defs>
       <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%"  stop-color="#1b1210"/>
-        <stop offset="42%" stop-color="#3f2c1f"/>
-        <stop offset="70%" stop-color="#7a5636"/>
-        <stop offset="88%" stop-color="#b98a45"/>
-        <stop offset="100%" stop-color="#cfa562"/>
+        <stop offset="40%" stop-color="#3f2c1f"/>
+        <stop offset="68%" stop-color="#8a6038"/>
+        <stop offset="86%" stop-color="#c39247"/>
+        <stop offset="100%" stop-color="#d8ae66"/>
       </linearGradient>
-      <radialGradient id="sun" cx="50%" cy="96%" r="52%">
-        <stop offset="0%"  stop-color="#f6d99b" stop-opacity="0.95"/>
-        <stop offset="34%" stop-color="#e9ad63" stop-opacity="0.55"/>
-        <stop offset="70%" stop-color="#c07840" stop-opacity="0.12"/>
+      <radialGradient id="sun" cx="50%" cy="88%" r="55%">
+        <stop offset="0%"  stop-color="#f7dc9e" stop-opacity="0.95"/>
+        <stop offset="34%" stop-color="#ecb266" stop-opacity="0.5"/>
+        <stop offset="70%" stop-color="#c07840" stop-opacity="0.1"/>
         <stop offset="100%" stop-color="#c07840" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3c2321"/>
-        <stop offset="100%" stop-color="#2a1719"/>
+      <linearGradient id="hazeFar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#9a6f45"/>
+        <stop offset="100%" stop-color="#6e4c30"/>
       </linearGradient>
       <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#22110f"/>
-        <stop offset="100%" stop-color="#190c0d"/>
+        <stop offset="0%" stop-color="#4a3223"/>
+        <stop offset="100%" stop-color="#2e1e16"/>
       </linearGradient>
-      <linearGradient id="rows" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3a1f1a" stop-opacity="0.0"/>
-        <stop offset="100%" stop-color="#0f0708" stop-opacity="1"/>
+      <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#20130e"/>
+        <stop offset="100%" stop-color="#0f0708"/>
       </linearGradient>
     </defs>
+
     <rect x="0" y="0" width="1200" height="460" fill="url(#sky)"/>
     <rect x="0" y="0" width="1200" height="460" fill="url(#sun)"/>
-    <path d="M0 250 C 180 210, 330 235, 470 214 C 640 190, 780 236, 940 210 C 1060 191, 1140 214, 1200 205 L1200 460 L0 460 Z"
-          fill="url(#hillFar)" opacity="0.9"/>
-    <path d="M0 300 C 160 270, 300 300, 460 282 C 650 261, 820 305, 1000 284 C 1100 272, 1160 292, 1200 286 L1200 460 L0 460 Z"
-          fill="url(#hillMid)"/>
-    <path d="M0 330 C 250 315, 520 340, 760 330 C 980 321, 1120 342, 1200 335 L1200 460 L0 460 Z" fill="#140a0b"/>
-    <g stroke="#5a352b" stroke-width="2" opacity="0.5">
-      <path d="M600 342 L120 460"/>
-      <path d="M600 342 L300 460"/>
-      <path d="M600 342 L480 460"/>
-      <path d="M600 342 L600 460"/>
-      <path d="M600 342 L720 460"/>
-      <path d="M600 342 L900 460"/>
-      <path d="M600 342 L1080 460"/>
+
+    <!-- far rolling Italian hills, hazy in the golden light -->
+    <path d="M0 250 C 150 222 300 242 460 226 C 640 208 820 246 1000 228 C 1100 219 1160 236 1200 230 L1200 460 L0 460 Z" fill="url(#hazeFar)" opacity="0.5"/>
+    <path d="M0 286 C 180 258 340 286 520 273 C 720 258 900 293 1080 277 C 1140 271 1180 283 1200 280 L1200 460 L0 460 Z" fill="url(#hazeFar)" opacity="0.8"/>
+
+    <!-- the ridge where the villa and cypress stand -->
+    <path d="M0 322 C 160 302 320 322 500 314 C 700 305 880 328 1060 316 C 1130 311 1170 322 1200 319 L1200 460 L0 460 Z" fill="url(#hillMid)"/>
+
+    <!-- hilltop villa with a campanile -->
+    <g fill="#170d0a">
+      <rect x="726" y="288" width="48" height="28"/>
+      <path d="M721 288 L750 273 L779 288 Z"/>
+      <rect x="710" y="266" width="12" height="50"/>
+      <path d="M708 266 L716 257 L724 266 Z"/>
     </g>
-    <rect x="0" y="330" width="1200" height="130" fill="url(#rows)"/>
+
+    <!-- a stand of cypress trees, the signature of the Italian country -->
+    <g fill="#150b09">
+      <path d="M120 318 C 112 300 113 268 120 240 C 127 268 128 300 120 318 Z"/>
+      <path d="M158 320 C 151 305 152 280 158 256 C 164 280 165 305 158 320 Z"/>
+      <path d="M250 317 C 242 297 243 258 250 226 C 257 258 258 297 250 317 Z"/>
+      <path d="M292 319 C 285 303 286 274 292 250 C 298 274 299 303 292 319 Z"/>
+      <path d="M330 320 C 324 307 325 284 330 262 C 335 284 336 307 330 320 Z"/>
+      <path d="M632 316 C 625 300 626 268 632 240 C 638 268 639 300 632 316 Z"/>
+      <path d="M666 317 C 660 304 661 282 666 258 C 671 282 672 304 666 317 Z"/>
+    </g>
+
+    <!-- foreground vineyard hill with rows -->
+    <path d="M0 352 C 220 334 470 358 720 348 C 940 339 1090 358 1200 352 L1200 460 L0 460 Z" fill="url(#fg)"/>
+    <g stroke="#5a3a28" stroke-width="1.5" opacity="0.4">
+      <path d="M0 374 C 300 362 800 374 1200 366"/>
+      <path d="M0 394 C 300 382 800 394 1200 386"/>
+      <path d="M0 416 C 300 404 800 416 1200 408"/>
+      <path d="M0 438 C 300 426 800 438 1200 430"/>
+    </g>
   </svg>
 </header>
 
@@ -832,18 +853,18 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2018</div>
-        <div class="flight-main">
-          <p class="flight-name">Cesari Amarone della Valpolicella</p>
-          <p class="flight-sub">Classico &middot; the estate Amarone, savoury and elegant</p>
-        </div>
-      </div>
-
-      <div class="flight">
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Cesari Amarone della Valpolicella Classico, Il Bosco</p>
           <p class="flight-sub">Single vineyard &middot; the flagship, rich and dried-fruited</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2018</div>
+        <div class="flight-main">
+          <p class="flight-name">Cesari Amarone della Valpolicella</p>
+          <p class="flight-sub">Classico &middot; the estate Amarone, savoury and elegant</p>
         </div>
       </div>
 
