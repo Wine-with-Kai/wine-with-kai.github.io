@@ -797,42 +797,72 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="The eight wines, listed oldest to youngest">
+    <div class="lineup" aria-label="Eight wines, grouped Old World then New World">
+
+      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Old World</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">Burgundy, France</span>
+      </div>
 
       <div class="flight">
-        <div class="flight-yr">2012</div>
+        <div class="flight-yr">2012
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="France">🇫🇷</span>
+        </div>
         <div class="flight-main">
           <p class="flight-name">De Montille, Corton &lsquo;Clos du Roi&rsquo; Grand Cru</p>
-          <p class="flight-sub">Burgundy &middot; Grand Cru, C&ocirc;te de Beaune</p>
+          <p class="flight-sub">Grand Cru &middot; C&ocirc;te de Beaune</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2014</div>
+        <div class="flight-yr">2014
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="France">🇫🇷</span>
+        </div>
         <div class="flight-main">
           <p class="flight-name">Louis Latour, Ch&acirc;teau Corton Grand Cru</p>
-          <p class="flight-sub">Burgundy &middot; Grand Cru, the hill of Corton</p>
+          <p class="flight-sub">Grand Cru &middot; the hill of Corton</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2015</div>
-        <div class="flight-main">
-          <p class="flight-name">Felton Road &lsquo;Block 3&rsquo;</p>
-          <p class="flight-sub">Central Otago, New Zealand &middot; single-vineyard</p>
+        <div class="flight-yr">2017
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="France">🇫🇷</span>
         </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2017</div>
         <div class="flight-main">
           <p class="flight-name">Roblot-Marchand, Chambolle-Musigny 1er Cru &lsquo;Les Fu&eacute;es&rsquo;</p>
-          <p class="flight-sub">Burgundy &middot; C&ocirc;te de Nuits, premier cru</p>
+          <p class="flight-sub">Premier Cru &middot; C&ocirc;te de Nuits</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2018</div>
+        <div class="flight-yr">2019
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="France">🇫🇷</span>
+        </div>
+        <div class="flight-main">
+          <p class="flight-name">Michel Mallard, Corton &lsquo;Le Rognet&rsquo; Grand Cru</p>
+          <p class="flight-sub">Grand Cru &middot; the hill of Corton</p>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">New World</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">California &middot; Central Otago</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2015
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
+        </div>
+        <div class="flight-main">
+          <p class="flight-name">Felton Road &lsquo;Block 3&rsquo;</p>
+          <p class="flight-sub">Central Otago &middot; single-vineyard</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2018
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="United States">🇺🇸</span>
+        </div>
         <div class="flight-main">
           <p class="flight-name">HDV &lsquo;Ygnacia&rsquo; Pinot Noir</p>
           <p class="flight-sub">Los Carneros, California</p>
@@ -840,15 +870,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2019</div>
-        <div class="flight-main">
-          <p class="flight-name">Michel Mallard, Corton &lsquo;Le Rognet&rsquo; Grand Cru</p>
-          <p class="flight-sub">Burgundy &middot; Grand Cru, the hill of Corton</p>
+        <div class="flight-yr">2020
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2020</div>
         <div class="flight-main">
           <p class="flight-name">Felton Road &lsquo;Block 5&rsquo;</p>
           <p class="flight-sub">Central Otago &middot; a neighbouring single-vineyard</p>
@@ -856,7 +880,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2021</div>
+        <div class="flight-yr">2021
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
+        </div>
         <div class="flight-main">
           <p class="flight-name">Two Paddocks &lsquo;First Paddock&rsquo;</p>
           <p class="flight-sub">Gibbston, Central Otago</p>
@@ -870,7 +896,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      Listed oldest to youngest &mdash; Old World and New together, with three Corton Grand Crus among them. Seats are kept to no more than twelve.
+      Grouped Old World then New, each in vintage order oldest to youngest; the flag marks each wine&rsquo;s country. Three Corton Grand Crus sit among the Burgundies. Seats are kept to no more than twelve.
     </p>
   </section>
 
