@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Super Tuscans · Wine with Kai</title>
-<meta name="description" content="The rule-breakers of the 1970s &mdash; Bordeaux grapes blended with Sangiovese in Tuscany. Three estates only: Tignanello, Oreno and Sassicaia, with a Tignanello vertical.">
+<meta name="description" content="The rule-breakers of the 1970s: Bordeaux grapes blended with Sangiovese in Tuscany. Three estates only, Tignanello, Oreno and Sassicaia, with a Tignanello vertical.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
+
 /* =========================================================
    Wine with Kai · shared styles
    Curated wine dinners, Singapore
@@ -619,6 +620,24 @@ strong, .b { font-weight: 600; color: var(--ink); }
   text-transform: uppercase;
   margin: 12px 0 0;
 }
+.next-card .nc-list {
+  list-style: none;
+  margin: 14px 0 2px;
+  padding: 0;
+}
+.next-card .nc-list li {
+  position: relative;
+  padding-left: 16px;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.next-card .nc-list li::before {
+  content: " B7";
+  color: var(--gold);
+  position: absolute;
+  left: 2px;
+}
 
 /* =========================================================
    ARCHIVE / PAST DINNERS
@@ -709,6 +728,38 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav a { font-size: 13.5px; white-space: nowrap; }
 }
 
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
+
 </style>
 </head>
 <body>
@@ -792,7 +843,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
       <p class="lede">The rule-breakers of the 1970s.</p>
       <p class="lede-sub">
-        When Tuscan estates set aside the rulebook to blend Bordeaux grapes with Sangiovese &mdash;<br>dismissed as table wine at first, then crowned icons.
+        When Tuscan estates set aside the rulebook to blend Bordeaux grapes with Sangiovese,<br>dismissed as table wine at first, then crowned icons.
       </p>
     </div>
 
@@ -811,7 +862,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2015</div>
         <div class="flight-main">
           <p class="flight-name">Tenuta Sette Ponti &lsquo;Oreno&rsquo;</p>
-          <p class="flight-sub">Tuscany &middot; a modern Bordeaux-blend star</p>
+          <p class="flight-sub">Tuscany &middot; a modern Bordeaux blend</p>
         </div>
       </div>
 
@@ -827,7 +878,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2018</div>
         <div class="flight-main">
           <p class="flight-name">Antinori &lsquo;Tignanello&rsquo;</p>
-          <p class="flight-sub">Tuscany &middot; Sangiovese and Cabernet, the original</p>
+          <p class="flight-sub">Tuscany &middot; Sangiovese and Cabernet, a trailblazing blend</p>
         </div>
       </div>
 
@@ -850,7 +901,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="flight" style="opacity:0.66;">
         <div class="flight-yr" style="font-size:19px; letter-spacing:0.16em; align-self:center; text-transform:uppercase;">Soon</div>
         <div class="flight-main">
-          <p class="flight-name" style="font-style:italic; color:var(--gold-soft);">Antinori &lsquo;Tignanello&rsquo; 2014 &mdash; being sourced</p>
+          <p class="flight-name" style="font-style:italic; color:var(--gold-soft);">Antinori &lsquo;Tignanello&rsquo; 2014, being sourced</p>
           <p class="flight-sub">Kai is sourcing the 2014 to build a Tignanello vertical. Announced once it rests in the cellar.</p>
         </div>
       </div>
@@ -858,7 +909,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="flight" style="opacity:0.66;">
         <div class="flight-yr" style="font-size:19px; letter-spacing:0.16em; align-self:center; text-transform:uppercase;">Soon</div>
         <div class="flight-main">
-          <p class="flight-name" style="font-style:italic; color:var(--gold-soft);">Antinori &lsquo;Tignanello&rsquo; 2017 &mdash; being sourced</p>
+          <p class="flight-name" style="font-style:italic; color:var(--gold-soft);">Antinori &lsquo;Tignanello&rsquo; 2017, being sourced</p>
           <p class="flight-sub">Kai is sourcing the 2017 to complete the Tignanello vertical. Announced once it rests in the cellar.</p>
         </div>
       </div>
@@ -870,7 +921,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      Three estates only &mdash; Tignanello, Oreno and Sassicaia &mdash; listed oldest to youngest, with a Tignanello vertical (2014 &middot; 2017 &middot; 2018) once the two are sourced. Seats are kept to no more than twelve.
+      Three estates only, Tignanello, Oreno and Sassicaia, listed oldest to youngest, with a Tignanello vertical (2014 &middot; 2017 &middot; 2018) once the two are sourced. Seats are kept to no more than twelve.
     </p>
   </section>
 

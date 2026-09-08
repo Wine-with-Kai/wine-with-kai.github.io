@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simply Italian · Wine with Kai</title>
-<meta name="description" content="Three of Italy's greats side by side &mdash; Barolo, Brunello and Amarone. Eight bottles across Piedmont, Tuscany and the Veneto.">
+<meta name="description" content="Three of Italy's greats side by side: Barolo, Brunello and Amarone. Eight bottles across Piedmont, Tuscany and the Veneto.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
+
 /* =========================================================
    Wine with Kai · shared styles
    Curated wine dinners, Singapore
@@ -619,6 +620,24 @@ strong, .b { font-weight: 600; color: var(--ink); }
   text-transform: uppercase;
   margin: 12px 0 0;
 }
+.next-card .nc-list {
+  list-style: none;
+  margin: 14px 0 2px;
+  padding: 0;
+}
+.next-card .nc-list li {
+  position: relative;
+  padding-left: 16px;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.next-card .nc-list li::before {
+  content: " B7";
+  color: var(--gold);
+  position: absolute;
+  left: 2px;
+}
 
 /* =========================================================
    ARCHIVE / PAST DINNERS
@@ -709,6 +728,38 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav a { font-size: 13.5px; white-space: nowrap; }
 }
 
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
+
 </style>
 </head>
 <body>
@@ -792,7 +843,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
       <p class="lede">Three of Italy&rsquo;s greats, side by side.</p>
       <p class="lede-sub">
-        Piedmont&rsquo;s Nebbiolo, Tuscany&rsquo;s Sangiovese and the Veneto&rsquo;s dried-grape red &mdash;<br>the differences and subtleties laid out in the glass.
+        Piedmont&rsquo;s Nebbiolo, Tuscany&rsquo;s Sangiovese and the Veneto&rsquo;s dried-grape red,<br>the differences and subtleties laid out in the glass.
       </p>
     </div>
 
@@ -808,7 +859,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2015</div>
         <div class="flight-main">
           <p class="flight-name">Ballarin &lsquo;Tre Ciabot&rsquo;</p>
-          <p class="flight-sub">Piedmont &middot; a single-vineyard Barolo</p>
+          <p class="flight-sub">a warm, generous vintage</p>
         </div>
       </div>
 
@@ -816,7 +867,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2018</div>
         <div class="flight-main">
           <p class="flight-name">Roagna &lsquo;Pira&rsquo;</p>
-          <p class="flight-sub">Piedmont &middot; Nebbiolo from a benchmark grower</p>
+          <p class="flight-sub">from a benchmark traditional grower</p>
         </div>
       </div>
 
@@ -829,7 +880,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2015</div>
         <div class="flight-main">
           <p class="flight-name">Siro Pacenti &lsquo;Vecchie Vigne&rsquo;</p>
-          <p class="flight-sub">Tuscany &middot; old-vine Sangiovese</p>
+          <p class="flight-sub">the old-vine bottling</p>
         </div>
       </div>
 
@@ -837,7 +888,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2017</div>
         <div class="flight-main">
           <p class="flight-name">Canalicchio di Sopra</p>
-          <p class="flight-sub">Tuscany &middot; Sangiovese at its most refined</p>
+          <p class="flight-sub">a refined, classical style</p>
         </div>
       </div>
 
@@ -850,7 +901,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Cesari &lsquo;Il Bosco&rsquo;</p>
-          <p class="flight-sub">Veneto &middot; a single-vineyard Amarone</p>
+          <p class="flight-sub">a single-vineyard Amarone</p>
         </div>
       </div>
 
@@ -858,7 +909,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2017</div>
         <div class="flight-main">
           <p class="flight-name">Cesari &lsquo;Il Bosco&rsquo;</p>
-          <p class="flight-sub">Veneto &middot; the same vineyard, a year on</p>
+          <p class="flight-sub">the same vineyard, a year on</p>
         </div>
       </div>
 
@@ -866,7 +917,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr">2017</div>
         <div class="flight-main">
           <p class="flight-name">Tinazzi &lsquo;La Bastia&rsquo;</p>
-          <p class="flight-sub">Veneto &middot; a second Amarone house</p>
+          <p class="flight-sub">a second Amarone house</p>
         </div>
       </div>
 
@@ -874,7 +925,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <div class="flight-yr" style="font-size:19px; letter-spacing:0.16em; align-self:center; text-transform:uppercase;">Soon</div>
         <div class="flight-main">
           <p class="flight-name" style="font-style:italic; color:var(--gold-soft);">A third Barolo or Brunello to round the set</p>
-          <p class="flight-sub">Kai is choosing an eighth wine &mdash; another Piedmont or Tuscan red. Announced once it rests in the cellar.</p>
+          <p class="flight-sub">Kai is choosing an eighth wine, another Piedmont or Tuscan red. Announced once it rests in the cellar.</p>
         </div>
       </div>
 
@@ -885,7 +936,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      Grouped by type &mdash; Barolo, then Brunello, then Amarone &mdash; and by vintage within each. Seats are kept to no more than twelve.
+      Grouped by type, then by vintage within each: Barolo, then Brunello, then Amarone. Seats are kept to no more than twelve.
     </p>
   </section>
 

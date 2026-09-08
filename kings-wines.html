@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
+
 /* =========================================================
    Wine with Kai · shared styles
    Curated wine dinners, Singapore
@@ -632,7 +633,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
   line-height: 1.6;
 }
 .next-card .nc-list li::before {
-  content: "\00B7";
+  content: " B7";
   color: var(--gold);
   position: absolute;
   left: 2px;
@@ -726,6 +727,38 @@ strong, .b { font-weight: 600; color: var(--ink); }
   }
   .site-top nav a { font-size: 13.5px; white-space: nowrap; }
 }
+
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
 
 </style>
 </head>
