@@ -97,7 +97,7 @@
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="Seven wines, listed oldest to youngest">
+    <div class="lineup" aria-label="Eight wines, listed oldest to youngest">
 
       <div class="flight">
         <div class="flight-yr">2007</div>
@@ -132,6 +132,14 @@
       </div>
 
       <div class="flight">
+        <div class="flight-yr">2016</div>
+        <div class="flight-main">
+          <p class="flight-name">Antinori &lsquo;Tignanello&rsquo;</p>
+          <p class="flight-sub">A structured, classic, long-lived vintage</p>
+        </div>
+      </div>
+
+      <div class="flight">
         <div class="flight-yr">2018</div>
         <div class="flight-main">
           <p class="flight-name">Antinori &lsquo;Tignanello&rsquo;</p>
@@ -162,8 +170,53 @@
     </div>
 
     <p class="note-line">
-      Three estates only, listed oldest to youngest, with a Tignanello vertical (2007 and 2018). Seats are kept to no more than twelve.
+      Three estates only, listed oldest to youngest, with a three-vintage Tignanello vertical (2007, 2016 and 2018). Seats are kept to no more than twelve.
     </p>
+
+    <figure class="map-fig" style="max-width:420px; margin-top:30px;">
+      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of Tuscany showing the three zones being compared: Bolgheri on the coast, Chianti Classico in the central hills, and the Valdarno di Sopra to the east">
+        <!-- Tuscany landmass (stylised) -->
+        <path d="M58 96 L74 66 L104 52 L142 46 L178 58 L214 50 L250 64 L286 100 L300 146 L286 190 L252 224 L214 250 L172 252 L132 232 L104 198 L86 162 L70 128 Z"
+              fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="0.7"/>
+        <!-- Tyrrhenian coast emphasis (west edge) -->
+        <path d="M58 96 L70 128 L86 162 L104 198 L132 232"
+              fill="none" stroke="rgba(201,162,75,0.5)" stroke-width="1"/>
+        <!-- the sea, off the west coast -->
+        <g stroke="rgba(201,162,75,0.2)" stroke-width="0.8" fill="none">
+          <path d="M26 214 q 14 -6 28 0 t 28 0"/>
+          <path d="M22 226 q 14 -6 28 0 t 28 0"/>
+          <path d="M30 238 q 14 -6 28 0 t 28 0"/>
+        </g>
+        <ellipse cx="36" cy="152" rx="7" ry="4" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="0.55"/>
+        <text class="wl" x="28" y="200" text-anchor="start">Tyrrhenian Sea</text>
+
+        <!-- Florence, for orientation -->
+        <circle cx="176" cy="86" r="1.8" fill="rgba(236,227,214,0.5)"/>
+        <text x="183" y="84" text-anchor="start" style="font-family:var(--serif); fill:rgba(236,227,214,0.45); font-size:9px; font-style:italic;">Firenze</text>
+
+        <!-- leader lines -->
+        <line x1="96"  y1="166" x2="62"  y2="50" stroke="rgba(201,162,75,0.5)" stroke-width="0.9"/>
+        <line x1="158" y1="120" x2="182" y2="50" stroke="rgba(201,162,75,0.5)" stroke-width="0.9"/>
+        <line x1="226" y1="126" x2="300" y2="50" stroke="rgba(201,162,75,0.5)" stroke-width="0.9"/>
+
+        <!-- zone markers -->
+        <circle cx="96"  cy="166" r="8.5" fill="rgba(201,162,75,0.16)"/>
+        <circle cx="96"  cy="166" r="3.4" fill="#c9a24b" stroke="#7d5f20" stroke-width="0.6"/>
+        <circle cx="158" cy="120" r="8.5" fill="rgba(201,162,75,0.16)"/>
+        <circle cx="158" cy="120" r="3.4" fill="#c9a24b" stroke="#7d5f20" stroke-width="0.6"/>
+        <circle cx="226" cy="126" r="8.5" fill="rgba(201,162,75,0.16)"/>
+        <circle cx="226" cy="126" r="3.4" fill="#c9a24b" stroke="#7d5f20" stroke-width="0.6"/>
+
+        <!-- labels -->
+        <text class="rl" x="62"  y="28" text-anchor="middle">Bolgheri</text>
+        <text class="wl" x="62"  y="43" text-anchor="middle">Sassicaia</text>
+        <text class="rl" x="182" y="28" text-anchor="middle">Chianti Classico</text>
+        <text class="wl" x="182" y="43" text-anchor="middle">Tignanello</text>
+        <text class="rl" x="300" y="28" text-anchor="middle">Valdarno</text>
+        <text class="wl" x="300" y="43" text-anchor="middle">Oreno</text>
+      </svg>
+      <figcaption class="map-cap">Three corners of Tuscany: Bolgheri on the coast (Sassicaia), Chianti Classico in the central hills (Tignanello), and the Valdarno di Sopra to the east (Oreno).</figcaption>
+    </figure>
 
     <p style="text-align:center; margin:18px 0 8px;">
       <a href="upcoming.html" style="color:var(--ink-soft); text-decoration:none; letter-spacing:0.08em; font-size:14px;">&larr; All upcoming themes</a>
