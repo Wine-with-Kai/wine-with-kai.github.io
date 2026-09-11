@@ -60,6 +60,26 @@ body {
 
 a { color: inherit; }
 
+/* Visible keyboard focus, on-brand for the dark theme.
+   Uses :focus-visible so it shows for keyboard/switch users
+   without ringing on mouse clicks. */
+a:focus-visible,
+.btn:focus-visible,
+.next-card:focus-visible,
+.home-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 img { max-width: 100%; display: block; }
 
 .wrap {
@@ -294,23 +314,6 @@ img { max-width: 100%; display: block; }
 /* =========================================================
    WINES PAGE
    ========================================================= */
-.topnav {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 22px 28px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 15px;
-}
-.topnav a { color: var(--ink-soft); text-decoration: none; letter-spacing: 0.04em; }
-.topnav a:hover { color: var(--gold); }
-.topnav .brand {
-  font-style: italic;
-  color: var(--ink-faint);
-  font-size: 15px;
-}
-
 .page-head { text-align: center; padding: 40px 0 6px; }
 .page-head .eyebrow { margin-bottom: 20px; }
 .page-title {
@@ -340,9 +343,6 @@ img { max-width: 100%; display: block; }
 }
 .section p { margin: 0 0 18px; color: var(--ink); }
 .section p.muted { color: var(--ink-soft); }
-.section .lead-first::first-letter {
-  /* subtle emphasis, no drop cap gimmick */
-}
 em, .i { font-style: italic; }
 strong, .b { font-weight: 600; color: var(--ink); }
 
@@ -499,6 +499,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  padding: 6px 2px;
   text-decoration: none;
   color: var(--ink);
 }
@@ -513,14 +514,21 @@ strong, .b { font-weight: 600; color: var(--ink); }
   font-size: 15px;
   letter-spacing: 0.04em;
 }
-.site-top nav { display: flex; gap: 22px; }
+.site-top nav { display: flex; align-items: center; gap: 8px 22px; }
 .site-top nav a {
   color: var(--ink-soft);
   text-decoration: none;
   font-size: 15px;
   letter-spacing: 0.04em;
+  /* roomier tap target (~40px tall) without shifting the row baseline */
+  padding: 9px 2px;
+  margin: -9px 0;
 }
 .site-top nav a:hover { color: var(--gold); }
+.site-top nav a[aria-current="page"] {
+  color: var(--gold);
+  cursor: default;
+}
 
 /* =========================================================
    HOME / LANDING
@@ -542,15 +550,6 @@ strong, .b { font-weight: 600; color: var(--ink); }
   filter: drop-shadow(0 5px 13px rgba(0, 0, 0, 0.5));
 }
 
-.brand-title {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: clamp(26px, 3.6vw, 37px);
-  line-height: 1.14;
-  margin: 4px 0 14px;
-  color: var(--ink);
-  letter-spacing: 0.05em;
-}
 .brand-eyebrow {
   font-family: var(--serif);
   color: var(--gold);
@@ -620,29 +619,38 @@ strong, .b { font-weight: 600; color: var(--ink); }
   text-transform: uppercase;
   margin: 12px 0 0;
 }
-.next-card .nc-list {
-  list-style: none;
-  margin: 14px 0 2px;
-  padding: 0;
+
+/* secondary path from the landing straight to the tasting notes */
+.nc-alt {
+  max-width: 620px;
+  margin: 14px auto 0;
+  text-align: center;
 }
-.next-card .nc-list li {
-  position: relative;
-  padding-left: 16px;
+.nc-alt a {
   color: var(--ink-soft);
-  font-size: 15.5px;
-  line-height: 1.6;
+  text-decoration: none;
+  font-style: italic;
+  font-size: 16px;
+  padding: 6px 8px;
+  transition: color .25s ease;
 }
-.next-card .nc-list li::before {
-  content: " B7";
-  color: var(--gold);
-  position: absolute;
-  left: 2px;
-}
+.nc-alt a:hover { color: var(--gold); }
 
 /* =========================================================
    ARCHIVE / PAST DINNERS
    ========================================================= */
 .themes { margin-top: 8px; }
+
+/* group divider inside the archive: "The next dinner" / "Past dinners" */
+.themes-group-head {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 13px;
+  margin: 40px 0 0;
+}
+.themes-group-head:first-child { margin-top: 8px; }
 
 .theme {
   border-top: 1px solid var(--line);
@@ -697,6 +705,14 @@ strong, .b { font-weight: 600; color: var(--ink); }
   font-size: 15.5px;
   margin: 0;
 }
+.theme .t-venue a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 162, 75, 0.45);
+  text-underline-offset: 3px;
+  padding: 2px 1px;
+}
+.theme .t-venue a:hover { text-decoration-color: var(--gold); }
 .archive-note {
   color: var(--ink-faint);
   font-style: italic;
@@ -759,6 +775,18 @@ strong, .b { font-weight: 600; color: var(--ink); }
   max-width: 340px;
 }
 
+/* On phones the densest inset labels render around 6-7px and are illegible;
+   the figure caption already names every region, so drop the smallest tier.
+   Larger orienting labels (inset title, highlighted place) are kept. */
+@media (max-width: 620px) {
+  .map-fig svg text[style*="font-size:5px"],
+  .map-fig svg text[style*="font-size:5.5px"],
+  .map-fig svg text[style*="font-size:6px"],
+  .map-fig svg text[style*="font-size:6.5px"] {
+    display: none;
+  }
+}
+
 
 </style>
 </head>
@@ -769,8 +797,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-mark" role="img" aria-label="Kai"></span>
     <span class="mini-word">Wine with Kai</span>
   </a>
-  <nav>
-    <a href="wines-of-israel.html">The line-up</a>
+    <nav>
+    <a href="wines-of-israel-wines.html" aria-current="page">Tasting notes</a>
     <a href="upcoming.html">Upcoming</a>
     <a href="archive.html">Past dinners</a>
   </nav>
