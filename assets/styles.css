@@ -763,15 +763,6 @@ strong, .b { font-weight: 600; color: var(--ink); }
   max-width: 340px;
 }
 
-/* On phones the densest inset labels render around 6-7px and are illegible;
-   the figure caption already names every region, so drop the smallest tier.
-   Larger orienting labels (inset title, highlighted place) are kept. */
-@media (max-width: 620px) {
-  .map-fig svg text[style*="font-size:5px"],
-  .map-fig svg text[style*="font-size:5.5px"],
-  .map-fig svg text[style*="font-size:6px"],
-  .map-fig svg text[style*="font-size:6.5px"] {
-    display: none;
-  }
-}
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
 
