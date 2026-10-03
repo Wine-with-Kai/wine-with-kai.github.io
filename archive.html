@@ -693,6 +693,37 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -877,17 +908,45 @@ strong, .b { font-weight: 600; color: var(--ink); }
         <p class="t-title">Pomerol versus Saint-Émilion</p>
         <p class="t-sub">Merlot and Cabernet Franc &middot; Blind</p>
         <p class="t-desc">
-          Eight bottles, four vintages, the two great Right Bank neighbours set directly against each
-          other in matched pairs and poured blind. Pomerol&rsquo;s iron-rich clay against
-          Saint-Émilion&rsquo;s limestone, judged glass by glass across 1986, 1988, 1993 and 1996, four
-          firm years chosen to lay the difference bare.
+          Eight bottles, the two great Right Bank neighbours set directly against each other in four
+          pairs and poured blind. Saint-Émilion&rsquo;s limestone against Pomerol&rsquo;s iron-rich clay,
+          from Ausone and Cheval Blanc to Petrus and Vieux Château Certan, judged glass by glass
+          across five firm vintages from 1986 to 1999.
         </p>
+        <div class="t-pairs" role="table" aria-label="The four pairs">
+          <div class="tp-row tp-head" role="row">
+            <span role="columnheader">Saint-Émilion</span>
+            <span class="tp-vs" aria-hidden="true"></span>
+            <span role="columnheader">Pomerol</span>
+          </div>
+          <div class="tp-row" role="row">
+            <span role="cell">Château Ausone <em>1986</em></span>
+            <span class="tp-vs" aria-hidden="true">vs</span>
+            <span role="cell">Château Trotanoy <em>1986</em></span>
+          </div>
+          <div class="tp-row" role="row">
+            <span role="cell">Château Cheval Blanc <em>1988</em></span>
+            <span class="tp-vs" aria-hidden="true">vs</span>
+            <span role="cell">Petrus <em>1999</em></span>
+          </div>
+          <div class="tp-row" role="row">
+            <span role="cell">Château Angélus <em>1993</em></span>
+            <span class="tp-vs" aria-hidden="true">vs</span>
+            <span role="cell">Château L&rsquo;Évangile <em>1993</em></span>
+          </div>
+          <div class="tp-row" role="row">
+            <span role="cell">Château Figeac <em>1996</em></span>
+            <span class="tp-vs" aria-hidden="true">vs</span>
+            <span role="cell">Vieux Château Certan <em>1996</em></span>
+          </div>
+        </div>
         <div class="t-meta">
           <span class="tag">1986</span>
           <span class="tag">1988</span>
           <span class="tag">1993</span>
           <span class="tag">1996</span>
-          <span class="tag">Matched pairs</span>
+          <span class="tag">1999</span>
+          <span class="tag">Four pairs</span>
         </div>
         <p class="t-venue">The American Club, Singapore</p>
       </div>
