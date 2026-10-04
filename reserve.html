@@ -1490,13 +1490,17 @@ window.WWK_CONFIG = {
       </dl>
       ${ev.description ? `<p style="margin-top:26px;">${W.esc(ev.description)}</p>` : ""}
       ${ev.format === "byob" ? `
-        <p class="muted">Bring a bottle you would like to share, or none at all. On the night, every bottle poured and the
-        evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} are added together and
-        split evenly across the table: if your bottle is worth more than your share, Kai pays you the difference.</p>` : ""}
+        <div class="banner">
+          <p class="kicker" style="margin-bottom:4px;">Bring your own bottle</p>
+          <p><a href="#line-up" data-jump style="color:var(--gold);">Click here to see the line-up and tally &rarr;</a></p>
+        </div>` : ""}
       <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
       ${ev.format === "byob" ? `
         <div class="panel" id="mine" hidden></div>
-        <h2>The line-up</h2>
+        <h2 id="line-up" style="scroll-margin-top:16px;">The line-up</h2>
+        <p class="muted">Bring a bottle you would like to share, or none at all. On the night, every bottle poured and the
+        evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} are added together and
+        split evenly across the table: if your bottle is worth more than your share, Kai pays you the difference.</p>
         <div id="lineup"><p class="muted">Loading&hellip;</p></div>
         <div id="tally"></div>` : ""}
       ${ev.deposit_cents ? `
@@ -1504,6 +1508,12 @@ window.WWK_CONFIG = {
         <strong>${W.esc(W.day(cutoff.toISOString()))}</strong>, ${ev.refund_days} days before the evening; after that it is kept.
         ${ev.format === "byob" ? "On the night, it counts towards your share of the tally." : "It counts towards the evening's cost."}</p>` : ""}
       <p class="foot-note" id="who"></p>`;
+
+    const jump = page.querySelector("[data-jump]");
+    if (jump) jump.addEventListener("click", (e) => {
+      e.preventDefault();
+      $("line-up").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
 
     await renderGuest();
   }
