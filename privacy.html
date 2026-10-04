@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Wine with Kai</title>
+<meta name="description" content="What Wine with Kai keeps when you reserve a seat or add a bottle, why, and how to have it removed.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+
+/* =========================================================
+   Wine with Kai · shared styles
+   Curated wine dinners, Singapore
+   ========================================================= */
+
+:root {
+  --bg:        #160a0c;
+  --bg-2:      #1d1013;
+  --panel:     #201215;
+  --ink:       #ece3d6;
+  --ink-soft:  #bdae9f;
+  --ink-faint: #8c7d71;
+  --gold:      #c9a24b;
+  --gold-soft: #d8bd7e;
+  /* red removed from the palette; these now carry the gold accent */
+  --crimson:   #c9a24b;
+  --crimson-2: #c9a24b;
+  --line:      rgba(236, 227, 214, 0.11);
+  --line-soft: rgba(236, 227, 214, 0.06);
+
+  --serif:   'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  /* headers now share the eyebrow's serif (EB Garamond) for consistency */
+  --display: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
+  --maxw: 820px;
+
+  --kai-mark: url(data:image/png;base64,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);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.72;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--gold); color: #201013; }
+
+a { color: inherit; }
+
+/* Visible keyboard focus, on-brand for the dark theme.
+   Uses :focus-visible so it shows for keyboard/switch users
+   without ringing on mouse clicks. */
+a:focus-visible,
+.btn:focus-visible,
+.next-card:focus-visible,
+.home-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img { max-width: 100%; display: block; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Eyebrow / small-caps kicker ---------- */
+.eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Thin rules ---------- */
+.rule-crimson {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 14%, var(--gold) 86%, transparent);
+  border: 0;
+  opacity: 0.72;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: calc(100% - 56px);
+}
+.tick {
+  width: 44px;
+  height: 1px;
+  background: var(--gold);
+  border: 0;
+  opacity: 0.85;
+  margin: 0 0 20px;
+}
+
+/* =========================================================
+   HERO (landing)
+   ========================================================= */
+.hero-scene {
+  position: relative;
+  height: 40vh;
+  min-height: 300px;
+  max-height: 440px;
+  overflow: hidden;
+  background: #0d0708;
+}
+.hero-scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-scene::after {
+  /* fade the bottom of the scene into the page */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 46%;
+  background: linear-gradient(to bottom, rgba(22,10,12,0) 0%, var(--bg) 96%);
+}
+
+.hero-body { padding: 46px 0 8px; }
+
+.masthead {
+  text-align: center;
+  padding-top: 30px;
+}
+.masthead .kick { margin-bottom: 26px; }
+
+.title-display {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: 0;
+  font-size: clamp(46px, 9vw, 74px);
+}
+.title-connector {
+  display: block;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.2;
+  margin: 2px 0;
+  letter-spacing: 0.01em;
+}
+
+.gold-divider {
+  width: min(560px, 82%);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 18%, var(--gold) 82%, transparent);
+  border: 0;
+  margin: 30px auto 26px;
+  opacity: 0.85;
+}
+
+.lede {
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(21px, 3.1vw, 27px);
+  color: var(--ink);
+  margin: 0 auto 8px;
+  max-width: 640px;
+  line-height: 1.35;
+}
+.lede-sub {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 auto 4px;
+  max-width: 560px;
+}
+
+/* =========================================================
+   WINE LINEUP (landing list)
+   ========================================================= */
+.lineup { margin: 6px 0 4px; }
+
+.flight {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 6px 22px;
+  align-items: baseline;
+  padding: 22px 4px;
+  border-top: 1px solid var(--line-soft);
+}
+.flight:last-child { border-bottom: 1px solid var(--line-soft); }
+
+.flight-yr {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.flight-main { }
+.flight-name {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.18;
+  margin: 0 0 4px;
+}
+.flight-sub {
+  color: var(--ink-faint);
+  font-size: 16.5px;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+.flight-order {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+}
+
+/* ---------- CTA ---------- */
+.cta-row { text-align: center; margin: 40px 0 8px; }
+.btn {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 15px 34px;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  transition: background .25s ease, color .25s ease;
+}
+.btn:hover { background: var(--gold); color: #201013; }
+.btn .arw { color: var(--gold); margin-left: 8px; transition: color .25s ease; }
+.btn:hover .arw { color: #201013; }
+
+.note-line {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 620px;
+  margin: 26px auto 0;
+}
+
+/* =========================================================
+   EVENT FOOTER BAR
+   ========================================================= */
+.event-bar {
+  background: var(--bg-2);
+  border-top: 1px solid rgba(201, 162, 75, 0.5);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.5);
+  color: var(--ink);
+  text-align: center;
+  padding: 30px 24px;
+  margin-top: 54px;
+}
+.event-bar .when {
+  font-family: var(--display);
+  font-weight: 500;
+  color: var(--gold-soft);
+  font-size: clamp(21px, 3.4vw, 27px);
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+.event-bar .where {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.page-foot {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-style: italic;
+  padding: 26px 20px 40px;
+}
+
+/* =========================================================
+   WINES PAGE
+   ========================================================= */
+.page-head { text-align: center; padding: 40px 0 6px; }
+.page-head .eyebrow { margin-bottom: 20px; }
+.page-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(40px, 7vw, 60px);
+  line-height: 1.05;
+  margin: 0;
+}
+.page-title .it {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(19px, 3vw, 26px);
+  margin-top: 4px;
+}
+
+.section { padding: 20px 0; }
+.section h2 {
+  font-family: var(--display);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 27px;
+  margin: 30px 0 14px;
+  letter-spacing: 0.01em;
+}
+.section p { margin: 0 0 18px; color: var(--ink); }
+.section p.muted { color: var(--ink-soft); }
+em, .i { font-style: italic; }
+strong, .b { font-weight: 600; color: var(--ink); }
+
+/* ---------- Wine entries ---------- */
+.wines { margin-top: 8px; }
+
+.wine {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  scroll-margin-top: 20px;
+}
+.wine-head {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 4px 20px;
+  align-items: start;
+}
+.wine-num {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  padding-top: 6px;
+}
+.wine-titles { }
+.wine-name {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.16;
+  margin: 0 0 2px;
+  color: var(--ink);
+}
+.wine-vintage {
+  color: var(--crimson);
+  font-weight: 600;
+  font-style: normal;
+}
+.wine-producer {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 2px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 14px 0 4px;
+  padding-left: 94px;
+}
+.tag {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border: 1px solid rgba(201,162,75,0.4);
+  border-radius: 2px;
+  padding: 4px 11px;
+  white-space: nowrap;
+}
+
+.wine-body { padding-left: 94px; margin-top: 14px; }
+.wine-body p { margin: 0 0 16px; }
+
+.lookfor {
+  padding-left: 94px;
+  margin-top: 6px;
+}
+.lookfor .lf-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+.lookfor p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.scores {
+  padding-left: 94px;
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.scores .sc-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+}
+.scores .sc {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+.scores .sc b { color: var(--ink); font-weight: 600; }
+.scores .sc .star { color: var(--crimson); }
+
+.source-note {
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  font-style: italic;
+  padding-left: 94px;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 620px) {
+  body { font-size: 18px; }
+  .wrap, .topnav { padding-left: 20px; padding-right: 20px; }
+
+  .flight { grid-template-columns: 66px 1fr; gap: 4px 16px; padding: 18px 2px; }
+  .flight-yr { font-size: 26px; }
+  .flight-name { font-size: 21px; }
+  .flight-sub { font-size: 15px; }
+
+  .wine-head { grid-template-columns: 54px 1fr; gap: 4px 14px; }
+  .wine-num { font-size: 24px; }
+  .wine-name { font-size: 23px; }
+  .meta, .wine-body, .lookfor, .source-note, .scores { padding-left: 0; }
+  .meta { margin-top: 16px; }
+}
+
+@media (max-width: 420px) {
+  .title-display { font-size: 44px; }
+}
+
+/* =========================================================
+   BRAND NAV (home link on sub-pages)
+   ========================================================= */
+.site-top {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.site-top .home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.site-top .home-link .mini-mark {
+  display: inline-block;
+  width: 32px;
+  height: 27px;
+  background: var(--kai-mark) center/contain no-repeat;
+}
+.site-top .home-link .mini-word {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.site-top nav { display: flex; align-items: center; gap: 8px 22px; }
+.site-top nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  /* roomier tap target (~40px tall) without shifting the row baseline */
+  padding: 9px 2px;
+  margin: -9px 0;
+}
+.site-top nav a:hover { color: var(--gold); }
+.site-top nav a[aria-current="page"] {
+  color: var(--gold);
+  cursor: default;
+}
+
+/* =========================================================
+   HOME / LANDING
+   ========================================================= */
+.home {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 28px 0;
+  text-align: center;
+}
+.home-inner { padding-top: 54px; }
+
+.logo-mark {
+  width: 172px;
+  height: 142px;
+  margin: 0 auto 16px;
+  background: var(--kai-mark) center/contain no-repeat;
+  opacity: 0.7;
+  filter: drop-shadow(0 5px 13px rgba(0, 0, 0, 0.5));
+}
+
+.brand-eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  font-size: 12px;
+  margin: 0;
+}
+
+.about-text {
+  margin: 6px auto 0;
+  max-width: 620px;
+}
+.about-text p {
+  font-size: 19.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+.about-text p.soft { color: var(--ink-soft); }
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 34px 0 8px;
+}
+
+/* next-dinner teaser */
+.next-card {
+  max-width: 620px;
+  margin: 40px auto 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 22px 26px;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  transition: border-color .25s ease, background .25s ease;
+}
+.next-card:hover { border-color: var(--gold); background: rgba(201,162,75,0.05); }
+.next-card .nc-kick {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+.next-card .nc-title {
+  font-family: var(--display);
+  font-size: 25px;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.next-card .nc-meta {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  margin: 0;
+  font-style: italic;
+}
+.next-card .nc-go {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 12px 0 0;
+}
+
+/* secondary path from the landing straight to the tasting notes */
+.nc-alt {
+  max-width: 620px;
+  margin: 14px auto 0;
+  text-align: center;
+}
+.nc-alt a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-style: italic;
+  font-size: 16px;
+  padding: 6px 8px;
+  transition: color .25s ease;
+}
+.nc-alt a:hover { color: var(--gold); }
+
+/* =========================================================
+   ARCHIVE / PAST DINNERS
+   ========================================================= */
+.themes { margin-top: 8px; }
+
+/* group divider inside the archive: "The next dinner" / "Past dinners" */
+.themes-group-head {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 13px;
+  margin: 40px 0 0;
+}
+.themes-group-head:first-child { margin-top: 8px; }
+
+.theme {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 6px 26px;
+}
+.theme:last-child { border-bottom: 1px solid var(--line); }
+.theme .t-index {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  padding-top: 4px;
+}
+.theme .t-index span {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+.theme .t-body { }
+.theme .t-title {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+  line-height: 1.18;
+}
+.theme .t-sub {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
+.theme .t-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0 0 12px;
+}
+.theme .t-venue {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  margin: 0;
+}
+.theme .t-venue a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 162, 75, 0.45);
+  text-underline-offset: 3px;
+  padding: 2px 1px;
+}
+.theme .t-venue a:hover { text-decoration-color: var(--gold); }
+.archive-note {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  margin: 34px auto 0;
+  max-width: 560px;
+}
+
+@media (max-width: 620px) {
+  .logo-mark { width: 168px; height: 142px; }
+  .theme { grid-template-columns: 1fr; gap: 4px; }
+  .theme .t-index { padding-top: 0; font-size: 20px; }
+
+  /* stack the header so brand and nav don't crush together */
+  .site-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 20px 20px 0;
+  }
+  .site-top .home-link .mini-word { white-space: nowrap; }
+  .site-top nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+  }
+  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+}
+
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
+
+
+</style>
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="upcoming.html">Upcoming</a>
+    <a href="reserve.html">Reserve</a>
+    <a href="archive.html">Past dinners</a>
+  </nav>
+</div>
+
+<hr class="rule-crimson" style="margin-top:18px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Privacy</p>
+    <h1 class="page-title">Privacy<span class="it">what we keep, and why</span></h1>
+  </header>
+
+  <section class="section wrap">
+    <p>Wine with Kai is a small circle of private wine dinners in Singapore, run by Kai. When you reserve a
+    seat or add a bottle on this site, we keep only what is needed to run the evening. This page explains what
+    that is. Questions, or a request to see or remove your details: <a href="mailto:winewithkai@gmail.com" style="color:var(--gold);">winewithkai@gmail.com</a>.</p>
+
+    <h2>What we keep</h2>
+    <p><strong>Your name and email address.</strong> You give these when you sign in, either by email (we send a
+    one-time code) or with Google. Signing in with Google shares only your name, email address and profile
+    picture with us; we do not receive your password or anything else from your Google account.</p>
+    <p><strong>Your mobile number</strong>, only if you choose to add it.</p>
+    <p><strong>Your reservations</strong>: which evenings you reserved, joined the waitlist for, or cancelled.
+    Where a deposit applies, payment is handled by Stripe; we see that it was paid or refunded, never your
+    card or bank details.</p>
+    <p><strong>The bottles you add</strong>: the wine, what you paid for it, a note if you leave one, and the
+    label photo if you take one, together with the market price and short background that our bottle
+    assistant looks up.</p>
+
+    <h2>How it is used</h2>
+    <p>Only to run the evenings: to hold your seat, to build the line-up, to split the evening&rsquo;s costs
+    fairly, and to contact you about a dinner you have reserved. We do not sell your details, share them for
+    marketing, or send newsletters.</p>
+
+    <h2>Who sees what</h2>
+    <p>The line-up for an evening is public, showing each bottle with the first name of the guest bringing it,
+    and its label photo. The tally and the prices are shown only to the guests seated that evening. Kai, as
+    host, sees the guest list with names, email addresses and mobile numbers.</p>
+
+    <h2>Where it is kept</h2>
+    <p>Your details are stored with Supabase, in its Singapore region. Sign-in codes are sent by email through
+    Gmail. When you photograph a label, the photo is read by Anthropic&rsquo;s Claude, which also searches the
+    web for the bottle&rsquo;s market price and background. Label photos are stored at a web address that
+    anyone with the link can open, so they can appear in the line-up.</p>
+
+    <h2>Keeping and removing</h2>
+    <p>We keep your details while you are part of the dinners. Email
+    <a href="mailto:winewithkai@gmail.com" style="color:var(--gold);">winewithkai@gmail.com</a> at any time and
+    we will show you what we hold, correct it, or delete it.</p>
+
+    <p class="muted" style="font-size:16px; margin-top:30px;">Last updated 4 October 2026.</p>
+  </section>
+
+  <p class="page-foot">Wine with Kai</p>
+</main>
+
+</body>
+</html>

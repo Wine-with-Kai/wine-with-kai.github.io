@@ -5,7 +5,8 @@
 -- confirmed straight away and Stripe is not needed. Dinner is S$80++ a
 -- head; with 10% service charge and 9% GST that is S$95.92, so S$287.76
 -- for three, split evenly with the bottles. Corkage is free.
--- Invite Alvin and Joshua from the host page (Invitations tab).
+-- Open to anyone with the link (invite_only false): Kai shares it with Alvin
+-- and Joshua on WhatsApp, and the 3-seat limit keeps the table to three.
 
 insert into public.events (
   slug, title, subtitle, description, format, starts_at, venue, seats,
@@ -29,6 +30,6 @@ insert into public.events (
   12000,
   'Bring something you love.',
   '2026-10-09 19:00:00+08',
-  true,
+  false,
   'open'
 );

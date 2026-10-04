@@ -6,5 +6,5 @@ window.WWK_CONFIG = {
   // the publishable key: safe in the browser; never put a secret key here
   supabaseAnonKey: "sb_publishable_XwBu994F6G19SYfrVrt67w_UQXSftIH",
   // show "Continue with Google" (turn on once the Google provider is enabled in Supabase)
-  googleSignIn: false,
+  googleSignIn: true,
 };

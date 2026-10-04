@@ -34,6 +34,9 @@ Steps 1 to 3 and 5 involve creating accounts and handling secret keys, so they a
 ### Sign-in emails
 Under **Authentication > Emails > Templates**, both **Confirm sign up** (first-time guests) and **Magic link or OTP** (returning guests) use the subject `Your Wine with Kai sign-in code: {{ .Token }}` and show `{{ .Token }}` large in the body, with `{{ .ConfirmationURL }}` as a fallback link. Guests type the code on the page, so they never leave it. Run `migrations/20261005000000_invitation_names.sql` too (invitation names).
 
+### Sign in with Google
+Google Cloud project `wine-with-kai` (owner winewithkai@gmail.com), Google Auth Platform: app "Wine with Kai", External, **In production**, home page and `privacy.html` filled in, a Web client with origin `https://wine-with-kai.github.io` and redirect `https://hweaxketmosodctqpnme.supabase.co/auth/v1/callback`. Its client ID and secret are in Supabase under **Authentication > Sign In / Providers > Google**. `googleSignIn: true` in `assets/wwk-config.js` shows the button.
+
 ### 2. Point the site at it
 **Project Settings > API**: copy the Project URL and the `anon` public key into `assets/wwk-config.js`. Both are public by design. **Never** put the `service_role` key there. Then run `python3 build.py`.
 
