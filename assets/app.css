@@ -93,6 +93,10 @@ button.btn:disabled { opacity: 0.5; cursor: wait; }
 .btn.solid { background: var(--gold); color: #201013; }
 .btn.solid:hover { background: var(--gold-soft); }
 
+.btn.google { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #201013; border-color: #fff; }
+.btn.google:hover { background: var(--gold-soft); border-color: var(--gold-soft); }
+.hint-or { color: var(--ink-faint); font-style: italic; font-size: 15px; margin: 0 0 6px; }
+
 .linkish {
   font: inherit;
   background: none;

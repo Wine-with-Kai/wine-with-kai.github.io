@@ -913,6 +913,10 @@ button.btn:disabled { opacity: 0.5; cursor: wait; }
 .btn.solid { background: var(--gold); color: #201013; }
 .btn.solid:hover { background: var(--gold-soft); }
 
+.btn.google { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #201013; border-color: #fff; }
+.btn.google:hover { background: var(--gold-soft); border-color: var(--gold-soft); }
+.hint-or { color: var(--ink-faint); font-style: italic; font-size: 15px; margin: 0 0 6px; }
+
 .linkish {
   font: inherit;
   background: none;
@@ -1106,6 +1110,8 @@ window.WWK_CONFIG = {
   supabaseUrl: "https://hweaxketmosodctqpnme.supabase.co",
   // the publishable key: safe in the browser; never put a secret key here
   supabaseAnonKey: "sb_publishable_XwBu994F6G19SYfrVrt67w_UQXSftIH",
+  // show "Continue with Google" (turn on once the Google provider is enabled in Supabase)
+  googleSignIn: false,
 };
 
 </script>
@@ -1234,9 +1240,17 @@ window.WWK_CONFIG = {
   // Two steps on the same page: email, then the code from the email.
   // The email also carries a link, which signs in just as well.
   function signInForm(el, lead, onSignedIn) {
+    const google = !!cfg.googleSignIn;
     el.innerHTML = `
       <p class="kicker">Sign in</p>
-      <p>${lead || "Enter your email and we will send you a 6-digit code. No password needed."}</p>
+      <p>${lead || (google ? "One tap with Google, or we can email you a 6-digit code." : "Enter your email and we will send you a 6-digit code. No password needed.")}</p>
+      ${google ? `
+      <div class="actions" style="margin:4px 0 14px;">
+        <button class="btn small solid google" type="button" data-google>
+          <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+          Continue with Google</button>
+      </div>
+      <p class="hint-or">or with your email</p>` : ""}
       <form class="form" data-signin>
         <label>Email <input type="email" name="email" required autocomplete="email" value="${esc(remembered())}"></label>
         <div class="actions"><button class="btn small solid" type="submit">Email me a code</button></div>
@@ -1254,6 +1268,20 @@ window.WWK_CONFIG = {
       </form>`;
     const form = el.querySelector("[data-signin]");
     const codeForm = el.querySelector("[data-code]");
+    const gBtn = el.querySelector("[data-google]");
+    if (gBtn) gBtn.addEventListener("click", async () => {
+      gBtn.disabled = true;
+      // Google sends the guest back to this same page, signed in
+      const { error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: location.href.split("#")[0] },
+      });
+      if (error) {
+        gBtn.disabled = false;
+        const msg = form.querySelector("[data-msg]");
+        msg.className = "msg err"; msg.textContent = error.message;
+      }
+    });
     let email = "";
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -1328,7 +1356,8 @@ window.WWK_CONFIG = {
       // invited by name: no need to ask again
       const { data: inv } = await client.from("invitations").select("name")
         .eq("email", (u.email || "").toLowerCase()).not("name", "is", null).limit(1);
-      const name = inv && inv[0] && inv[0].name;
+      const meta = u.user_metadata || {};
+      const name = (inv && inv[0] && inv[0].name) || meta.full_name || meta.name;
       if (name) {
         const { data } = await client.from("profiles")
           .insert({ id: u.id, email: u.email, full_name: name }).select().single();

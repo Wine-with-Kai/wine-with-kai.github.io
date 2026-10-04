@@ -165,7 +165,7 @@
     const box = $("guest");
     const g = await W.guest(box, renderGuest,
       ev.invite_only
-        ? "This evening is by invitation. Enter the email address Kai invited and we will email you a 6-digit code."
+        ? `This evening is by invitation: sign in with the email address Kai invited${(window.WWK_CONFIG || {}).googleSignIn ? " (with Google, if that is your Google account)" : ", and we will email you a 6-digit code"}.`
         : null);
     if (!g) return;
     W.whoBar($("who"), g);
