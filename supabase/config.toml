@@ -1,0 +1,17 @@
+project_id = "hweaxketmosodctqpnme"
+
+# Every function checks the caller itself: the guest functions look the
+# signed-in user up from their access token (currentUser), and Stripe signs
+# its webhook calls. The gateway's own JWT check is off because it does not
+# accept the asymmetric tokens newer Supabase projects issue.
+[functions.create-deposit-checkout]
+verify_jwt = false
+
+[functions.cancel-reservation]
+verify_jwt = false
+
+[functions.bottle-assist]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false

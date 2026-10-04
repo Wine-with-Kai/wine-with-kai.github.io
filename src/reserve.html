@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserve a Seat · Wine with Kai</title>
+<meta name="description" content="Reserve a seat at a Wine with Kai dinner. A deposit holds your place, refunded in full if you cancel at least fourteen days ahead.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="upcoming.html">Upcoming</a>
+    <a href="reserve.html" aria-current="page">Reserve</a>
+    <a href="archive.html">Past dinners</a>
+  </nav>
+</div>
+
+<hr class="rule-crimson" style="margin-top:18px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow" id="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Reserve a seat</p>
+    <h1 class="page-title">
+      <span id="title">Reserve a Seat</span>
+      <span class="it" id="subtitle">a place at the table</span>
+    </h1>
+  </header>
+
+  <section class="section wrap" id="page">
+    <p class="muted" style="text-align:center;" id="loading">Loading&hellip;</p>
+  </section>
+
+  <div class="event-bar" id="bar" hidden>
+    <p class="when" id="bar-when"></p>
+    <p class="where" id="bar-where"></p>
+  </div>
+
+  <p class="page-foot">A curated wine dinner among friends &middot; Wine with Kai</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../assets/wwk-config.js"></script>
+<script src="../assets/wwk.js"></script>
+<script>
+(function () {
+  const W = window.WWK;
+  const $ = (id) => document.getElementById(id);
+  const page = $("page");
+  const slug = W.param("event");
+
+  if (!W.ready) { W.notConfigured(page); return; }
+
+  // ---------- no evening chosen: list what is open ----------
+  async function listOpen() {
+    const { data } = await W.client.from("events").select("*")
+      .eq("status", "open").gte("starts_at", new Date().toISOString()).order("starts_at");
+    if (!data || !data.length) {
+      page.innerHTML = `<p class="muted" style="text-align:center;">No evenings are open for reservation just now.
+        See what is <a href="upcoming.html" style="color:var(--gold);">taking shape</a>.</p>`;
+      return;
+    }
+    page.innerHTML = `<div class="themes">${data.map((ev) => `
+      <article class="theme">
+        <div class="t-index">${W.esc(W.day(ev.starts_at))}<span>${W.esc(ev.venue || "")}</span></div>
+        <div class="t-body">
+          <p class="t-title">${W.esc(ev.title)}</p>
+          ${ev.subtitle ? `<p class="t-sub">${W.esc(ev.subtitle)}</p>` : ""}
+          ${ev.description ? `<p class="t-desc">${W.esc(ev.description)}</p>` : ""}
+          <div class="t-meta">
+            <span class="tag">${ev.format === "byob" ? "Bring your own bottle" : "Curated line-up"}</span>
+            ${ev.invite_only ? `<span class="tag">By invitation</span>` : ""}
+          </div>
+          <p style="margin:6px 0 0;"><a href="reserve.html?event=${encodeURIComponent(ev.slug)}"
+            style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">Reserve a seat &rarr;</a></p>
+        </div>
+      </article>`).join("")}</div>`;
+  }
+
+  // ---------- one evening ----------
+  let ev, counts;
+
+  async function load() {
+    ev = await W.event(slug);
+    if (!ev) {
+      page.innerHTML = `<p class="muted" style="text-align:center;">This evening could not be found.
+        <a href="reserve.html" style="color:var(--gold);">See the evenings open for reservation</a>.</p>`;
+      return;
+    }
+    document.title = `Reserve · ${ev.title} · Wine with Kai`;
+    $("eyebrow").innerHTML = `Wine with Kai &nbsp;&middot;&nbsp; ${ev.format === "byob" ? "Bring your own bottle" : "Reserve a seat"}`;
+    $("title").textContent = ev.title;
+    $("subtitle").textContent = ev.subtitle || "reserve a seat";
+    $("bar").hidden = false;
+    $("bar-when").textContent = W.when(ev.starts_at);
+    $("bar-where").textContent = ev.venue || "";
+
+    counts = (await W.rpc("event_counts", { p_slug: slug }))[0] || { seats_taken: 0, waitlisted: 0 };
+    const left = Math.max(0, ev.seats - counts.seats_taken);
+    const cutoff = W.refundCutoff(ev);
+
+    page.innerHTML = `
+      <dl class="facts">
+        <div><dt>When</dt><dd>${W.esc(W.when(ev.starts_at))}</dd></div>
+        <div><dt>Where</dt><dd>${W.esc(ev.venue || "To be announced")}</dd></div>
+        <div><dt>Seats</dt><dd>${left ? `${left} of ${ev.seats} left` : `Full &middot; ${counts.waitlisted} waiting`}</dd></div>
+        <div><dt>Deposit</dt><dd>${ev.deposit_cents == null ? "To be confirmed" : ev.deposit_cents === 0 ? "None" : W.money(ev.deposit_cents, ev.currency)}</dd></div>
+      </dl>
+      ${ev.description ? `<p style="margin-top:26px;">${W.esc(ev.description)}</p>` : ""}
+      ${ev.format === "byob" ? `
+        <div class="banner">
+          <p class="kicker" style="margin-bottom:4px;">Bring your own bottle</p>
+          <p>Each guest may bring a bottle on the theme, or none at all. Everything poured, with the evening's shared
+          costs, is tallied and split evenly across the table.
+          <a href="byob.html?event=${encodeURIComponent(ev.slug)}" style="color:var(--gold);">See the line-up and the tally &rarr;</a></p>
+        </div>` : ""}
+      <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
+      ${ev.deposit_cents ? `
+        <p class="foot-note">The deposit holds your seat. It is refunded in full if you cancel on or before
+        <strong>${W.esc(W.day(cutoff.toISOString()))}</strong>, ${ev.refund_days} days before the evening; after that it is kept.
+        ${ev.format === "byob" ? "On the night, it counts towards your share of the tally." : "It counts towards the evening's cost."}</p>` : ""}
+      <p class="foot-note" id="who"></p>`;
+
+    await renderGuest();
+  }
+
+  async function renderGuest() {
+    const box = $("guest");
+    const g = await W.guest(box, renderGuest,
+      ev.invite_only
+        ? "This evening is by invitation. Enter the email your invitation was sent to and we will send you a link to sign in."
+        : null);
+    if (!g) return;
+    W.whoBar($("who"), g);
+
+    const { data: mine } = await W.client.from("reservations").select("*")
+      .eq("event_id", ev.id).eq("user_id", g.user.id).neq("status", "cancelled").maybeSingle();
+    // a lapsed hold (checkout abandoned) reads as plain interest
+    const lapsed = mine && mine.status === "pending" && !W.param("paid")
+      && new Date(mine.hold_expires_at) < new Date();
+    const status = !mine ? "none" : lapsed ? "interested" : mine.status;
+
+    if (ev.invite_only && status === "none") {
+      const { data: inv } = await W.client.from("invitations").select("email").eq("event_id", ev.id);
+      if (!inv || !inv.length) {
+        box.innerHTML = `<p class="kicker">By invitation</p>
+          <p>This evening is by invitation, and we could not find one for <strong>${W.esc(g.user.email)}</strong>.
+          If Kai invited you at another address, sign out and sign in with that one.</p>`;
+        return;
+      }
+    }
+
+    const left = Math.max(0, ev.seats - counts.seats_taken);
+    const deposit = ev.deposit_cents ? W.money(ev.deposit_cents, ev.currency) : null;
+    const reserveLabel = deposit ? `Reserve a seat &middot; ${deposit} deposit` : "Reserve a seat";
+    const cutoff = W.refundCutoff(ev);
+    const inTime = Date.now() <= cutoff.getTime();
+    const html = [];
+
+    if (status === "reserved") {
+      html.push(`<p class="kicker">Your seat</p>
+        <p><strong>Your seat is reserved.</strong> ${mine.deposit_paid_cents
+          ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
+          : ""} We look forward to seeing you.</p>`);
+      if (ev.format === "byob") {
+        html.push(`<div class="actions"><a class="btn small" href="byob.html?event=${encodeURIComponent(ev.slug)}">Add your bottle <span class="arw">&rarr;</span></a></div>`);
+      }
+      html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
+          ? "Plans changed?"
+          : inTime
+            ? `Plans changed? Cancel on or before ${W.esc(W.day(cutoff.toISOString()))} and your deposit is refunded in full.`
+            : `The refund window closed on ${W.esc(W.day(cutoff.toISOString()))}. If you cancel now, the deposit is kept.`}
+        <button class="linkish danger" type="button" data-act="cancel">Cancel my reservation</button></p>`);
+    } else if (status === "pending" && W.param("paid")) {
+      html.push(`<p class="kicker">Almost there</p><p>Payment received. Confirming your seat&hellip;</p>`);
+      pollUntilReserved();
+    } else if (status === "pending") {
+      html.push(`<p class="kicker">Your seat is held</p>
+        <p>We are holding a seat for you until <strong>${W.esc(W.time(mine.hold_expires_at))}</strong> while you pay the deposit.</p>
+        <div class="actions">
+          <button class="btn small solid" type="button" data-act="reserve">Continue to payment</button>
+          <button class="linkish" type="button" data-act="cancel">Release the seat</button>
+        </div>`);
+    } else if (status === "waitlisted") {
+      const pos = await W.rpc("my_waitlist_position", { p_slug: slug });
+      const yours = left > 0 && pos && pos <= left;
+      html.push(`<p class="kicker">Waitlist</p>`);
+      html.push(yours
+        ? `<p><strong>A seat has opened for you.</strong> Reserve it now to claim it.</p>
+           <div class="actions"><button class="btn small solid" type="button" data-act="reserve">${reserveLabel}</button>
+           <button class="linkish" type="button" data-act="withdraw">Leave the waitlist</button></div>`
+        : `<p>You are <strong>number ${pos || "?"}</strong> on the waitlist. If a seat opens, it is offered in order:
+           come back here, or Kai will be in touch.</p>
+           <div class="actions"><button class="linkish" type="button" data-act="withdraw">Leave the waitlist</button></div>`);
+    } else if (ev.status !== "open") {
+      html.push(`<p>Reservations for this evening are ${ev.status === "draft" ? "not open yet" : "closed"}.</p>`);
+    } else if (ev.deposit_cents == null) {
+      html.push(`<p class="kicker">Seats open soon</p>`);
+      html.push(status === "interested"
+        ? `<p>You are on the interest list. Seats open as soon as the deposit is set, and Kai will let you know.</p>
+           <div class="actions"><button class="linkish" type="button" data-act="withdraw">Withdraw my interest</button></div>`
+        : `<p>The deposit for this evening is still being settled. Register your interest and Kai will let you know when seats open.</p>
+           <div class="actions"><button class="btn small" type="button" data-act="interest">I&rsquo;m interested</button></div>`);
+    } else {
+      const queueFirst = counts.waitlisted >= left;
+      html.push(`<p class="kicker">${left && !queueFirst ? "Seats are open" : "The table is full"}</p>`);
+      html.push(left && !queueFirst
+        ? `<p>${left === 1 ? "One seat is" : `${left} seats are`} left.${deposit ? ` A deposit of ${deposit} secures yours; you will pay it on Stripe&rsquo;s secure page, by PayNow or card.` : ""}</p>
+           <div class="actions"><button class="btn small solid" type="button" data-act="reserve">${reserveLabel}</button>
+           ${status === "interested" ? "" : `<button class="linkish" type="button" data-act="interest">Just register interest</button>`}</div>`
+        : `<p>Every seat is taken. Join the waitlist and, if a seat opens, it is offered in order.</p>
+           <div class="actions"><button class="btn small" type="button" data-act="reserve">Join the waitlist</button></div>`);
+      if (status === "interested") html.push(`<p class="foot-note">You are on the interest list for this evening.</p>`);
+    }
+    html.push(`<p class="msg" data-msg aria-live="polite"></p>`);
+    box.innerHTML = html.join("");
+
+    box.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => act(b, b.dataset.act, mine)));
+  }
+
+  async function act(btn, what, mine) {
+    const msg = $("guest").querySelector("[data-msg]");
+    const fail = (e) => { btn.disabled = false; msg.className = "msg err"; msg.textContent = W.errorText(e); };
+    btn.disabled = true;
+    try {
+      if (what === "reserve") {
+        const r = await W.callFn("create-deposit-checkout", { slug });
+        if (r.url) { location.href = r.url; return; }
+      } else if (what === "interest") {
+        await W.rpc("register_interest", { p_slug: slug });
+      } else if (what === "withdraw") {
+        await W.rpc("withdraw", { p_slug: slug });
+      } else if (what === "cancel") {
+        const paid = mine && mine.status === "reserved" && mine.deposit_paid_cents > 0;
+        const inTime = Date.now() <= W.refundCutoff(ev).getTime();
+        const warn = !paid ? "Release your seat?"
+          : inTime ? `Cancel your reservation? Your deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} will be refunded in full.`
+          : "Cancel your reservation? The refund window has passed, so the deposit will be kept.";
+        if (!confirm(warn)) { btn.disabled = false; return; }
+        const r = await W.callFn("cancel-reservation", { slug });
+        if (r.refund_status === "refunded") {
+          alert(`Cancelled. ${W.money(r.refunded_cents, ev.currency)} is on its way back to you; PayNow and card refunds usually arrive within 5 to 10 working days.`);
+        }
+      }
+      await load();
+    } catch (e) { fail(e); }
+  }
+
+  // the webhook usually lands within seconds of Stripe's redirect
+  let polls = 0;
+  function pollUntilReserved() {
+    if (polls++ > 15) {
+      const msg = $("guest").querySelector("[data-msg]");
+      if (msg) msg.textContent = "Still confirming. Your payment is safe; refresh this page in a minute.";
+      return;
+    }
+    setTimeout(async () => {
+      const u = await W.user();
+      const { data } = await W.client.from("reservations").select("status")
+        .eq("event_id", ev.id).eq("user_id", u.id).neq("status", "cancelled").maybeSingle();
+      if (data && data.status === "reserved") {
+        history.replaceState(null, "", `reserve.html?event=${encodeURIComponent(slug)}`);
+        load();
+      } else {
+        pollUntilReserved();
+      }
+    }, 2000);
+  }
+
+  (slug ? load() : listOpen()).catch((e) => {
+    page.innerHTML = `<p class="msg err" style="text-align:center;">${W.esc(W.errorText(e))}</p>`;
+  });
+})();
+</script>
+</body>
+</html>

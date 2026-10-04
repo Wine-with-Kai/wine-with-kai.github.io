@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Host · Wine with Kai</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../assets/app.css">
+<style>
+  /* the host's page runs a little wider for the ledgers */
+  main .wrap { max-width: 980px; }
+  .ev-list { margin: 10px 0; }
+  .ev-list button {
+    display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; width: 100%; text-align: left;
+    font: inherit; color: var(--ink); background: none; border: 0; border-top: 1px solid var(--line-soft);
+    padding: 12px 4px; cursor: pointer;
+  }
+  .ev-list button:hover, .ev-list button[aria-current="true"] { background: rgba(201,162,75,0.06); }
+  .ev-list .sub { color: var(--ink-faint); font-style: italic; font-size: 15px; }
+  table.ledger td .linkish { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="reserve.html">Reserve</a>
+    <a href="admin.html" aria-current="page">Host</a>
+  </nav>
+</div>
+
+<hr class="rule-crimson" style="margin-top:18px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Host</p>
+    <h1 class="page-title">Evenings<span class="it">seats, bottles and the tally</span></h1>
+  </header>
+
+  <section class="section wrap" id="page">
+    <p class="muted" style="text-align:center;">Loading&hellip;</p>
+  </section>
+
+  <p class="page-foot" id="who"></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../assets/wwk-config.js"></script>
+<script src="../assets/wwk.js"></script>
+<script>
+(function () {
+  const W = window.WWK;
+  const $ = (id) => document.getElementById(id);
+  const page = $("page");
+  const esc = W.esc;
+  if (!W.ready) { W.notConfigured(page); return; }
+
+  let events = [], current = null, tab = "guests";
+
+  // ---------- Singapore time <-> <input type="datetime-local"> ----------
+  function toLocalInput(iso) {
+    if (!iso) return "";
+    const p = {};
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Singapore", year: "numeric", month: "2-digit",
+      day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(new Date(iso)).forEach((x) => { p[x.type] = x.value; });
+    return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+  }
+  const fromLocalInput = (v) => v ? new Date(`${v}:00+08:00`).toISOString() : null;
+  const toCents = (v) => v === "" || v == null ? null : Math.round(parseFloat(v) * 100);
+  const toDollars = (c) => c == null ? "" : (c / 100).toFixed(2).replace(/\.00$/, "");
+
+  async function start() {
+    const box = document.createElement("div");
+    box.className = "panel";
+    page.innerHTML = "";
+    page.appendChild(box);
+    const g = await W.guest(box, start, "Sign in with the host's email.");
+    if (!g) return;
+    W.whoBar($("who"), g);
+    const { data: a } = await W.client.from("admins").select("email").limit(1);
+    if (!a || !a.length) {
+      box.innerHTML = `<p>This page is for the host. You are signed in as <strong>${esc(g.user.email)}</strong>.</p>`;
+      return;
+    }
+    await loadEvents();
+  }
+
+  async function loadEvents(selectId) {
+    const { data, error } = await W.client.from("events").select("*").order("starts_at", { ascending: false });
+    if (error) { page.innerHTML = `<p class="msg err">${esc(error.message)}</p>`; return; }
+    events = data;
+    if (selectId !== undefined) current = events.find((e) => e.id === selectId) || null;
+    else if (current) current = events.find((e) => e.id === current.id) || null;
+    render();
+  }
+
+  function render() {
+    page.innerHTML = `
+      <div class="actions" style="justify-content:space-between;">
+        <p class="kicker" style="margin:0;">All evenings</p>
+        <button class="btn small" type="button" id="new-ev">New evening</button>
+      </div>
+      <div class="ev-list">${events.map((e) => `
+        <button type="button" data-ev="${e.id}" aria-current="${current && current.id === e.id}">
+          <span>${esc(e.title)}<br><span class="sub">${esc(W.when(e.starts_at))}${e.venue ? " &middot; " + esc(e.venue) : ""}</span></span>
+          <span><span class="pill">${e.format === "byob" ? "BYOB" : "curated"}</span> <span class="pill ${e.status}">${esc(e.status)}</span></span>
+        </button>`).join("") || `<p class="muted">No evenings yet.</p>`}
+      </div>
+      <div id="editor"></div>
+      <div id="detail"></div>`;
+    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; });
+    page.querySelectorAll("[data-ev]").forEach((b) => b.addEventListener("click", () => {
+      current = events.find((e) => e.id === b.dataset.ev); render();
+    }));
+    if (current) { renderEditor(false); renderDetail(); }
+  }
+
+  // ---------- create / edit an evening ----------
+  function renderEditor(isNew) {
+    const e = isNew ? { format: "byob", seats: 12, refund_days: 14, currency: "sgd", status: "draft", shared_costs_cents: 0 } : current;
+    $("editor").innerHTML = `
+      <div class="panel">
+        <p class="kicker">${isNew ? "New evening" : "Edit evening"}</p>
+        <form class="form" id="ev-form">
+          <div class="row">
+            <label>Title <input name="title" required value="${esc(e.title || "")}"></label>
+            <label>Page address <span class="hint">lowercase-with-dashes, used in the links</span>
+              <input name="slug" required pattern="[a-z0-9-]+" value="${esc(e.slug || "")}"></label>
+          </div>
+          <label>Subtitle <input name="subtitle" value="${esc(e.subtitle || "")}"></label>
+          <label>Description <textarea name="description">${esc(e.description || "")}</textarea></label>
+          <div class="row">
+            <label>Format <select name="format">
+              <option value="byob" ${e.format === "byob" ? "selected" : ""}>Bring your own bottle</option>
+              <option value="curated" ${e.format === "curated" ? "selected" : ""}>Curated line-up</option></select></label>
+            <label>Status <select name="status">
+              ${["draft", "open", "closed", "settled"].map((s) => `<option ${e.status === s ? "selected" : ""}>${s}</option>`).join("")}
+              </select><span class="hint">draft is hidden; open takes reservations</span></label>
+          </div>
+          <div class="row">
+            <label>Starts (Singapore time) <input name="starts_at" type="datetime-local" required value="${toLocalInput(e.starts_at)}"></label>
+            <label>Venue <input name="venue" value="${esc(e.venue || "")}"></label>
+          </div>
+          <div class="row">
+            <label>Seats <input name="seats" type="number" min="1" required value="${e.seats}"></label>
+            <label>Deposit (S$) <span class="hint">blank = still to be decided; 0 = no deposit</span>
+              <input name="deposit" type="number" min="0" step="0.01" value="${toDollars(e.deposit_cents)}"></label>
+          </div>
+          <div class="row">
+            <label>Full refund if cancelled at least (days ahead) <input name="refund_days" type="number" min="0" required value="${e.refund_days}"></label>
+            <label class="check" style="align-self:end;"><input name="invite_only" type="checkbox" ${e.invite_only ? "checked" : ""}> By invitation only</label>
+          </div>
+          <div class="row">
+            <label>Shared costs (S$) <span class="hint">venue, corkage, food: split across the table</span>
+              <input name="shared" type="number" min="0" step="0.01" value="${toDollars(e.shared_costs_cents)}"></label>
+            <label>Shared costs note <input name="shared_costs_note" placeholder="corkage and dinner" value="${esc(e.shared_costs_note || "")}"></label>
+          </div>
+          <div class="row">
+            <label>Bottle price from (S$) <input name="price_min" type="number" min="0" step="0.01" value="${toDollars(e.price_min_cents)}"></label>
+            <label>Bottle price to (S$) <input name="price_max" type="number" min="0" step="0.01" value="${toDollars(e.price_max_cents)}"></label>
+          </div>
+          <div class="row">
+            <label>Price banner note <input name="price_note" placeholder="Village or Premier Cru, ideally with some age" value="${esc(e.price_note || "")}"></label>
+            <label>Bottles close <span class="hint">blank = open until the evening</span>
+              <input name="bottle_lock_at" type="datetime-local" value="${toLocalInput(e.bottle_lock_at)}"></label>
+          </div>
+          <div class="actions">
+            <button class="btn small solid" type="submit">${isNew ? "Create evening" : "Save changes"}</button>
+            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Reservation page</a>
+              ${e.format === "byob" ? `<a class="linkish" href="byob.html?event=${encodeURIComponent(e.slug)}" target="_blank">BYOB page</a>` : ""}`}
+          </div>
+          <p class="msg" data-msg aria-live="polite"></p>
+        </form>
+      </div>`;
+    const f = $("ev-form");
+    f.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const row = {
+        title: f.title.value.trim(), slug: f.slug.value.trim(), subtitle: f.subtitle.value.trim() || null,
+        description: f.description.value.trim() || null, format: f.format.value, status: f.status.value,
+        starts_at: fromLocalInput(f.starts_at.value), venue: f.venue.value.trim() || null,
+        seats: parseInt(f.seats.value, 10), deposit_cents: toCents(f.deposit.value),
+        refund_days: parseInt(f.refund_days.value, 10), invite_only: f.invite_only.checked,
+        shared_costs_cents: toCents(f.shared.value) || 0, shared_costs_note: f.shared_costs_note.value.trim() || null,
+        price_min_cents: toCents(f.price_min.value), price_max_cents: toCents(f.price_max.value),
+        price_note: f.price_note.value.trim() || null, bottle_lock_at: fromLocalInput(f.bottle_lock_at.value),
+      };
+      const res = isNew
+        ? await W.client.from("events").insert(row).select().single()
+        : await W.client.from("events").update(row).eq("id", current.id).select().single();
+      const msg = f.querySelector("[data-msg]");
+      if (res.error) { msg.className = "msg err"; msg.textContent = res.error.message; return; }
+      await loadEvents(res.data.id);
+    });
+  }
+
+  // ---------- one evening: guests, invitations, bottles, tally ----------
+  function renderDetail() {
+    const tabs = [["guests", "Guests"], ["invites", "Invitations"], ...(current.format === "byob" ? [["bottles", "Bottles"]] : []), ["tally", "Tally"]];
+    if (!tabs.some((t) => t[0] === tab)) tab = "guests";
+    $("detail").innerHTML = `
+      <div class="tabs" role="tablist">${tabs.map(([k, l]) =>
+        `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join("")}</div>
+      <div id="tab-body" class="panel"><p class="muted">Loading&hellip;</p></div>`;
+    $("detail").querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { tab = b.dataset.tab; renderDetail(); }));
+    ({ guests, invites, bottles, tally })[tab]().catch((e) => { $("tab-body").innerHTML = `<p class="msg err">${esc(e.message || W.errorText(e))}</p>`; });
+  }
+
+  const ORDER = { reserved: 0, pending: 1, waitlisted: 2, interested: 3, cancelled: 4 };
+
+  async function guests() {
+    const { data, error } = await W.client.from("reservations")
+      .select("*, profiles(full_name, email, phone)").eq("event_id", current.id);
+    if (error) throw error;
+    data.sort((a, b) => ORDER[a.status] - ORDER[b.status] || a.created_at.localeCompare(b.created_at));
+    const n = (s) => data.filter((r) => r.status === s).length;
+    const c = current.currency;
+    $("tab-body").innerHTML = `
+      <p class="muted">${n("reserved")} of ${current.seats} seats reserved &middot; ${n("pending")} paying now &middot;
+        ${n("waitlisted")} waiting &middot; ${n("interested")} interested</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th>Status</th><th class="num">Deposit</th><th></th></tr></thead>
+        <tbody>${data.map((r) => `
+          <tr>
+            <td>${esc(r.profiles.full_name)}<small>${esc(r.profiles.email)}${r.profiles.phone ? " &middot; " + esc(r.profiles.phone) : ""}</small></td>
+            <td><span class="pill ${r.status}">${r.status}</span>
+              <small>${r.status === "reserved" && r.paid_at ? "since " + esc(W.day(r.paid_at)) : ""}
+              ${r.status === "cancelled" ? esc(r.refund_status === "refunded" ? `refunded ${W.money(r.refunded_cents, c)}` : r.refund_status || "") : ""}</small></td>
+            <td class="num">${r.deposit_paid_cents ? W.money(r.deposit_paid_cents, c) : ""}</td>
+            <td class="num">${
+              ["interested", "waitlisted"].includes(r.status) ? `<button class="linkish" data-seat="${r.id}">Seat without deposit</button>` :
+              ["reserved", "pending"].includes(r.status) ? `<button class="linkish danger" data-cancel="${r.id}">Cancel</button>` : ""}</td>
+          </tr>`).join("") || `<tr><td colspan="4" class="muted">No one yet.</td></tr>`}
+        </tbody></table></div>
+      <p class="msg" data-msg aria-live="polite"></p>`;
+
+    const msg = $("tab-body").querySelector("[data-msg]");
+    $("tab-body").querySelectorAll("[data-seat]").forEach((b) => b.addEventListener("click", async () => {
+      const { error } = await W.client.from("reservations").update({ status: "reserved", paid_at: new Date().toISOString(),
+        hold_expires_at: null }).eq("id", b.dataset.seat);
+      if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
+      guests();
+    }));
+    $("tab-body").querySelectorAll("[data-cancel]").forEach((b) => b.addEventListener("click", async () => {
+      const r = data.find((x) => x.id === b.dataset.cancel);
+      const inTime = Date.now() <= W.refundCutoff(current).getTime();
+      let force = false;
+      if (r.deposit_paid_cents && !inTime) {
+        force = confirm(`${r.profiles.full_name} is past the refund window. Refund the ${W.money(r.deposit_paid_cents, current.currency)} deposit anyway?\n\nOK = refund, Cancel = keep the deposit.`);
+      }
+      if (!confirm(`Cancel ${r.profiles.full_name}'s reservation${r.deposit_paid_cents ? (inTime || force ? " and refund the deposit" : ", keeping the deposit") : ""}?`)) return;
+      b.disabled = true;
+      try {
+        await W.callFn("cancel-reservation", { reservation_id: r.id, force_refund: force });
+        guests();
+      } catch (e) { b.disabled = false; msg.className = "msg err"; msg.textContent = W.errorText(e); }
+    }));
+  }
+
+  async function invites() {
+    const { data, error } = await W.client.from("invitations").select("*").eq("event_id", current.id).order("created_at");
+    if (error) throw error;
+    const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
+    $("tab-body").innerHTML = `
+      <p class="muted">${current.invite_only ? "This evening is by invitation: only these addresses can reserve." :
+        "This evening is open to anyone with the link; turn on <em>By invitation only</em> above to limit it to this list."}</p>
+      <p>Link to send: <a href="${esc(link)}" style="color:var(--gold);">${esc(link)}</a></p>
+      <form class="form" id="inv-form">
+        <label>Invite by email <span class="hint">one or more, separated by commas or new lines</span>
+          <textarea name="emails" placeholder="guest@example.com"></textarea></label>
+        <div class="actions"><button class="btn small" type="submit">Add to the list</button></div>
+      </form>
+      <div class="table-wrap"><table class="ledger"><tbody>${data.map((i) => `
+        <tr><td>${esc(i.email)}</td><td class="num"><button class="linkish danger" data-rm="${esc(i.email)}">Remove</button></td></tr>`).join("") ||
+        `<tr><td class="muted">No invitations yet.</td></tr>`}</tbody></table></div>`;
+    $("inv-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const emails = [...new Set(e.target.emails.value.split(/[\s,;]+/).map((x) => x.trim().toLowerCase()).filter((x) => x.includes("@")))];
+      if (emails.length) {
+        await W.client.from("invitations").upsert(emails.map((email) => ({ event_id: current.id, email })), { ignoreDuplicates: true });
+      }
+      invites();
+    });
+    $("tab-body").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+      await W.client.from("invitations").delete().eq("event_id", current.id).eq("email", b.dataset.rm);
+      invites();
+    }));
+  }
+
+  async function bottles() {
+    const { data, error } = await W.client.from("bottles")
+      .select("*, profiles(full_name)").eq("event_id", current.id).order("vintage", { nullsFirst: false });
+    if (error) throw error;
+    const c = current.currency;
+    const url = (p) => W.client.storage.from("labels").getPublicUrl(p).data.publicUrl;
+    // flag declared prices well away from the market estimate
+    const gap = (b) => {
+      if (!b.market_cents) return "";
+      const d = (b.price_cents - b.market_cents) / b.market_cents;
+      return Math.abs(d) < 0.3 ? "" : `<span class="pill ${d > 0 ? "declined" : ""}">${Math.round(Math.abs(d) * 100)}% ${d > 0 ? "above" : "below"}</span>`;
+    };
+    $("tab-body").innerHTML = `
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Paid</th><th class="num">Market</th><th>Status</th><th></th></tr></thead>
+        <tbody>${data.map((b) => `
+          <tr>
+            <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
+              <small>${esc(b.region || "")}${b.note ? ` &middot; &ldquo;${esc(b.note)}&rdquo;` : ""}
+              ${b.background ? `<br>${esc(b.background)}` : ""}
+              ${b.photo_path ? ` &middot; <a href="${esc(url(b.photo_path))}" target="_blank" style="color:var(--gold);">label</a>` : ""}</small></td>
+            <td>${esc(b.profiles.full_name)}</td>
+            <td class="num">${W.money(b.price_cents, c)}</td>
+            <td class="num">${b.market_cents ? W.money(b.market_cents, c) : `<span class="faint">none</span>`}
+              ${gap(b) ? `<small>${gap(b)}</small>` : ""}
+              ${b.market_note ? `<small title="${esc(b.market_note)}">${(b.market_sources || []).map((s, i) =>
+                `<a href="${esc(s.url)}" target="_blank" rel="noopener">${i + 1}</a>`).join(" ")}</small>` : ""}</td>
+            <td><span class="pill ${b.status}">${b.status}</span>${b.admin_note ? `<small>${esc(b.admin_note)}</small>` : ""}</td>
+            <td class="num">
+              ${b.status !== "approved" ? `<button class="linkish" data-set="approved" data-id="${b.id}">Approve</button>` : ""}
+              ${b.status !== "declined" ? `<button class="linkish danger" data-set="declined" data-id="${b.id}">Decline</button>` : ""}
+            </td>
+          </tr>`).join("") || `<tr><td colspan="6" class="muted">No bottles yet.</td></tr>`}
+        </tbody></table></div>
+      <p class="foot-note">Declined bottles leave the line-up and the tally. Approving is optional: bottles awaiting review still count.</p>`;
+    $("tab-body").querySelectorAll("[data-set]").forEach((btn) => btn.addEventListener("click", async () => {
+      const upd = { status: btn.dataset.set };
+      if (btn.dataset.set === "declined") {
+        const why = prompt("A short note for the guest (optional), e.g. off theme:");
+        if (why === null) return;
+        upd.admin_note = why.trim() || null;
+      }
+      await W.client.from("bottles").update(upd).eq("id", btn.dataset.id);
+      bottles();
+    }));
+  }
+
+  async function tally() {
+    const rows = await W.rpc("event_tally", { p_slug: current.slug });
+    const c = current.currency;
+    const total = rows.reduce((a, r) => a + r.bottles_cents, 0) + current.shared_costs_cents;
+    const owed = rows.filter((r) => r.balance_cents > 0).reduce((a, r) => a + r.balance_cents, 0);
+    const back = rows.filter((r) => r.balance_cents < 0).reduce((a, r) => a - r.balance_cents, 0);
+    $("tab-body").innerHTML = rows.length ? `
+      <p class="muted">Total ${W.money(total, c)} (bottles plus ${W.money(current.shared_costs_cents, c)} shared costs),
+        split ${rows.length} ways. You collect ${W.money(owed, c)} and pay out ${W.money(back, c)}.</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th class="num">Brought</th><th class="num">Deposit</th><th class="num">Share</th>
+          <th class="num">Balance</th><th>Settled</th></tr></thead>
+        <tbody>${rows.map((r) => `
+          <tr><td>${esc(r.guest)}</td><td class="num">${W.money(r.bottles_cents, c)}</td>
+            <td class="num">${W.money(r.deposit_cents, c)}</td><td class="num">${W.money(r.share_cents, c)}</td>
+            <td class="num">${r.balance_cents > 0 ? `<span class="owes">pays ${W.money(r.balance_cents, c)}</span>`
+              : r.balance_cents < 0 ? `<span class="gets">receives ${W.money(-r.balance_cents, c)}</span>` : "square"}</td>
+            <td><label class="check"><input type="checkbox" data-settle="${r.reservation_id}" ${r.settled ? "checked" : ""}> settled</label></td>
+          </tr>`).join("")}</tbody></table></div>` : `<p class="muted">No seated guests yet.</p>`;
+    $("tab-body").querySelectorAll("[data-settle]").forEach((cb) => cb.addEventListener("change", async () => {
+      await W.client.from("reservations").update({ settled: cb.checked }).eq("id", cb.dataset.settle);
+    }));
+  }
+
+  start().catch((e) => { page.innerHTML = `<p class="msg err">${esc(W.errorText(e))}</p>`; });
+})();
+</script>
+</body>
+</html>

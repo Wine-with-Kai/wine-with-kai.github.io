@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Host · Wine with Kai</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+
+/* =========================================================
+   Wine with Kai · shared styles
+   Curated wine dinners, Singapore
+   ========================================================= */
+
+:root {
+  --bg:        #160a0c;
+  --bg-2:      #1d1013;
+  --panel:     #201215;
+  --ink:       #ece3d6;
+  --ink-soft:  #bdae9f;
+  --ink-faint: #8c7d71;
+  --gold:      #c9a24b;
+  --gold-soft: #d8bd7e;
+  /* red removed from the palette; these now carry the gold accent */
+  --crimson:   #c9a24b;
+  --crimson-2: #c9a24b;
+  --line:      rgba(236, 227, 214, 0.11);
+  --line-soft: rgba(236, 227, 214, 0.06);
+
+  --serif:   'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  /* headers now share the eyebrow's serif (EB Garamond) for consistency */
+  --display: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
+  --maxw: 820px;
+
+  --kai-mark: url(data:image/png;base64,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);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.72;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--gold); color: #201013; }
+
+a { color: inherit; }
+
+/* Visible keyboard focus, on-brand for the dark theme.
+   Uses :focus-visible so it shows for keyboard/switch users
+   without ringing on mouse clicks. */
+a:focus-visible,
+.btn:focus-visible,
+.next-card:focus-visible,
+.home-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img { max-width: 100%; display: block; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Eyebrow / small-caps kicker ---------- */
+.eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Thin rules ---------- */
+.rule-crimson {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 14%, var(--gold) 86%, transparent);
+  border: 0;
+  opacity: 0.72;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: calc(100% - 56px);
+}
+.tick {
+  width: 44px;
+  height: 1px;
+  background: var(--gold);
+  border: 0;
+  opacity: 0.85;
+  margin: 0 0 20px;
+}
+
+/* =========================================================
+   HERO (landing)
+   ========================================================= */
+.hero-scene {
+  position: relative;
+  height: 40vh;
+  min-height: 300px;
+  max-height: 440px;
+  overflow: hidden;
+  background: #0d0708;
+}
+.hero-scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-scene::after {
+  /* fade the bottom of the scene into the page */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 46%;
+  background: linear-gradient(to bottom, rgba(22,10,12,0) 0%, var(--bg) 96%);
+}
+
+.hero-body { padding: 46px 0 8px; }
+
+.masthead {
+  text-align: center;
+  padding-top: 30px;
+}
+.masthead .kick { margin-bottom: 26px; }
+
+.title-display {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: 0;
+  font-size: clamp(46px, 9vw, 74px);
+}
+.title-connector {
+  display: block;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.2;
+  margin: 2px 0;
+  letter-spacing: 0.01em;
+}
+
+.gold-divider {
+  width: min(560px, 82%);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 18%, var(--gold) 82%, transparent);
+  border: 0;
+  margin: 30px auto 26px;
+  opacity: 0.85;
+}
+
+.lede {
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(21px, 3.1vw, 27px);
+  color: var(--ink);
+  margin: 0 auto 8px;
+  max-width: 640px;
+  line-height: 1.35;
+}
+.lede-sub {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 auto 4px;
+  max-width: 560px;
+}
+
+/* =========================================================
+   WINE LINEUP (landing list)
+   ========================================================= */
+.lineup { margin: 6px 0 4px; }
+
+.flight {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 6px 22px;
+  align-items: baseline;
+  padding: 22px 4px;
+  border-top: 1px solid var(--line-soft);
+}
+.flight:last-child { border-bottom: 1px solid var(--line-soft); }
+
+.flight-yr {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.flight-main { }
+.flight-name {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.18;
+  margin: 0 0 4px;
+}
+.flight-sub {
+  color: var(--ink-faint);
+  font-size: 16.5px;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+.flight-order {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+}
+
+/* ---------- CTA ---------- */
+.cta-row { text-align: center; margin: 40px 0 8px; }
+.btn {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 15px 34px;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  transition: background .25s ease, color .25s ease;
+}
+.btn:hover { background: var(--gold); color: #201013; }
+.btn .arw { color: var(--gold); margin-left: 8px; transition: color .25s ease; }
+.btn:hover .arw { color: #201013; }
+
+.note-line {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 620px;
+  margin: 26px auto 0;
+}
+
+/* =========================================================
+   EVENT FOOTER BAR
+   ========================================================= */
+.event-bar {
+  background: var(--bg-2);
+  border-top: 1px solid rgba(201, 162, 75, 0.5);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.5);
+  color: var(--ink);
+  text-align: center;
+  padding: 30px 24px;
+  margin-top: 54px;
+}
+.event-bar .when {
+  font-family: var(--display);
+  font-weight: 500;
+  color: var(--gold-soft);
+  font-size: clamp(21px, 3.4vw, 27px);
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+.event-bar .where {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.page-foot {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-style: italic;
+  padding: 26px 20px 40px;
+}
+
+/* =========================================================
+   WINES PAGE
+   ========================================================= */
+.page-head { text-align: center; padding: 40px 0 6px; }
+.page-head .eyebrow { margin-bottom: 20px; }
+.page-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(40px, 7vw, 60px);
+  line-height: 1.05;
+  margin: 0;
+}
+.page-title .it {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(19px, 3vw, 26px);
+  margin-top: 4px;
+}
+
+.section { padding: 20px 0; }
+.section h2 {
+  font-family: var(--display);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 27px;
+  margin: 30px 0 14px;
+  letter-spacing: 0.01em;
+}
+.section p { margin: 0 0 18px; color: var(--ink); }
+.section p.muted { color: var(--ink-soft); }
+em, .i { font-style: italic; }
+strong, .b { font-weight: 600; color: var(--ink); }
+
+/* ---------- Wine entries ---------- */
+.wines { margin-top: 8px; }
+
+.wine {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  scroll-margin-top: 20px;
+}
+.wine-head {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 4px 20px;
+  align-items: start;
+}
+.wine-num {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  padding-top: 6px;
+}
+.wine-titles { }
+.wine-name {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.16;
+  margin: 0 0 2px;
+  color: var(--ink);
+}
+.wine-vintage {
+  color: var(--crimson);
+  font-weight: 600;
+  font-style: normal;
+}
+.wine-producer {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 2px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 14px 0 4px;
+  padding-left: 94px;
+}
+.tag {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border: 1px solid rgba(201,162,75,0.4);
+  border-radius: 2px;
+  padding: 4px 11px;
+  white-space: nowrap;
+}
+
+.wine-body { padding-left: 94px; margin-top: 14px; }
+.wine-body p { margin: 0 0 16px; }
+
+.lookfor {
+  padding-left: 94px;
+  margin-top: 6px;
+}
+.lookfor .lf-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+.lookfor p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.scores {
+  padding-left: 94px;
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.scores .sc-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+}
+.scores .sc {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+.scores .sc b { color: var(--ink); font-weight: 600; }
+.scores .sc .star { color: var(--crimson); }
+
+.source-note {
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  font-style: italic;
+  padding-left: 94px;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 620px) {
+  body { font-size: 18px; }
+  .wrap, .topnav { padding-left: 20px; padding-right: 20px; }
+
+  .flight { grid-template-columns: 66px 1fr; gap: 4px 16px; padding: 18px 2px; }
+  .flight-yr { font-size: 26px; }
+  .flight-name { font-size: 21px; }
+  .flight-sub { font-size: 15px; }
+
+  .wine-head { grid-template-columns: 54px 1fr; gap: 4px 14px; }
+  .wine-num { font-size: 24px; }
+  .wine-name { font-size: 23px; }
+  .meta, .wine-body, .lookfor, .source-note, .scores { padding-left: 0; }
+  .meta { margin-top: 16px; }
+}
+
+@media (max-width: 420px) {
+  .title-display { font-size: 44px; }
+}
+
+/* =========================================================
+   BRAND NAV (home link on sub-pages)
+   ========================================================= */
+.site-top {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.site-top .home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.site-top .home-link .mini-mark {
+  display: inline-block;
+  width: 32px;
+  height: 27px;
+  background: var(--kai-mark) center/contain no-repeat;
+}
+.site-top .home-link .mini-word {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.site-top nav { display: flex; align-items: center; gap: 8px 22px; }
+.site-top nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  /* roomier tap target (~40px tall) without shifting the row baseline */
+  padding: 9px 2px;
+  margin: -9px 0;
+}
+.site-top nav a:hover { color: var(--gold); }
+.site-top nav a[aria-current="page"] {
+  color: var(--gold);
+  cursor: default;
+}
+
+/* =========================================================
+   HOME / LANDING
+   ========================================================= */
+.home {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 28px 0;
+  text-align: center;
+}
+.home-inner { padding-top: 54px; }
+
+.logo-mark {
+  width: 172px;
+  height: 142px;
+  margin: 0 auto 16px;
+  background: var(--kai-mark) center/contain no-repeat;
+  opacity: 0.7;
+  filter: drop-shadow(0 5px 13px rgba(0, 0, 0, 0.5));
+}
+
+.brand-eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  font-size: 12px;
+  margin: 0;
+}
+
+.about-text {
+  margin: 6px auto 0;
+  max-width: 620px;
+}
+.about-text p {
+  font-size: 19.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+.about-text p.soft { color: var(--ink-soft); }
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 34px 0 8px;
+}
+
+/* next-dinner teaser */
+.next-card {
+  max-width: 620px;
+  margin: 40px auto 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 22px 26px;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  transition: border-color .25s ease, background .25s ease;
+}
+.next-card:hover { border-color: var(--gold); background: rgba(201,162,75,0.05); }
+.next-card .nc-kick {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+.next-card .nc-title {
+  font-family: var(--display);
+  font-size: 25px;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.next-card .nc-meta {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  margin: 0;
+  font-style: italic;
+}
+.next-card .nc-go {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 12px 0 0;
+}
+
+/* secondary path from the landing straight to the tasting notes */
+.nc-alt {
+  max-width: 620px;
+  margin: 14px auto 0;
+  text-align: center;
+}
+.nc-alt a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-style: italic;
+  font-size: 16px;
+  padding: 6px 8px;
+  transition: color .25s ease;
+}
+.nc-alt a:hover { color: var(--gold); }
+
+/* =========================================================
+   ARCHIVE / PAST DINNERS
+   ========================================================= */
+.themes { margin-top: 8px; }
+
+/* group divider inside the archive: "The next dinner" / "Past dinners" */
+.themes-group-head {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 13px;
+  margin: 40px 0 0;
+}
+.themes-group-head:first-child { margin-top: 8px; }
+
+.theme {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 6px 26px;
+}
+.theme:last-child { border-bottom: 1px solid var(--line); }
+.theme .t-index {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  padding-top: 4px;
+}
+.theme .t-index span {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+.theme .t-body { }
+.theme .t-title {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+  line-height: 1.18;
+}
+.theme .t-sub {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
+.theme .t-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0 0 12px;
+}
+.theme .t-venue {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  margin: 0;
+}
+.theme .t-venue a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 162, 75, 0.45);
+  text-underline-offset: 3px;
+  padding: 2px 1px;
+}
+.theme .t-venue a:hover { text-decoration-color: var(--gold); }
+.archive-note {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  margin: 34px auto 0;
+  max-width: 560px;
+}
+
+@media (max-width: 620px) {
+  .logo-mark { width: 168px; height: 142px; }
+  .theme { grid-template-columns: 1fr; gap: 4px; }
+  .theme .t-index { padding-top: 0; font-size: 20px; }
+
+  /* stack the header so brand and nav don't crush together */
+  .site-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 20px 20px 0;
+  }
+  .site-top .home-link .mini-word { white-space: nowrap; }
+  .site-top nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+  }
+  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+}
+
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
+
+
+</style>
+<style>
+/* =========================================================
+   Wine with Kai · reservation, BYOB and admin pages
+   (inlined only into the pages that link it)
+   ========================================================= */
+
+[hidden] { display: none !important; }
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 24px 26px;
+  margin: 26px 0;
+  background: rgba(255, 255, 255, 0.015);
+}
+.panel h2 { margin-top: 0; }
+.panel > p:last-child { margin-bottom: 0; }
+
+.kicker {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
+/* price-range banner on BYOB evenings */
+.banner {
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  border-left: 3px solid var(--gold);
+  background: rgba(201, 162, 75, 0.07);
+  padding: 16px 20px;
+  margin: 22px 0;
+  border-radius: 2px;
+}
+.banner .b-amt {
+  font-family: var(--display);
+  font-size: 24px;
+  color: var(--gold-soft);
+  margin: 0 0 2px;
+}
+.banner p { margin: 0; color: var(--ink-soft); font-size: 16.5px; line-height: 1.55; }
+
+/* facts row: date, venue, seats, deposit */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px 22px;
+  margin: 8px 0 0;
+}
+.facts div { border-top: 1px solid var(--line); padding-top: 10px; }
+.facts dt {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+}
+.facts dd { margin: 2px 0 0; color: var(--ink); font-size: 17.5px; line-height: 1.4; }
+
+/* ---------- forms ---------- */
+.form { display: grid; gap: 14px; }
+.form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form label {
+  display: grid;
+  gap: 5px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+.form input, .form select, .form textarea {
+  font: inherit;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 10px 12px;
+  width: 100%;
+}
+.form textarea { min-height: 80px; resize: vertical; }
+.form input:focus, .form select:focus, .form textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.form .hint { color: var(--ink-faint); font-style: italic; font-size: 14px; letter-spacing: 0; }
+.form .check { display: flex; align-items: center; gap: 10px; }
+.form .check input { width: auto; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-top: 6px; }
+
+button.btn { background: transparent; cursor: pointer; }
+button.btn:disabled { opacity: 0.5; cursor: wait; }
+.btn.small { padding: 9px 18px; font-size: 13px; letter-spacing: 0.14em; }
+.btn.solid { background: var(--gold); color: #201013; }
+.btn.solid:hover { background: var(--gold-soft); }
+
+.linkish {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: rgba(236, 227, 214, 0.3);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.linkish:hover { color: var(--gold); }
+.linkish.danger:hover { color: #e08a7a; }
+
+.msg { margin: 12px 0 0; font-size: 16px; font-style: italic; color: var(--ink-soft); }
+.msg.err { color: #e08a7a; font-style: normal; }
+.msg.ok { color: var(--gold-soft); }
+
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 2px 8px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.pill.reserved, .pill.approved, .pill.open { color: var(--gold-soft); border-color: rgba(201, 162, 75, 0.5); }
+.pill.declined, .pill.cancelled { color: #e08a7a; border-color: rgba(224, 138, 122, 0.4); }
+
+/* ---------- bottle line-up ---------- */
+.bottle {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  gap: 4px 18px;
+  align-items: baseline;
+  padding: 16px 2px;
+  border-top: 1px solid var(--line-soft);
+}
+.bottle:last-child { border-bottom: 1px solid var(--line-soft); }
+.bottle .yr { font-family: var(--display); color: var(--gold); font-size: 26px; line-height: 1; }
+.bottle .nm { font-family: var(--display); font-size: 21px; margin: 0; line-height: 1.2; }
+.bottle .sub { color: var(--ink-faint); font-style: italic; font-size: 15.5px; margin: 0; }
+.bottle .side { text-align: right; color: var(--ink-soft); font-size: 15px; white-space: nowrap; }
+.bottle .side .linkish { font-size: 14px; }
+.bottle img.label { width: 54px; height: 72px; object-fit: cover; border-radius: 2px; margin-top: 8px; }
+
+/* ---------- tables (tally, admin) ---------- */
+.table-wrap { overflow-x: auto; margin: 10px 0; }
+table.ledger { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+table.ledger th {
+  text-align: left;
+  color: var(--gold);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.ledger td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+table.ledger td.num, table.ledger th.num { text-align: right; }
+table.ledger tr.me td { color: var(--gold-soft); }
+table.ledger tfoot td { border-top: 1px solid var(--line); border-bottom: 0; color: var(--ink-soft); }
+.owes { color: var(--ink); }
+.gets { color: var(--gold-soft); }
+
+/* ---------- bottle assistant ---------- */
+.assist {
+  border: 1px dashed rgba(201, 162, 75, 0.45);
+  border-radius: 3px;
+  padding: 18px 20px;
+  margin: 0 0 20px;
+}
+.assist .snap { cursor: pointer; }
+.assist .hint-line { color: var(--ink-soft); font-size: 15.5px; line-height: 1.55; margin: 12px 0 0; }
+.assist-row { display: flex; gap: 16px; align-items: flex-start; margin-top: 4px; }
+.assist-row img.label { width: 72px; height: 96px; object-fit: cover; border-radius: 2px; margin-top: 12px; flex: none; }
+.steps { list-style: none; margin: 12px 0 0; padding: 0; font-size: 16px; }
+.steps li { display: flex; gap: 10px; align-items: baseline; color: var(--ink-faint); padding: 2px 0; }
+.steps li .mark { width: 14px; flex: none; color: var(--gold); text-align: center; }
+.steps li.busy { color: var(--ink); }
+.steps li.busy .mark::before {
+  content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--gold); border-right-color: transparent;
+  animation: wwk-spin 0.9s linear infinite;
+}
+.steps li.done { color: var(--ink-soft); }
+.steps li.fail .mark { color: #e08a7a; }
+.steps li.note { color: var(--ink-soft); font-style: italic; padding-left: 24px; }
+@keyframes wwk-spin { to { transform: rotate(360deg); } }
+
+.market {
+  background: rgba(201, 162, 75, 0.06);
+  border-left: 3px solid var(--gold);
+  padding: 14px 18px;
+  border-radius: 2px;
+}
+.market .m-amt { font-family: var(--display); font-size: 22px; color: var(--gold-soft); margin: 0 0 2px; }
+.market .m-amt .range { font-size: 16px; color: var(--ink-soft); }
+.market .sub { color: var(--ink-soft); font-size: 15px; margin: 2px 0; }
+.market a { color: var(--gold); }
+.bgtext { color: var(--ink-soft); font-size: 16px; line-height: 1.6; margin: 6px 0 0; }
+.bottle .bgtext { font-size: 15.5px; }
+.faint { color: var(--ink-faint); font-style: italic; }
+table.ledger td small { color: var(--ink-faint); display: block; font-size: 13.5px; }
+table.ledger a { color: var(--gold-soft); }
+
+.foot-note { color: var(--ink-faint); font-style: italic; font-size: 14.5px; line-height: 1.55; margin: 10px 0 0; }
+
+/* admin layout */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; }
+.tabs button {
+  font: inherit; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;
+  background: none; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 2px;
+  padding: 7px 14px; cursor: pointer;
+}
+.tabs button[aria-selected="true"] { color: #201013; background: var(--gold); border-color: var(--gold); }
+
+.only-narrow { display: none; }
+
+@media (max-width: 620px) {
+  .panel { padding: 20px 18px; }
+  table.ledger { font-size: 15px; }
+  table.ledger .opt { display: none; }
+  table.ledger th, table.ledger td { padding-right: 6px; }
+  table.ledger th { letter-spacing: 0.05em; font-size: 11px; }
+  table.ledger td.num { white-space: nowrap; }
+  .only-narrow { display: inline; }
+  .form .row { grid-template-columns: 1fr; }
+  .bottle { grid-template-columns: 56px 1fr; }
+  .bottle .side { grid-column: 2; text-align: left; }
+  .bottle .yr { font-size: 22px; }
+}
+
+</style>
+<style>
+  /* the host's page runs a little wider for the ledgers */
+  main .wrap { max-width: 980px; }
+  .ev-list { margin: 10px 0; }
+  .ev-list button {
+    display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; width: 100%; text-align: left;
+    font: inherit; color: var(--ink); background: none; border: 0; border-top: 1px solid var(--line-soft);
+    padding: 12px 4px; cursor: pointer;
+  }
+  .ev-list button:hover, .ev-list button[aria-current="true"] { background: rgba(201,162,75,0.06); }
+  .ev-list .sub { color: var(--ink-faint); font-style: italic; font-size: 15px; }
+  table.ledger td .linkish { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="reserve.html">Reserve</a>
+    <a href="admin.html" aria-current="page">Host</a>
+  </nav>
+</div>
+
+<hr class="rule-crimson" style="margin-top:18px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Host</p>
+    <h1 class="page-title">Evenings<span class="it">seats, bottles and the tally</span></h1>
+  </header>
+
+  <section class="section wrap" id="page">
+    <p class="muted" style="text-align:center;">Loading&hellip;</p>
+  </section>
+
+  <p class="page-foot" id="who"></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script>
+// Supabase project settings. Both values are public by design (they ship
+// to every browser); the database's row level security does the guarding.
+// Find them in Supabase: Project Settings > API.
+window.WWK_CONFIG = {
+  supabaseUrl: "https://hweaxketmosodctqpnme.supabase.co",
+  // the publishable key: safe in the browser; never put a secret key here
+  supabaseAnonKey: "sb_publishable_XwBu994F6G19SYfrVrt67w_UQXSftIH",
+};
+
+</script>
+<script>
+// Wine with Kai · shared helpers for the reservation, BYOB and admin pages.
+// Needs supabase-js (UMD build) and wwk-config.js loaded first.
+(function () {
+  const cfg = window.WWK_CONFIG || {};
+  const ready = !!(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase);
+  const client = ready
+    ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+        // implicit flow: the emailed link works even if opened in another browser
+        auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true },
+      })
+    : null;
+
+  const TZ = "Asia/Singapore";
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function money(cents, currency) {
+    if (cents == null) return "";
+    const sym = (currency || "sgd").toLowerCase() === "sgd" ? "S$" : (currency || "").toUpperCase() + " ";
+    const neg = cents < 0;
+    const abs = Math.abs(cents);
+    const whole = abs % 100 === 0;
+    const n = (abs / 100).toLocaleString("en-SG", {
+      minimumFractionDigits: whole ? 0 : 2,
+      maximumFractionDigits: 2,
+    });
+    return (neg ? "-" : "") + sym + n;
+  }
+
+  function parts(iso, opts) {
+    const out = {};
+    new Intl.DateTimeFormat("en-GB", Object.assign({ timeZone: TZ }, opts))
+      .formatToParts(new Date(iso)).forEach((p) => { out[p.type] = p.value; });
+    return out;
+  }
+
+  // "Thursday 8 October 2026 · 7:00 pm"
+  function when(iso) {
+    const d = parts(iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    return `${d.weekday} ${d.day} ${d.month} ${d.year} · ${time(iso)}`;
+  }
+  // "8 October 2026"
+  function day(iso) {
+    const d = parts(iso, { day: "numeric", month: "long", year: "numeric" });
+    return `${d.day} ${d.month} ${d.year}`;
+  }
+  function time(iso) {
+    const t = parts(iso, { hour: "numeric", minute: "2-digit", hour12: true });
+    return `${t.hour}:${t.minute} ${(t.dayPeriod || "").toLowerCase()}`;
+  }
+
+  function param(name) {
+    return new URLSearchParams(location.search).get(name);
+  }
+
+  // the last moment a cancellation still gets the deposit back
+  function refundCutoff(ev) {
+    return new Date(new Date(ev.starts_at).getTime() - ev.refund_days * 86400000);
+  }
+
+  const ERRORS = {
+    not_signed_in: "Please sign in first.",
+    no_profile: "Please add your name first.",
+    event_not_found: "This evening could not be found.",
+    event_not_open: "Reservations for this evening are not open.",
+    deposit_not_set: "The deposit has not been set yet, so seats cannot be reserved just yet.",
+    event_started: "This evening has already begun.",
+    not_invited: "This evening is by invitation. Sign in with the email address your invitation was sent to.",
+    not_a_guest: "The tally is shared with seated guests only.",
+    checkout_failed: "The payment page could not be opened. Please try again in a moment.",
+    refund_failed: "The refund could not be issued automatically. Kai has been told; nothing has been cancelled yet.",
+    no_reservation: "There is no reservation to cancel.",
+    too_many_lookups: "You have used today's bottle look-ups. Please type the details and Kai will check the price.",
+    assist_refused: "The assistant could not help with this one.",
+    assist_failed: "The assistant could not finish this time.",
+    assist_busy: "The assistant is busy just now. Please try again in a minute.",
+    nothing_to_look_up: "Add the producer or the wine first.",
+    bad_photo: "That photo could not be used. Please try another.",
+  };
+  function errorText(e) {
+    const code = (e && (e.code || e.message)) || String(e);
+    for (const k in ERRORS) if (code.indexOf(k) !== -1) return ERRORS[k];
+    return "Something went wrong: " + code;
+  }
+
+  // call an edge function; surfaces the { error } code it returns
+  async function callFn(name, body) {
+    const { data, error } = await client.functions.invoke(name, { body });
+    if (error) {
+      let code = error.message;
+      try { code = (await error.context.json()).error || code; } catch (_) {}
+      throw { code };
+    }
+    return data;
+  }
+
+  async function rpc(fn, args) {
+    const { data, error } = await client.rpc(fn, args);
+    if (error) throw error;
+    return data;
+  }
+
+  async function user() {
+    if (!client) return null;
+    const { data } = await client.auth.getSession();
+    return data.session ? data.session.user : null;
+  }
+
+  async function profile(u) {
+    const { data } = await client.from("profiles").select("*").eq("id", u.id).maybeSingle();
+    return data;
+  }
+
+  function signInForm(el, lead) {
+    el.innerHTML = `
+      <p class="kicker">Sign in</p>
+      <p>${lead || "Enter your email and we will send you a link to sign in. No password needed."}</p>
+      <form class="form" data-signin>
+        <label>Email <input type="email" name="email" required autocomplete="email"></label>
+        <div class="actions"><button class="btn small" type="submit">Email me a sign-in link</button></div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>`;
+    const form = el.querySelector("[data-signin]");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector("button");
+      const msg = form.querySelector("[data-msg]");
+      btn.disabled = true;
+      const email = form.email.value.trim();
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: location.href.split("#")[0] },
+      });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
+      msg.className = "msg ok";
+      msg.textContent = `A sign-in link is on its way to ${email}. Open it on this device to continue.`;
+    });
+  }
+
+  function profileForm(el, u, onSaved) {
+    el.innerHTML = `
+      <p class="kicker">Welcome</p>
+      <p>Signed in as <strong>${esc(u.email)}</strong>. Tell us who you are, so Kai knows who is at the table.</p>
+      <form class="form" data-profile>
+        <div class="row">
+          <label>Full name <input name="full_name" required autocomplete="name"></label>
+          <label>Mobile <span class="hint">for the evening's arrangements</span>
+            <input name="phone" type="tel" autocomplete="tel"></label>
+        </div>
+        <div class="actions"><button class="btn small" type="submit">Continue</button></div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>`;
+    const form = el.querySelector("[data-profile]");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const { error } = await client.from("profiles").insert({
+        id: u.id, email: u.email,
+        full_name: form.full_name.value.trim(),
+        phone: form.phone.value.trim() || null,
+      });
+      if (error) {
+        const msg = form.querySelector("[data-msg]");
+        msg.className = "msg err"; msg.textContent = error.message; return;
+      }
+      onSaved();
+    });
+  }
+
+  // Resolves to { user, profile } once the visitor is signed in and has a
+  // profile; until then renders the sign-in or profile form into `el`.
+  async function guest(el, onReady, lead) {
+    const u = await user();
+    if (!u) { signInForm(el, lead); return null; }
+    const p = await profile(u);
+    if (!p) { profileForm(el, u, onReady); return null; }
+    return { user: u, profile: p };
+  }
+
+  function whoBar(el, g) {
+    el.innerHTML = `Signed in as ${esc(g.profile.full_name)} &middot;
+      <button class="linkish" type="button" data-signout>Sign out</button>`;
+    el.querySelector("[data-signout]").addEventListener("click", async () => {
+      await client.auth.signOut();
+      location.reload();
+    });
+  }
+
+  function notConfigured(el) {
+    el.innerHTML = `<p class="muted" style="text-align:center;">Reservations open here soon.
+      Until then, please let Kai know directly.</p>`;
+  }
+
+  async function event(slug) {
+    const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
+    if (error) throw error;
+    return data;
+  }
+
+  window.WWK = {
+    client, ready, esc, money, when, day, time, param, refundCutoff,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event,
+  };
+})();
+
+</script>
+<script>
+(function () {
+  const W = window.WWK;
+  const $ = (id) => document.getElementById(id);
+  const page = $("page");
+  const esc = W.esc;
+  if (!W.ready) { W.notConfigured(page); return; }
+
+  let events = [], current = null, tab = "guests";
+
+  // ---------- Singapore time <-> <input type="datetime-local"> ----------
+  function toLocalInput(iso) {
+    if (!iso) return "";
+    const p = {};
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Singapore", year: "numeric", month: "2-digit",
+      day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(new Date(iso)).forEach((x) => { p[x.type] = x.value; });
+    return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+  }
+  const fromLocalInput = (v) => v ? new Date(`${v}:00+08:00`).toISOString() : null;
+  const toCents = (v) => v === "" || v == null ? null : Math.round(parseFloat(v) * 100);
+  const toDollars = (c) => c == null ? "" : (c / 100).toFixed(2).replace(/\.00$/, "");
+
+  async function start() {
+    const box = document.createElement("div");
+    box.className = "panel";
+    page.innerHTML = "";
+    page.appendChild(box);
+    const g = await W.guest(box, start, "Sign in with the host's email.");
+    if (!g) return;
+    W.whoBar($("who"), g);
+    const { data: a } = await W.client.from("admins").select("email").limit(1);
+    if (!a || !a.length) {
+      box.innerHTML = `<p>This page is for the host. You are signed in as <strong>${esc(g.user.email)}</strong>.</p>`;
+      return;
+    }
+    await loadEvents();
+  }
+
+  async function loadEvents(selectId) {
+    const { data, error } = await W.client.from("events").select("*").order("starts_at", { ascending: false });
+    if (error) { page.innerHTML = `<p class="msg err">${esc(error.message)}</p>`; return; }
+    events = data;
+    if (selectId !== undefined) current = events.find((e) => e.id === selectId) || null;
+    else if (current) current = events.find((e) => e.id === current.id) || null;
+    render();
+  }
+
+  function render() {
+    page.innerHTML = `
+      <div class="actions" style="justify-content:space-between;">
+        <p class="kicker" style="margin:0;">All evenings</p>
+        <button class="btn small" type="button" id="new-ev">New evening</button>
+      </div>
+      <div class="ev-list">${events.map((e) => `
+        <button type="button" data-ev="${e.id}" aria-current="${current && current.id === e.id}">
+          <span>${esc(e.title)}<br><span class="sub">${esc(W.when(e.starts_at))}${e.venue ? " &middot; " + esc(e.venue) : ""}</span></span>
+          <span><span class="pill">${e.format === "byob" ? "BYOB" : "curated"}</span> <span class="pill ${e.status}">${esc(e.status)}</span></span>
+        </button>`).join("") || `<p class="muted">No evenings yet.</p>`}
+      </div>
+      <div id="editor"></div>
+      <div id="detail"></div>`;
+    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; });
+    page.querySelectorAll("[data-ev]").forEach((b) => b.addEventListener("click", () => {
+      current = events.find((e) => e.id === b.dataset.ev); render();
+    }));
+    if (current) { renderEditor(false); renderDetail(); }
+  }
+
+  // ---------- create / edit an evening ----------
+  function renderEditor(isNew) {
+    const e = isNew ? { format: "byob", seats: 12, refund_days: 14, currency: "sgd", status: "draft", shared_costs_cents: 0 } : current;
+    $("editor").innerHTML = `
+      <div class="panel">
+        <p class="kicker">${isNew ? "New evening" : "Edit evening"}</p>
+        <form class="form" id="ev-form">
+          <div class="row">
+            <label>Title <input name="title" required value="${esc(e.title || "")}"></label>
+            <label>Page address <span class="hint">lowercase-with-dashes, used in the links</span>
+              <input name="slug" required pattern="[a-z0-9-]+" value="${esc(e.slug || "")}"></label>
+          </div>
+          <label>Subtitle <input name="subtitle" value="${esc(e.subtitle || "")}"></label>
+          <label>Description <textarea name="description">${esc(e.description || "")}</textarea></label>
+          <div class="row">
+            <label>Format <select name="format">
+              <option value="byob" ${e.format === "byob" ? "selected" : ""}>Bring your own bottle</option>
+              <option value="curated" ${e.format === "curated" ? "selected" : ""}>Curated line-up</option></select></label>
+            <label>Status <select name="status">
+              ${["draft", "open", "closed", "settled"].map((s) => `<option ${e.status === s ? "selected" : ""}>${s}</option>`).join("")}
+              </select><span class="hint">draft is hidden; open takes reservations</span></label>
+          </div>
+          <div class="row">
+            <label>Starts (Singapore time) <input name="starts_at" type="datetime-local" required value="${toLocalInput(e.starts_at)}"></label>
+            <label>Venue <input name="venue" value="${esc(e.venue || "")}"></label>
+          </div>
+          <div class="row">
+            <label>Seats <input name="seats" type="number" min="1" required value="${e.seats}"></label>
+            <label>Deposit (S$) <span class="hint">blank = still to be decided; 0 = no deposit</span>
+              <input name="deposit" type="number" min="0" step="0.01" value="${toDollars(e.deposit_cents)}"></label>
+          </div>
+          <div class="row">
+            <label>Full refund if cancelled at least (days ahead) <input name="refund_days" type="number" min="0" required value="${e.refund_days}"></label>
+            <label class="check" style="align-self:end;"><input name="invite_only" type="checkbox" ${e.invite_only ? "checked" : ""}> By invitation only</label>
+          </div>
+          <div class="row">
+            <label>Shared costs (S$) <span class="hint">venue, corkage, food: split across the table</span>
+              <input name="shared" type="number" min="0" step="0.01" value="${toDollars(e.shared_costs_cents)}"></label>
+            <label>Shared costs note <input name="shared_costs_note" placeholder="corkage and dinner" value="${esc(e.shared_costs_note || "")}"></label>
+          </div>
+          <div class="row">
+            <label>Bottle price from (S$) <input name="price_min" type="number" min="0" step="0.01" value="${toDollars(e.price_min_cents)}"></label>
+            <label>Bottle price to (S$) <input name="price_max" type="number" min="0" step="0.01" value="${toDollars(e.price_max_cents)}"></label>
+          </div>
+          <div class="row">
+            <label>Price banner note <input name="price_note" placeholder="Village or Premier Cru, ideally with some age" value="${esc(e.price_note || "")}"></label>
+            <label>Bottles close <span class="hint">blank = open until the evening</span>
+              <input name="bottle_lock_at" type="datetime-local" value="${toLocalInput(e.bottle_lock_at)}"></label>
+          </div>
+          <div class="actions">
+            <button class="btn small solid" type="submit">${isNew ? "Create evening" : "Save changes"}</button>
+            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Reservation page</a>
+              ${e.format === "byob" ? `<a class="linkish" href="byob.html?event=${encodeURIComponent(e.slug)}" target="_blank">BYOB page</a>` : ""}`}
+          </div>
+          <p class="msg" data-msg aria-live="polite"></p>
+        </form>
+      </div>`;
+    const f = $("ev-form");
+    f.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const row = {
+        title: f.title.value.trim(), slug: f.slug.value.trim(), subtitle: f.subtitle.value.trim() || null,
+        description: f.description.value.trim() || null, format: f.format.value, status: f.status.value,
+        starts_at: fromLocalInput(f.starts_at.value), venue: f.venue.value.trim() || null,
+        seats: parseInt(f.seats.value, 10), deposit_cents: toCents(f.deposit.value),
+        refund_days: parseInt(f.refund_days.value, 10), invite_only: f.invite_only.checked,
+        shared_costs_cents: toCents(f.shared.value) || 0, shared_costs_note: f.shared_costs_note.value.trim() || null,
+        price_min_cents: toCents(f.price_min.value), price_max_cents: toCents(f.price_max.value),
+        price_note: f.price_note.value.trim() || null, bottle_lock_at: fromLocalInput(f.bottle_lock_at.value),
+      };
+      const res = isNew
+        ? await W.client.from("events").insert(row).select().single()
+        : await W.client.from("events").update(row).eq("id", current.id).select().single();
+      const msg = f.querySelector("[data-msg]");
+      if (res.error) { msg.className = "msg err"; msg.textContent = res.error.message; return; }
+      await loadEvents(res.data.id);
+    });
+  }
+
+  // ---------- one evening: guests, invitations, bottles, tally ----------
+  function renderDetail() {
+    const tabs = [["guests", "Guests"], ["invites", "Invitations"], ...(current.format === "byob" ? [["bottles", "Bottles"]] : []), ["tally", "Tally"]];
+    if (!tabs.some((t) => t[0] === tab)) tab = "guests";
+    $("detail").innerHTML = `
+      <div class="tabs" role="tablist">${tabs.map(([k, l]) =>
+        `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join("")}</div>
+      <div id="tab-body" class="panel"><p class="muted">Loading&hellip;</p></div>`;
+    $("detail").querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { tab = b.dataset.tab; renderDetail(); }));
+    ({ guests, invites, bottles, tally })[tab]().catch((e) => { $("tab-body").innerHTML = `<p class="msg err">${esc(e.message || W.errorText(e))}</p>`; });
+  }
+
+  const ORDER = { reserved: 0, pending: 1, waitlisted: 2, interested: 3, cancelled: 4 };
+
+  async function guests() {
+    const { data, error } = await W.client.from("reservations")
+      .select("*, profiles(full_name, email, phone)").eq("event_id", current.id);
+    if (error) throw error;
+    data.sort((a, b) => ORDER[a.status] - ORDER[b.status] || a.created_at.localeCompare(b.created_at));
+    const n = (s) => data.filter((r) => r.status === s).length;
+    const c = current.currency;
+    $("tab-body").innerHTML = `
+      <p class="muted">${n("reserved")} of ${current.seats} seats reserved &middot; ${n("pending")} paying now &middot;
+        ${n("waitlisted")} waiting &middot; ${n("interested")} interested</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th>Status</th><th class="num">Deposit</th><th></th></tr></thead>
+        <tbody>${data.map((r) => `
+          <tr>
+            <td>${esc(r.profiles.full_name)}<small>${esc(r.profiles.email)}${r.profiles.phone ? " &middot; " + esc(r.profiles.phone) : ""}</small></td>
+            <td><span class="pill ${r.status}">${r.status}</span>
+              <small>${r.status === "reserved" && r.paid_at ? "since " + esc(W.day(r.paid_at)) : ""}
+              ${r.status === "cancelled" ? esc(r.refund_status === "refunded" ? `refunded ${W.money(r.refunded_cents, c)}` : r.refund_status || "") : ""}</small></td>
+            <td class="num">${r.deposit_paid_cents ? W.money(r.deposit_paid_cents, c) : ""}</td>
+            <td class="num">${
+              ["interested", "waitlisted"].includes(r.status) ? `<button class="linkish" data-seat="${r.id}">Seat without deposit</button>` :
+              ["reserved", "pending"].includes(r.status) ? `<button class="linkish danger" data-cancel="${r.id}">Cancel</button>` : ""}</td>
+          </tr>`).join("") || `<tr><td colspan="4" class="muted">No one yet.</td></tr>`}
+        </tbody></table></div>
+      <p class="msg" data-msg aria-live="polite"></p>`;
+
+    const msg = $("tab-body").querySelector("[data-msg]");
+    $("tab-body").querySelectorAll("[data-seat]").forEach((b) => b.addEventListener("click", async () => {
+      const { error } = await W.client.from("reservations").update({ status: "reserved", paid_at: new Date().toISOString(),
+        hold_expires_at: null }).eq("id", b.dataset.seat);
+      if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
+      guests();
+    }));
+    $("tab-body").querySelectorAll("[data-cancel]").forEach((b) => b.addEventListener("click", async () => {
+      const r = data.find((x) => x.id === b.dataset.cancel);
+      const inTime = Date.now() <= W.refundCutoff(current).getTime();
+      let force = false;
+      if (r.deposit_paid_cents && !inTime) {
+        force = confirm(`${r.profiles.full_name} is past the refund window. Refund the ${W.money(r.deposit_paid_cents, current.currency)} deposit anyway?\n\nOK = refund, Cancel = keep the deposit.`);
+      }
+      if (!confirm(`Cancel ${r.profiles.full_name}'s reservation${r.deposit_paid_cents ? (inTime || force ? " and refund the deposit" : ", keeping the deposit") : ""}?`)) return;
+      b.disabled = true;
+      try {
+        await W.callFn("cancel-reservation", { reservation_id: r.id, force_refund: force });
+        guests();
+      } catch (e) { b.disabled = false; msg.className = "msg err"; msg.textContent = W.errorText(e); }
+    }));
+  }
+
+  async function invites() {
+    const { data, error } = await W.client.from("invitations").select("*").eq("event_id", current.id).order("created_at");
+    if (error) throw error;
+    const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
+    $("tab-body").innerHTML = `
+      <p class="muted">${current.invite_only ? "This evening is by invitation: only these addresses can reserve." :
+        "This evening is open to anyone with the link; turn on <em>By invitation only</em> above to limit it to this list."}</p>
+      <p>Link to send: <a href="${esc(link)}" style="color:var(--gold);">${esc(link)}</a></p>
+      <form class="form" id="inv-form">
+        <label>Invite by email <span class="hint">one or more, separated by commas or new lines</span>
+          <textarea name="emails" placeholder="guest@example.com"></textarea></label>
+        <div class="actions"><button class="btn small" type="submit">Add to the list</button></div>
+      </form>
+      <div class="table-wrap"><table class="ledger"><tbody>${data.map((i) => `
+        <tr><td>${esc(i.email)}</td><td class="num"><button class="linkish danger" data-rm="${esc(i.email)}">Remove</button></td></tr>`).join("") ||
+        `<tr><td class="muted">No invitations yet.</td></tr>`}</tbody></table></div>`;
+    $("inv-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const emails = [...new Set(e.target.emails.value.split(/[\s,;]+/).map((x) => x.trim().toLowerCase()).filter((x) => x.includes("@")))];
+      if (emails.length) {
+        await W.client.from("invitations").upsert(emails.map((email) => ({ event_id: current.id, email })), { ignoreDuplicates: true });
+      }
+      invites();
+    });
+    $("tab-body").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+      await W.client.from("invitations").delete().eq("event_id", current.id).eq("email", b.dataset.rm);
+      invites();
+    }));
+  }
+
+  async function bottles() {
+    const { data, error } = await W.client.from("bottles")
+      .select("*, profiles(full_name)").eq("event_id", current.id).order("vintage", { nullsFirst: false });
+    if (error) throw error;
+    const c = current.currency;
+    const url = (p) => W.client.storage.from("labels").getPublicUrl(p).data.publicUrl;
+    // flag declared prices well away from the market estimate
+    const gap = (b) => {
+      if (!b.market_cents) return "";
+      const d = (b.price_cents - b.market_cents) / b.market_cents;
+      return Math.abs(d) < 0.3 ? "" : `<span class="pill ${d > 0 ? "declined" : ""}">${Math.round(Math.abs(d) * 100)}% ${d > 0 ? "above" : "below"}</span>`;
+    };
+    $("tab-body").innerHTML = `
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Paid</th><th class="num">Market</th><th>Status</th><th></th></tr></thead>
+        <tbody>${data.map((b) => `
+          <tr>
+            <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
+              <small>${esc(b.region || "")}${b.note ? ` &middot; &ldquo;${esc(b.note)}&rdquo;` : ""}
+              ${b.background ? `<br>${esc(b.background)}` : ""}
+              ${b.photo_path ? ` &middot; <a href="${esc(url(b.photo_path))}" target="_blank" style="color:var(--gold);">label</a>` : ""}</small></td>
+            <td>${esc(b.profiles.full_name)}</td>
+            <td class="num">${W.money(b.price_cents, c)}</td>
+            <td class="num">${b.market_cents ? W.money(b.market_cents, c) : `<span class="faint">none</span>`}
+              ${gap(b) ? `<small>${gap(b)}</small>` : ""}
+              ${b.market_note ? `<small title="${esc(b.market_note)}">${(b.market_sources || []).map((s, i) =>
+                `<a href="${esc(s.url)}" target="_blank" rel="noopener">${i + 1}</a>`).join(" ")}</small>` : ""}</td>
+            <td><span class="pill ${b.status}">${b.status}</span>${b.admin_note ? `<small>${esc(b.admin_note)}</small>` : ""}</td>
+            <td class="num">
+              ${b.status !== "approved" ? `<button class="linkish" data-set="approved" data-id="${b.id}">Approve</button>` : ""}
+              ${b.status !== "declined" ? `<button class="linkish danger" data-set="declined" data-id="${b.id}">Decline</button>` : ""}
+            </td>
+          </tr>`).join("") || `<tr><td colspan="6" class="muted">No bottles yet.</td></tr>`}
+        </tbody></table></div>
+      <p class="foot-note">Declined bottles leave the line-up and the tally. Approving is optional: bottles awaiting review still count.</p>`;
+    $("tab-body").querySelectorAll("[data-set]").forEach((btn) => btn.addEventListener("click", async () => {
+      const upd = { status: btn.dataset.set };
+      if (btn.dataset.set === "declined") {
+        const why = prompt("A short note for the guest (optional), e.g. off theme:");
+        if (why === null) return;
+        upd.admin_note = why.trim() || null;
+      }
+      await W.client.from("bottles").update(upd).eq("id", btn.dataset.id);
+      bottles();
+    }));
+  }
+
+  async function tally() {
+    const rows = await W.rpc("event_tally", { p_slug: current.slug });
+    const c = current.currency;
+    const total = rows.reduce((a, r) => a + r.bottles_cents, 0) + current.shared_costs_cents;
+    const owed = rows.filter((r) => r.balance_cents > 0).reduce((a, r) => a + r.balance_cents, 0);
+    const back = rows.filter((r) => r.balance_cents < 0).reduce((a, r) => a - r.balance_cents, 0);
+    $("tab-body").innerHTML = rows.length ? `
+      <p class="muted">Total ${W.money(total, c)} (bottles plus ${W.money(current.shared_costs_cents, c)} shared costs),
+        split ${rows.length} ways. You collect ${W.money(owed, c)} and pay out ${W.money(back, c)}.</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th class="num">Brought</th><th class="num">Deposit</th><th class="num">Share</th>
+          <th class="num">Balance</th><th>Settled</th></tr></thead>
+        <tbody>${rows.map((r) => `
+          <tr><td>${esc(r.guest)}</td><td class="num">${W.money(r.bottles_cents, c)}</td>
+            <td class="num">${W.money(r.deposit_cents, c)}</td><td class="num">${W.money(r.share_cents, c)}</td>
+            <td class="num">${r.balance_cents > 0 ? `<span class="owes">pays ${W.money(r.balance_cents, c)}</span>`
+              : r.balance_cents < 0 ? `<span class="gets">receives ${W.money(-r.balance_cents, c)}</span>` : "square"}</td>
+            <td><label class="check"><input type="checkbox" data-settle="${r.reservation_id}" ${r.settled ? "checked" : ""}> settled</label></td>
+          </tr>`).join("")}</tbody></table></div>` : `<p class="muted">No seated guests yet.</p>`;
+    $("tab-body").querySelectorAll("[data-settle]").forEach((cb) => cb.addEventListener("change", async () => {
+      await W.client.from("reservations").update({ settled: cb.checked }).eq("id", cb.dataset.settle);
+    }));
+  }
+
+  start().catch((e) => { page.innerHTML = `<p class="msg err">${esc(W.errorText(e))}</p>`; });
+})();
+</script>
+</body>
+</html>
