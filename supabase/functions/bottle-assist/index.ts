@@ -198,7 +198,8 @@ Deno.serve(async (req) => {
   const since = new Date(Date.now() - 86_400_000).toISOString();
   const { count } = await db.from("bottle_lookups").select("id", { count: "exact", head: true })
     .eq("user_id", user.id).gte("created_at", since);
-  if ((count ?? 0) >= DAILY_LIMIT) return json(req, { error: "too_many_lookups" }, 429);
+  // Kai is exempt, so the host page's label tester can be used freely
+  if (!admin && (count ?? 0) >= DAILY_LIMIT) return json(req, { error: "too_many_lookups" }, 429);
 
   try {
     if (body.step === "label") {

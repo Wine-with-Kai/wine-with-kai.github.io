@@ -115,41 +115,76 @@
     return data;
   }
 
-  function signInForm(el, lead) {
+  const LAST_EMAIL = "wwk-email";
+  const remembered = () => { try { return localStorage.getItem(LAST_EMAIL) || ""; } catch (_) { return ""; } };
+  const remember = (v) => { try { localStorage.setItem(LAST_EMAIL, v); } catch (_) {} };
+
+  // Two steps on the same page: email, then the code from the email.
+  // The email also carries a link, which signs in just as well.
+  function signInForm(el, lead, onSignedIn) {
     el.innerHTML = `
       <p class="kicker">Sign in</p>
-      <p>${lead || "Enter your email and we will send you a link to sign in. No password needed."}</p>
+      <p>${lead || "Enter your email and we will send you a 6-digit code. No password needed."}</p>
       <form class="form" data-signin>
-        <label>Email <input type="email" name="email" required autocomplete="email"></label>
-        <div class="actions"><button class="btn small" type="submit">Email me a sign-in link</button></div>
+        <label>Email <input type="email" name="email" required autocomplete="email" value="${esc(remembered())}"></label>
+        <div class="actions"><button class="btn small solid" type="submit">Email me a code</button></div>
         <p class="msg" data-msg aria-live="polite"></p>
+      </form>
+      <form class="form" data-code hidden>
+        <label>The code from your email
+          <input name="code" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}"
+            maxlength="10" placeholder="123456" style="letter-spacing:0.3em; font-size:22px; max-width:220px;"></label>
+        <div class="actions">
+          <button class="btn small solid" type="submit">Sign in</button>
+          <button class="linkish" type="button" data-again>Use another email</button>
+        </div>
+        <p class="msg" data-msg2 aria-live="polite"></p>
       </form>`;
     const form = el.querySelector("[data-signin]");
+    const codeForm = el.querySelector("[data-code]");
+    let email = "";
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = form.querySelector("button");
       const msg = form.querySelector("[data-msg]");
       btn.disabled = true;
-      const email = form.email.value.trim();
+      email = form.email.value.trim().toLowerCase();
+      remember(email);
       const { error } = await client.auth.signInWithOtp({
         email,
         options: { emailRedirectTo: location.href.split("#")[0] },
       });
       btn.disabled = false;
       if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
-      msg.className = "msg ok";
-      msg.textContent = `A sign-in link is on its way to ${email}. Open it on this device to continue.`;
+      form.hidden = true;
+      codeForm.hidden = false;
+      codeForm.querySelector("[data-msg2]").className = "msg ok";
+      codeForm.querySelector("[data-msg2]").textContent = `We have emailed a code to ${email}. It can take a minute; check spam if it does not arrive.`;
+      codeForm.code.focus();
+    });
+    codeForm.querySelector("[data-again]").addEventListener("click", () => {
+      codeForm.hidden = true; form.hidden = false; form.email.focus();
+    });
+    codeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = codeForm.querySelector("button[type=submit]");
+      const msg = codeForm.querySelector("[data-msg2]");
+      btn.disabled = true;
+      const { error } = await client.auth.verifyOtp({ email, token: codeForm.code.value.trim(), type: "email" });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = "That code did not work. Check it, or ask for a new one."; return; }
+      if (onSignedIn) onSignedIn();
     });
   }
 
   function profileForm(el, u, onSaved) {
     el.innerHTML = `
       <p class="kicker">Welcome</p>
-      <p>Signed in as <strong>${esc(u.email)}</strong>. Tell us who you are, so Kai knows who is at the table.</p>
+      <p>Signed in as <strong>${esc(u.email)}</strong>. What name should Kai put at the table?</p>
       <form class="form" data-profile>
         <div class="row">
           <label>Full name <input name="full_name" required autocomplete="name"></label>
-          <label>Mobile <span class="hint">for the evening's arrangements</span>
+          <label>Mobile <span class="hint">optional</span>
             <input name="phone" type="tel" autocomplete="tel"></label>
         </div>
         <div class="actions"><button class="btn small" type="submit">Continue</button></div>
@@ -175,8 +210,19 @@
   // profile; until then renders the sign-in or profile form into `el`.
   async function guest(el, onReady, lead) {
     const u = await user();
-    if (!u) { signInForm(el, lead); return null; }
-    const p = await profile(u);
+    if (!u) { signInForm(el, lead, onReady); return null; }
+    let p = await profile(u);
+    if (!p) {
+      // invited by name: no need to ask again
+      const { data: inv } = await client.from("invitations").select("name")
+        .eq("email", (u.email || "").toLowerCase()).not("name", "is", null).limit(1);
+      const name = inv && inv[0] && inv[0].name;
+      if (name) {
+        const { data } = await client.from("profiles")
+          .insert({ id: u.id, email: u.email, full_name: name }).select().single();
+        p = data;
+      }
+    }
     if (!p) { profileForm(el, u, onReady); return null; }
     return { user: u, profile: p };
   }
@@ -195,6 +241,23 @@
       Until then, please let Kai know directly.</p>`;
   }
 
+  // shrink a photo to a JPEG of at most 1600 px: quicker to upload, and a
+  // format the label reader accepts (iPhone HEIC included, where the browser can decode it)
+  async function shrinkImage(file) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(bmp.width * k);
+      c.height = Math.round(bmp.height * k);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+      return blob || file;
+    } catch (_) {
+      return file;
+    }
+  }
+
   async function event(slug) {
     const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
     if (error) throw error;
@@ -203,6 +266,6 @@
 
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
-    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage,
   };
 })();

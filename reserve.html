@@ -1221,41 +1221,76 @@ window.WWK_CONFIG = {
     return data;
   }
 
-  function signInForm(el, lead) {
+  const LAST_EMAIL = "wwk-email";
+  const remembered = () => { try { return localStorage.getItem(LAST_EMAIL) || ""; } catch (_) { return ""; } };
+  const remember = (v) => { try { localStorage.setItem(LAST_EMAIL, v); } catch (_) {} };
+
+  // Two steps on the same page: email, then the code from the email.
+  // The email also carries a link, which signs in just as well.
+  function signInForm(el, lead, onSignedIn) {
     el.innerHTML = `
       <p class="kicker">Sign in</p>
-      <p>${lead || "Enter your email and we will send you a link to sign in. No password needed."}</p>
+      <p>${lead || "Enter your email and we will send you a 6-digit code. No password needed."}</p>
       <form class="form" data-signin>
-        <label>Email <input type="email" name="email" required autocomplete="email"></label>
-        <div class="actions"><button class="btn small" type="submit">Email me a sign-in link</button></div>
+        <label>Email <input type="email" name="email" required autocomplete="email" value="${esc(remembered())}"></label>
+        <div class="actions"><button class="btn small solid" type="submit">Email me a code</button></div>
         <p class="msg" data-msg aria-live="polite"></p>
+      </form>
+      <form class="form" data-code hidden>
+        <label>The code from your email
+          <input name="code" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}"
+            maxlength="10" placeholder="123456" style="letter-spacing:0.3em; font-size:22px; max-width:220px;"></label>
+        <div class="actions">
+          <button class="btn small solid" type="submit">Sign in</button>
+          <button class="linkish" type="button" data-again>Use another email</button>
+        </div>
+        <p class="msg" data-msg2 aria-live="polite"></p>
       </form>`;
     const form = el.querySelector("[data-signin]");
+    const codeForm = el.querySelector("[data-code]");
+    let email = "";
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = form.querySelector("button");
       const msg = form.querySelector("[data-msg]");
       btn.disabled = true;
-      const email = form.email.value.trim();
+      email = form.email.value.trim().toLowerCase();
+      remember(email);
       const { error } = await client.auth.signInWithOtp({
         email,
         options: { emailRedirectTo: location.href.split("#")[0] },
       });
       btn.disabled = false;
       if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
-      msg.className = "msg ok";
-      msg.textContent = `A sign-in link is on its way to ${email}. Open it on this device to continue.`;
+      form.hidden = true;
+      codeForm.hidden = false;
+      codeForm.querySelector("[data-msg2]").className = "msg ok";
+      codeForm.querySelector("[data-msg2]").textContent = `We have emailed a code to ${email}. It can take a minute; check spam if it does not arrive.`;
+      codeForm.code.focus();
+    });
+    codeForm.querySelector("[data-again]").addEventListener("click", () => {
+      codeForm.hidden = true; form.hidden = false; form.email.focus();
+    });
+    codeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = codeForm.querySelector("button[type=submit]");
+      const msg = codeForm.querySelector("[data-msg2]");
+      btn.disabled = true;
+      const { error } = await client.auth.verifyOtp({ email, token: codeForm.code.value.trim(), type: "email" });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = "That code did not work. Check it, or ask for a new one."; return; }
+      if (onSignedIn) onSignedIn();
     });
   }
 
   function profileForm(el, u, onSaved) {
     el.innerHTML = `
       <p class="kicker">Welcome</p>
-      <p>Signed in as <strong>${esc(u.email)}</strong>. Tell us who you are, so Kai knows who is at the table.</p>
+      <p>Signed in as <strong>${esc(u.email)}</strong>. What name should Kai put at the table?</p>
       <form class="form" data-profile>
         <div class="row">
           <label>Full name <input name="full_name" required autocomplete="name"></label>
-          <label>Mobile <span class="hint">for the evening's arrangements</span>
+          <label>Mobile <span class="hint">optional</span>
             <input name="phone" type="tel" autocomplete="tel"></label>
         </div>
         <div class="actions"><button class="btn small" type="submit">Continue</button></div>
@@ -1281,8 +1316,19 @@ window.WWK_CONFIG = {
   // profile; until then renders the sign-in or profile form into `el`.
   async function guest(el, onReady, lead) {
     const u = await user();
-    if (!u) { signInForm(el, lead); return null; }
-    const p = await profile(u);
+    if (!u) { signInForm(el, lead, onReady); return null; }
+    let p = await profile(u);
+    if (!p) {
+      // invited by name: no need to ask again
+      const { data: inv } = await client.from("invitations").select("name")
+        .eq("email", (u.email || "").toLowerCase()).not("name", "is", null).limit(1);
+      const name = inv && inv[0] && inv[0].name;
+      if (name) {
+        const { data } = await client.from("profiles")
+          .insert({ id: u.id, email: u.email, full_name: name }).select().single();
+        p = data;
+      }
+    }
     if (!p) { profileForm(el, u, onReady); return null; }
     return { user: u, profile: p };
   }
@@ -1301,6 +1347,23 @@ window.WWK_CONFIG = {
       Until then, please let Kai know directly.</p>`;
   }
 
+  // shrink a photo to a JPEG of at most 1600 px: quicker to upload, and a
+  // format the label reader accepts (iPhone HEIC included, where the browser can decode it)
+  async function shrinkImage(file) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(bmp.width * k);
+      c.height = Math.round(bmp.height * k);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+      return blob || file;
+    } catch (_) {
+      return file;
+    }
+  }
+
   async function event(slug) {
     const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
     if (error) throw error;
@@ -1309,7 +1372,7 @@ window.WWK_CONFIG = {
 
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
-    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage,
   };
 })();
 
@@ -1350,7 +1413,18 @@ window.WWK_CONFIG = {
   }
 
   // ---------- one evening ----------
-  let ev, counts;
+  let ev, counts, me = null, seated = false, isAdmin = false, editing = null;
+
+  const priceRange = () => {
+    const lo = ev.price_min_cents, hi = ev.price_max_cents, c = ev.currency;
+    if (lo != null && hi != null) return `${W.money(lo, c)} to ${W.money(hi, c)}`;
+    if (lo != null) return `From ${W.money(lo, c)}`;
+    if (hi != null) return `Up to ${W.money(hi, c)}`;
+    return null;
+  };
+  const locked = () => (ev.bottle_lock_at && Date.now() >= new Date(ev.bottle_lock_at).getTime())
+    || Date.now() >= new Date(ev.starts_at).getTime() || ev.status !== "open";
+  const labelUrl = (path) => path ? W.client.storage.from("labels").getPublicUrl(path).data.publicUrl : null;
 
   async function load() {
     ev = await W.event(slug);
@@ -1359,7 +1433,7 @@ window.WWK_CONFIG = {
         <a href="reserve.html" style="color:var(--gold);">See the evenings open for reservation</a>.</p>`;
       return;
     }
-    document.title = `Reserve · ${ev.title} · Wine with Kai`;
+    document.title = `${ev.title} · Wine with Kai`;
     $("eyebrow").innerHTML = `Wine with Kai &nbsp;&middot;&nbsp; ${ev.format === "byob" ? "Bring your own bottle" : "Reserve a seat"}`;
     $("title").textContent = ev.title;
     $("subtitle").textContent = ev.subtitle || "reserve a seat";
@@ -1371,7 +1445,14 @@ window.WWK_CONFIG = {
     const left = Math.max(0, ev.seats - counts.seats_taken);
     const cutoff = W.refundCutoff(ev);
 
+    const range = ev.format === "byob" ? priceRange() : null;
     page.innerHTML = `
+      ${range || (ev.format === "byob" && ev.price_note) ? `
+        <div class="banner" role="note">
+          <p class="kicker" style="margin-bottom:2px;">Suggested bottle price for the evening</p>
+          ${range ? `<p class="b-amt">${W.esc(range)}</p>` : ""}
+          ${ev.price_note ? `<p>${W.esc(ev.price_note)}</p>` : ""}
+        </div>` : ""}
       <dl class="facts">
         <div><dt>When</dt><dd>${W.esc(W.when(ev.starts_at))}</dd></div>
         <div><dt>Where</dt><dd>${W.esc(ev.venue || "To be announced")}</dd></div>
@@ -1380,13 +1461,15 @@ window.WWK_CONFIG = {
       </dl>
       ${ev.description ? `<p style="margin-top:26px;">${W.esc(ev.description)}</p>` : ""}
       ${ev.format === "byob" ? `
-        <div class="banner">
-          <p class="kicker" style="margin-bottom:4px;">Bring your own bottle</p>
-          <p>Each guest may bring a bottle on the theme, or none at all. Everything poured, with the evening's shared
-          costs, is tallied and split evenly across the table.
-          <a href="byob.html?event=${encodeURIComponent(ev.slug)}" style="color:var(--gold);">See the line-up and the tally &rarr;</a></p>
-        </div>` : ""}
+        <p class="muted">Bring a bottle you would like to share, or none at all. On the night, every bottle poured and the
+        evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} are added together and
+        split evenly across the table: if your bottle is worth more than your share, Kai pays you the difference.</p>` : ""}
       <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
+      ${ev.format === "byob" ? `
+        <div class="panel" id="mine" hidden></div>
+        <h2>The line-up</h2>
+        <div id="lineup"><p class="muted">Loading&hellip;</p></div>
+        <div id="tally"></div>` : ""}
       ${ev.deposit_cents ? `
         <p class="foot-note">The deposit holds your seat. It is refunded in full if you cancel on or before
         <strong>${W.esc(W.day(cutoff.toISOString()))}</strong>, ${ev.refund_days} days before the evening; after that it is kept.
@@ -1396,14 +1479,24 @@ window.WWK_CONFIG = {
     await renderGuest();
   }
 
+  // the guest panel, then (for BYOB evenings) the bottle sections beneath it
   async function renderGuest() {
+    seated = false;
+    await renderGuestPanel();
+    if (ev.format === "byob") await refresh();
+  }
+
+  async function renderGuestPanel() {
     const box = $("guest");
     const g = await W.guest(box, renderGuest,
       ev.invite_only
-        ? "This evening is by invitation. Enter the email your invitation was sent to and we will send you a link to sign in."
+        ? "This evening is by invitation. Enter the email address Kai invited and we will email you a 6-digit code."
         : null);
     if (!g) return;
     W.whoBar($("who"), g);
+    me = g.user;
+    const { data: adm } = await W.client.from("admins").select("email").limit(1);
+    isAdmin = !!(adm && adm.length);
 
     const { data: mine } = await W.client.from("reservations").select("*")
       .eq("event_id", ev.id).eq("user_id", g.user.id).neq("status", "cancelled").maybeSingle();
@@ -1411,6 +1504,7 @@ window.WWK_CONFIG = {
     const lapsed = mine && mine.status === "pending" && !W.param("paid")
       && new Date(mine.hold_expires_at) < new Date();
     const status = !mine ? "none" : lapsed ? "interested" : mine.status;
+    seated = status === "reserved";
 
     if (ev.invite_only && status === "none") {
       const { data: inv } = await W.client.from("invitations").select("email").eq("event_id", ev.id);
@@ -1424,7 +1518,7 @@ window.WWK_CONFIG = {
 
     const left = Math.max(0, ev.seats - counts.seats_taken);
     const deposit = ev.deposit_cents ? W.money(ev.deposit_cents, ev.currency) : null;
-    const reserveLabel = deposit ? `Reserve a seat &middot; ${deposit} deposit` : "Reserve a seat";
+    const reserveLabel = deposit ? `Reserve my seat &middot; ${deposit} deposit` : "Reserve my seat";
     const cutoff = W.refundCutoff(ev);
     const inTime = Date.now() <= cutoff.getTime();
     const html = [];
@@ -1435,7 +1529,7 @@ window.WWK_CONFIG = {
           ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
           : ""} We look forward to seeing you.</p>`);
       if (ev.format === "byob") {
-        html.push(`<div class="actions"><a class="btn small" href="byob.html?event=${encodeURIComponent(ev.slug)}">Add your bottle <span class="arw">&rarr;</span></a></div>`);
+        html.push(`<p class="muted" style="margin-top:8px;">Add the bottle you will bring just below.</p>`);
       }
       html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
           ? "Plans changed?"
@@ -1479,7 +1573,7 @@ window.WWK_CONFIG = {
       html.push(left && !queueFirst
         ? `<p>${left === 1 ? "One seat is" : `${left} seats are`} left.${deposit ? ` A deposit of ${deposit} secures yours; you will pay it on Stripe&rsquo;s secure page, by PayNow or card.` : ""}</p>
            <div class="actions"><button class="btn small solid" type="button" data-act="reserve">${reserveLabel}</button>
-           ${status === "interested" ? "" : `<button class="linkish" type="button" data-act="interest">Just register interest</button>`}</div>`
+           ${status === "interested" || !deposit ? "" : `<button class="linkish" type="button" data-act="interest">Just register interest</button>`}</div>`
         : `<p>Every seat is taken. Join the waitlist and, if a seat opens, it is offered in order.</p>
            <div class="actions"><button class="btn small" type="button" data-act="reserve">Join the waitlist</button></div>`);
       if (status === "interested") html.push(`<p class="foot-note">You are on the interest list for this evening.</p>`);
@@ -1515,7 +1609,325 @@ window.WWK_CONFIG = {
         }
       }
       await load();
+      if (what === "reserve" && seated && $("mine")) $("mine").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) { fail(e); }
+  }
+
+  async function renderLineup() {
+    const rows = await W.rpc("event_lineup", { p_slug: slug });
+    $("lineup").innerHTML = rows.length
+      ? rows.map((b) => `
+        <div class="bottle">
+          <div class="yr">${b.vintage || "NV"}</div>
+          <div>
+            <p class="nm">${W.esc(b.producer)} &middot; ${W.esc(b.wine)}</p>
+            <p class="sub">${b.region ? W.esc(b.region) + " &middot; " : ""}brought by ${W.esc(b.guest)}</p>
+            ${b.background ? `<p class="bgtext">${W.esc(b.background)}</p>` : ""}
+            ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy">` : ""}
+          </div>
+          <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? "awaiting Kai" : W.esc(b.status)}</span>` : ""}</div>
+        </div>`).join("")
+      : `<p class="muted">No bottles yet. The line-up builds here, oldest to youngest, as guests add their wines.</p>`;
+  }
+
+  async function renderMine() {
+    const box = $("mine");
+    if (!seated || !me) { box.hidden = true; return; }
+    box.hidden = false;
+    const g = { user: me };
+
+    const { data: bottles } = await W.client.from("bottles").select("*")
+      .eq("event_id", ev.id).eq("user_id", g.user.id).order("created_at");
+    const closed = locked();
+    const b = editing && bottles.find((x) => x.id === editing);
+
+    box.innerHTML = `
+      <p class="kicker">Your bottles</p>
+      ${bottles.length ? bottles.map((x) => `
+        <div class="bottle">
+          <div class="yr">${x.vintage || "NV"}</div>
+          <div>
+            <p class="nm">${W.esc(x.producer)} &middot; ${W.esc(x.wine)}</p>
+            <p class="sub">${x.region ? W.esc(x.region) + " &middot; " : ""}${W.money(x.price_cents, ev.currency)}
+              ${x.admin_note ? ` &middot; Kai: ${W.esc(x.admin_note)}` : ""}</p>
+          </div>
+          <div class="side">
+            <span class="pill ${x.status}">${x.status === "proposed" ? "awaiting Kai" : W.esc(x.status)}</span><br>
+            ${closed ? "" : `<button class="linkish" type="button" data-edit="${x.id}">Edit</button> &middot;
+            <button class="linkish danger" type="button" data-del="${x.id}">Remove</button>`}
+          </div>
+        </div>`).join("") : `<p class="muted">You have not added a bottle. That is fine: bringing one is optional.</p>`}
+      ${closed
+        ? `<p class="foot-note">The line-up is closed${ev.bottle_lock_at ? ` (it closed on ${W.esc(W.day(ev.bottle_lock_at))})` : ""}. For any change, please tell Kai.</p>`
+        : `
+      <h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>
+      <div class="assist">
+        <label class="btn small solid snap">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}
+          <input type="file" id="photo-input" accept="image/*" hidden></label>
+        <p class="hint-line">We read the label, check the market price and write a short background for the
+          line-up. You look it over, then add it. No photo to hand? Type the wine below and press <em>Look it up</em>.</p>
+        <div class="assist-row">
+          <img id="photo-preview" class="label" alt="Your label photo" ${b && b.photo_path ? `src="${W.esc(labelUrl(b.photo_path))}"` : "hidden"}>
+          <ol class="steps" id="steps" aria-live="polite" hidden></ol>
+        </div>
+      </div>
+      <form class="form" id="bottle-form">
+        <div class="row">
+          <label>Producer <input name="producer" required placeholder="Domaine Armand Rousseau" value="${W.esc(b ? b.producer : "")}"></label>
+          <label>Wine <input name="wine" required placeholder="Gevrey-Chambertin 1er Cru Clos Saint-Jacques" value="${W.esc(b ? b.wine : "")}"></label>
+        </div>
+        <div class="row">
+          <label>Vintage <span class="hint">leave blank for non-vintage</span>
+            <input name="vintage" type="number" min="1800" max="2100" inputmode="numeric" value="${b && b.vintage ? b.vintage : ""}"></label>
+          <label>Region <input name="region" placeholder="Gevrey-Chambertin, Burgundy" value="${W.esc(b ? b.region || "" : "")}"></label>
+        </div>
+        <div class="actions" style="margin-top:0;">
+          <button class="linkish" type="button" id="look-up">Look it up</button>
+          <span class="hint">market price and background for the wine above</span>
+        </div>
+        <div id="market" hidden></div>
+        <div class="row">
+          <label>What you paid (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the price that goes into the tally"}</span>
+            <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
+          <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
+            <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
+        </div>
+        <div class="actions">
+          <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the line-up"}</button>
+          ${b ? `<button class="linkish" type="button" id="cancel-edit">Cancel</button>` : ""}
+        </div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>`}`;
+
+    box.querySelectorAll("[data-edit]").forEach((el) => el.addEventListener("click", () => {
+      editing = el.dataset.edit; renderMine();
+    }));
+    box.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", async () => {
+      const x = bottles.find((y) => y.id === el.dataset.del);
+      if (!confirm(`Remove ${x.producer} ${x.wine} from the line-up?`)) return;
+      await W.client.from("bottles").delete().eq("id", x.id);
+      if (x.photo_path) await W.client.storage.from("labels").remove([x.photo_path]);
+      if (editing === x.id) editing = null;
+      refresh();
+    }));
+    const cancelEdit = $("cancel-edit");
+    if (cancelEdit) cancelEdit.addEventListener("click", () => { editing = null; renderMine(); });
+    const form = $("bottle-form");
+    if (!form) return;
+
+    // what the assistant has produced for this form so far
+    const assist = { photo_path: null, lookup: null, busy: false };
+    if (b && (b.market_cents || b.background)) showMarket(b, true);
+
+    form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
+    $("photo-input").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      e.target.value = "";
+      if (file) fromPhoto(file, form, g, assist);
+    });
+    $("look-up").addEventListener("click", () => lookUp(form, assist));
+  }
+
+  // ---------- the bottle assistant ----------
+
+  const STEPS = [["label", "Reading the label"], ["price", "Checking the market price"], ["bg", "Writing the background"]];
+
+  function steps(state, note) {
+    const el = $("steps");
+    el.hidden = false;
+    el.innerHTML = STEPS.filter(([k]) => state[k]).map(([k, label]) => `
+      <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
+        ${label}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("")
+      + (note ? `<li class="note">${W.esc(note)}</li>` : "");
+  }
+
+  async function fromPhoto(file, form, g, assist) {
+    if (assist.busy) return;
+    assist.busy = true;
+    const state = { label: "busy" };
+    steps(state);
+    const preview = $("photo-preview");
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    try {
+      const img = await W.shrinkImage(file);
+      if (img.size > 5 * 1024 * 1024) throw new Error("That photo is too large; please try a smaller one.");
+      const path = `${g.user.id}/${ev.id}/${Date.now()}.jpg`;
+      const up = await W.client.storage.from("labels").upload(path, img, { contentType: img.type || "image/jpeg" });
+      if (up.error) throw up.error;
+      if (assist.photo_path) W.client.storage.from("labels").remove([assist.photo_path]);
+      assist.photo_path = path;
+
+      const { label } = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
+      if (!label.is_wine_label) {
+        state.label = "fail";
+        steps(state, "That does not look like a wine label. Try another photo, or type the details below.");
+        return;
+      }
+      if (label.producer) form.producer.value = label.producer;
+      if (label.wine) form.wine.value = label.wine;
+      form.vintage.value = /^\d{4}$/.test(label.vintage) ? label.vintage : "";
+      if (label.region) form.region.value = label.region;
+      state.label = "done";
+      steps(state, label.unsure ? `Please check: ${label.unsure}` : "");
+      assist.busy = false;
+      await lookUp(form, assist, state, label.unsure);
+    } catch (e) {
+      state.label = "fail";
+      steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details below instead.");
+    } finally {
+      assist.busy = false;
+    }
+  }
+
+  async function lookUp(form, assist, state, unsure) {
+    if (assist.busy) return;
+    const wine = {
+      producer: form.producer.value.trim(), wine: form.wine.value.trim(),
+      vintage: form.vintage.value.trim(), region: form.region.value.trim(),
+    };
+    if (!wine.producer && !wine.wine) { form.producer.focus(); return; }
+    assist.busy = true;
+    state = state || {};
+    state.price = state.bg = "busy";
+    steps(state, unsure ? `Please check: ${unsure}` : "This can take up to a minute.");
+    try {
+      const r = await W.callFn("bottle-assist", { slug, step: "research", ...wine });
+      assist.lookup = r;
+      state.price = r.market_cents ? "done" : "fail";
+      state.bg = r.background ? "done" : "fail";
+      steps(state, unsure ? `Please check: ${unsure}` : "");
+      showMarket(r, false);
+      if (!form.price.value && r.market_cents) {
+        form.price.value = (r.market_cents / 100).toFixed(2);
+        $("price-hint").textContent = "filled in with the market price: change it to what you paid";
+      }
+    } catch (e) {
+      state.price = state.bg = "fail";
+      steps(state, W.errorText(e) + " You can still add the bottle; Kai will see it without a market price.");
+    } finally {
+      assist.busy = false;
+    }
+  }
+
+  // r: a fresh lookup, or a saved bottle's fields
+  function showMarket(r, saved) {
+    const c = ev.currency;
+    const el = $("market");
+    const range = r.market_low_cents && r.market_high_cents && r.market_low_cents !== r.market_high_cents
+      ? ` <span class="range">(${W.money(r.market_low_cents, c)} to ${W.money(r.market_high_cents, c)})</span>` : "";
+    const sources = r.sources || r.market_sources || [];
+    el.hidden = false;
+    el.innerHTML = `
+      <div class="market">
+        <p class="kicker">Market price${saved ? "" : ", just checked"}</p>
+        <p class="m-amt">${r.market_cents ? `About ${W.money(r.market_cents, c)}${range}` : "No reliable market price found"}</p>
+        ${r.market_note ? `<p class="sub">${W.esc(r.market_note)}</p>` : ""}
+        ${sources.length ? `<p class="sub">Sources: ${sources.map((s) =>
+          `<a href="${W.esc(s.url)}" target="_blank" rel="noopener">${W.esc(s.title || new URL(s.url).hostname)}</a>`).join(" &middot; ")}</p>` : ""}
+        ${r.background ? `<p class="kicker" style="margin-top:14px;">Background, for the line-up</p><p class="bgtext">${W.esc(r.background)}</p>` : ""}
+        ${r.identified_as ? `<p class="foot-note">Researched as ${W.esc(r.identified_as)}. If that is not your bottle, correct the details and press Look it up again.</p>` : ""}
+        <p class="foot-note">Guests at the table see this market price beside what you paid.</p>
+      </div>`;
+  }
+
+  async function save(form, g, b, assist) {
+    const msg = form.querySelector("[data-msg]");
+    const btn = form.querySelector("button[type=submit]");
+    if (assist.busy && !confirm("The assistant is still working. Add the bottle without waiting for it?")) return;
+    const price_cents = Math.round(parseFloat(form.price.value) * 100);
+    const lo = ev.price_min_cents, hi = ev.price_max_cents;
+    if ((lo != null && price_cents < lo) || (hi != null && price_cents > hi)) {
+      if (!confirm(`${W.money(price_cents, ev.currency)} is outside the evening's suggested range of ${priceRange()}. Add it anyway?`)) return;
+    }
+    btn.disabled = true;
+    try {
+      const row = {
+        event_id: ev.id,
+        user_id: g.user.id,
+        producer: form.producer.value.trim(),
+        wine: form.wine.value.trim(),
+        vintage: form.vintage.value ? parseInt(form.vintage.value, 10) : null,
+        region: form.region.value.trim() || null,
+        price_cents,
+        note: form.note.value.trim() || null,
+      };
+      // the market price and background are copied server-side from this lookup
+      if (assist.lookup) row.lookup_id = assist.lookup.lookup_id;
+      if (assist.photo_path) row.photo_path = assist.photo_path;
+      const res = b
+        ? await W.client.from("bottles").update(row).eq("id", b.id)
+        : await W.client.from("bottles").insert(row);
+      if (res.error) throw res.error;
+      if (b && assist.photo_path && b.photo_path) await W.client.storage.from("labels").remove([b.photo_path]);
+      editing = null;
+      await refresh();
+    } catch (e) {
+      btn.disabled = false;
+      msg.className = "msg err";
+      msg.textContent = e.message || W.errorText(e);
+    }
+  }
+
+  async function renderTally() {
+    const box = $("tally");
+    if (!seated && !isAdmin) { box.innerHTML = ""; return; }
+    let rows, prices;
+    try {
+      [rows, prices] = await Promise.all([
+        W.rpc("event_tally", { p_slug: slug }),
+        W.rpc("event_bottle_prices", { p_slug: slug }),
+      ]);
+    } catch (e) { box.innerHTML = ""; return; }
+    if (!rows.length) { box.innerHTML = ""; return; }
+
+    const c = ev.currency;
+    const bottlesTotal = rows.reduce((a, r) => a + r.bottles_cents, 0);
+    const total = bottlesTotal + ev.shared_costs_cents;
+    const balance = (v) => v > 0
+      ? `<span class="owes">pays ${W.money(v, c)}</span>`
+      : v < 0 ? `<span class="gets">receives ${W.money(-v, c)}</span>` : "square";
+
+    box.innerHTML = `
+      <h2>The tally</h2>
+      <p class="muted">Shared with the guests at the table. It updates as bottles are added, and is final once the line-up closes.</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Brought</th>
+          <th class="num opt">Deposit</th><th class="num">Share</th><th class="num">On the night</th></tr></thead>
+        <tbody>${rows.map((r) => `
+          <tr class="${r.mine ? "me" : ""}"><td>${W.esc(r.guest)}${r.mine ? " (you)" : ""}${r.settled ? ` <span class="pill">settled</span>` : ""}</td>
+            <td class="num opt">${r.bottles}</td><td class="num">${W.money(r.bottles_cents, c)}</td>
+            <td class="num opt">${W.money(r.deposit_cents, c)}</td><td class="num">${W.money(r.share_cents, c)}</td>
+            <td class="num">${balance(r.balance_cents)}</td></tr>`).join("")}
+        </tbody>
+      </table></div>
+      <p class="muted" style="font-size:16.5px;">Bottles brought ${W.money(bottlesTotal, c)} &middot;
+        shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;
+        <strong>total ${W.money(total, c)}</strong>, split ${rows.length} ways.
+        <span class="only-narrow">Your deposit is already taken off your figure.</span></p>
+      ${prices.length ? `
+      <h2 style="font-size:22px;">The bottles, paid and market</h2>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Bottle</th><th class="num">Paid</th><th class="num">Market</th></tr></thead>
+        <tbody>${prices.map((p) => `
+          <tr class="${p.mine ? "me" : ""}">
+            <td>${p.vintage || "NV"} ${W.esc(p.producer)} &middot; ${W.esc(p.wine)}<small>${W.esc(p.guest)}${p.mine ? " (you)" : ""}</small></td>
+            <td class="num">${W.money(p.price_cents, c)}</td>
+            <td class="num">${p.market_cents
+              ? `${(p.market_sources || []).length ? `<a href="${W.esc(p.market_sources[0].url)}" target="_blank" rel="noopener" title="${W.esc(p.market_note || "")}">${W.money(p.market_cents, c)}</a>` : W.money(p.market_cents, c)}`
+              : `<span class="faint">not found</span>`}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+      <p class="foot-note">Market prices are checked automatically against Singapore retailers and Wine-Searcher when a
+        bottle is added; tap one to see its source. The tally uses what each guest paid.</p>` : ""}
+      <p class="foot-note">Share = everything poured plus the shared costs, divided by the guests at the table.
+        On the night = share, less the bottles you brought and your deposit. Shares are rounded to the cent, so the
+        column may differ from the total by a few cents. All settling is with Kai.</p>`;
+  }
+
+  async function refresh() {
+    await Promise.all([renderLineup(), renderMine(), renderTally()]);
   }
 
   // the webhook usually lands within seconds of Stripe's redirect

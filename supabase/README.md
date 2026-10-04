@@ -5,9 +5,9 @@ The site stays on GitHub Pages. Three new pages talk to a Supabase project
 
 | Page | For | What it does |
 |---|---|---|
-| `reserve.html` | guests | lists open evenings; `?event=<slug>` reserves a seat with a deposit, joins the waitlist, registers interest, cancels (refund if 14+ days ahead) |
-| `byob.html?event=<slug>` | guests | price-range banner, the bottle line-up, add / edit your bottles, the cost tally |
-| `admin.html` | Kai | create evenings, see guests, invitations, approve or decline bottles, tally and mark settled |
+| `reserve.html?event=<slug>` | guests | the one page per evening: sign in with an emailed 6-digit code, reserve (deposit or free), then, on BYOB evenings, photograph your label, the line-up and the tally. Without `?event` it lists open evenings |
+| `byob.html` | old links | redirects to `reserve.html` |
+| `admin.html` | Kai | evenings, guests, invitations by name with a WhatsApp button, bottle approvals, tally and settled ticks, and a "Test the bottle assistant" box |
 
 Server side, in this folder:
 
@@ -30,6 +30,9 @@ Steps 1 to 3 and 5 involve creating accounts and handling secret keys, so they a
    ```
 4. **Authentication > URL Configuration**: Site URL `https://wine-with-kai.github.io`, and add the redirect URL `https://wine-with-kai.github.io/**`.
 5. **Authentication > SMTP**: Supabase's built-in mailer only sends a handful of sign-in emails an hour. Before guests use it, connect a mail provider (Resend, Postmark, or similar).
+
+### Sign-in emails
+Under **Authentication > Emails > Templates**, both **Confirm sign up** (first-time guests) and **Magic link or OTP** (returning guests) use the subject `Your Wine with Kai sign-in code: {{ .Token }}` and show `{{ .Token }}` large in the body, with `{{ .ConfirmationURL }}` as a fallback link. Guests type the code on the page, so they never leave it. Run `migrations/20261005000000_invitation_names.sql` too (invitation names).
 
 ### 2. Point the site at it
 **Project Settings > API**: copy the Project URL and the `anon` public key into `assets/wwk-config.js`. Both are public by design. **Never** put the `service_role` key there. Then run `python3 build.py`.

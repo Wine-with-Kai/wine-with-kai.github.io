@@ -50,6 +50,8 @@
     <p class="muted" style="text-align:center;">Loading&hellip;</p>
   </section>
 
+  <section class="section wrap" id="lab" hidden></section>
+
   <p class="page-foot" id="who"></p>
 </main>
 
@@ -93,6 +95,90 @@
       return;
     }
     await loadEvents();
+    renderLab(g);
+  }
+
+  // ---------- try the bottle assistant on any photo ----------
+  function renderLab(g) {
+    const lab = $("lab");
+    const byob = events.find((e) => e.format === "byob");
+    lab.hidden = false;
+    lab.innerHTML = `
+      <div class="panel">
+        <p class="kicker">Test the bottle assistant</p>
+        ${byob ? `
+        <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label,
+          then checks the market price and writes the background, exactly as it will for guests
+          (roughly US$0.10 to US$0.40 a test).</p>
+        <label class="btn small solid snap">Choose a label photo <input type="file" id="lab-photo" accept="image/*" hidden></label>
+        <div class="assist-row">
+          <img id="lab-img" class="label" alt="The label being tested" hidden>
+          <ol class="steps" id="lab-steps" aria-live="polite" hidden></ol>
+        </div>
+        <div id="lab-out"></div>` : `<p class="muted">Create a bring-your-own-bottle evening first; the test runs against it.</p>`}
+      </div>`;
+    if (!byob) return;
+
+    const stepsEl = $("lab-steps");
+    const show = (state, note) => {
+      stepsEl.hidden = false;
+      const rows = [["label", "Reading the label"], ["research", "Checking the market price and writing the background"]];
+      stepsEl.innerHTML = rows.filter(([k]) => state[k]).map(([k, t]) => `
+        <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
+        ${t}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("") + (note ? `<li class="note">${esc(note)}</li>` : "");
+    };
+
+    $("lab-photo").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      e.target.value = "";
+      if (!file) return;
+      const out = $("lab-out");
+      out.innerHTML = "";
+      $("lab-img").src = URL.createObjectURL(file);
+      $("lab-img").hidden = false;
+      const state = { label: "busy" };
+      show(state);
+      const t0 = Date.now();
+      try {
+        const img = await W.shrinkImage(file);
+        const path = `${g.user.id}/test/${Date.now()}.jpg`;
+        const up = await W.client.storage.from("labels").upload(path, img, { contentType: img.type || "image/jpeg" });
+        if (up.error) throw up.error;
+        const { label } = await W.callFn("bottle-assist", { slug: byob.slug, step: "label", photo_path: path });
+        state.label = label.is_wine_label ? "done" : "fail";
+        const secs1 = Math.round((Date.now() - t0) / 1000);
+        out.innerHTML = `
+          <h2 style="font-size:20px;">What the label reader saw <span class="faint" style="font-size:14px;">(${secs1}s)</span></h2>
+          <div class="table-wrap"><table class="ledger"><tbody>
+            ${[["Wine label?", label.is_wine_label ? "yes" : "no"], ["Producer", label.producer], ["Wine", label.wine],
+               ["Vintage", label.vintage], ["Region", label.region], ["Colour", label.colour], ["Unsure about", label.unsure]]
+              .map(([k, v]) => `<tr><td style="width:150px;">${k}</td><td>${esc(v || "")}</td></tr>`).join("")}
+          </tbody></table></div><div id="lab-market"></div>`;
+        if (!label.is_wine_label || (!label.producer && !label.wine)) { show(state, "Nothing to look up."); return; }
+        state.research = "busy";
+        show(state, "This can take up to a minute.");
+        const t1 = Date.now();
+        const r = await W.callFn("bottle-assist", {
+          slug: byob.slug, step: "research", producer: label.producer, wine: label.wine,
+          vintage: label.vintage, region: label.region,
+        });
+        state.research = "done";
+        show(state);
+        const c = byob.currency;
+        $("lab-market").innerHTML = `
+          <h2 style="font-size:20px;">Market price and background <span class="faint" style="font-size:14px;">(${Math.round((Date.now() - t1) / 1000)}s)</span></h2>
+          <div class="market">
+            <p class="m-amt">${r.market_cents ? `About ${W.money(r.market_cents, c)}${r.market_low_cents && r.market_high_cents ? ` <span class="range">(${W.money(r.market_low_cents, c)} to ${W.money(r.market_high_cents, c)})</span>` : ""}` : "No reliable market price found"}</p>
+            <p class="sub">${esc(r.market_note || "")}</p>
+            ${(r.sources || []).length ? `<p class="sub">Sources: ${r.sources.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a>`).join(" &middot; ")}</p>` : ""}
+            <p class="kicker" style="margin-top:14px;">Background</p><p class="bgtext">${esc(r.background || "")}</p>
+            <p class="foot-note">Researched as ${esc(r.identified_as || "")}.</p>
+          </div>`;
+      } catch (err) {
+        if (state.research === "busy") state.research = "fail"; else state.label = "fail";
+        show(state, err.message && !err.code ? err.message : W.errorText(err));
+      }
+    });
   }
 
   async function loadEvents(selectId) {
@@ -176,8 +262,7 @@
           </div>
           <div class="actions">
             <button class="btn small solid" type="submit">${isNew ? "Create evening" : "Save changes"}</button>
-            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Reservation page</a>
-              ${e.format === "byob" ? `<a class="linkish" href="byob.html?event=${encodeURIComponent(e.slug)}" target="_blank">BYOB page</a>` : ""}`}
+            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Open the evening page</a>`}
           </div>
           <p class="msg" data-msg aria-live="polite"></p>
         </form>
@@ -267,31 +352,58 @@
     }));
   }
 
-  async function invites() {
-    const { data, error } = await W.client.from("invitations").select("*").eq("event_id", current.id).order("created_at");
-    if (error) throw error;
+  // the message Kai sends; WhatsApp opens with it ready, Kai picks the chat
+  function inviteMessage(name) {
     const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
+    return `${name ? `Hi ${name}! ` : ""}You're invited to ${current.title}, ${W.when(current.starts_at)}` +
+      `${current.venue ? ` at ${current.venue}` : ""}.\n\n` +
+      `Reserve your seat${current.format === "byob" ? " and add your bottle" : ""} here: ${link}\n` +
+      `Sign in with the email address you gave me; you'll get a 6-digit code.`;
+  }
+  const whatsapp = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+  async function invites() {
+    const [{ data, error }, { data: res }] = await Promise.all([
+      W.client.from("invitations").select("*").eq("event_id", current.id).order("created_at"),
+      W.client.from("reservations").select("status, profiles(email)").eq("event_id", current.id).neq("status", "cancelled"),
+    ]);
+    if (error) throw error;
+    const statusOf = (email) => {
+      const r = (res || []).find((x) => x.profiles && x.profiles.email === email);
+      return r ? r.status : "not yet";
+    };
     $("tab-body").innerHTML = `
       <p class="muted">${current.invite_only ? "This evening is by invitation: only these addresses can reserve." :
-        "This evening is open to anyone with the link; turn on <em>By invitation only</em> above to limit it to this list."}</p>
-      <p>Link to send: <a href="${esc(link)}" style="color:var(--gold);">${esc(link)}</a></p>
+        "This evening is open to anyone with the link; turn on <em>By invitation only</em> above to limit it to this list."}
+        A guest invited by name is not asked for it again.</p>
       <form class="form" id="inv-form">
-        <label>Invite by email <span class="hint">one or more, separated by commas or new lines</span>
-          <textarea name="emails" placeholder="guest@example.com"></textarea></label>
-        <div class="actions"><button class="btn small" type="submit">Add to the list</button></div>
+        <div class="row">
+          <label>Name <input name="name" placeholder="Alvin" autocomplete="off"></label>
+          <label>Email <input name="email" type="email" required placeholder="alvin@example.com" autocomplete="off"></label>
+        </div>
+        <div class="actions"><button class="btn small" type="submit">Invite</button>
+          <a class="linkish" href="${esc(whatsapp(inviteMessage("")))}" target="_blank" rel="noopener">Share the evening on WhatsApp</a></div>
+        <p class="msg" data-msg aria-live="polite"></p>
       </form>
-      <div class="table-wrap"><table class="ledger"><tbody>${data.map((i) => `
-        <tr><td>${esc(i.email)}</td><td class="num"><button class="linkish danger" data-rm="${esc(i.email)}">Remove</button></td></tr>`).join("") ||
-        `<tr><td class="muted">No invitations yet.</td></tr>`}</tbody></table></div>`;
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th>Seat</th><th></th></tr></thead>
+        <tbody>${data.map((i) => `
+        <tr><td>${esc(i.name || "")}<small>${esc(i.email)}</small></td>
+          <td><span class="pill ${statusOf(i.email)}">${statusOf(i.email)}</span></td>
+          <td class="num"><a class="btn small" href="${esc(whatsapp(inviteMessage(i.name)))}" target="_blank" rel="noopener">WhatsApp</a>
+            <button class="linkish danger" data-rm="${esc(i.email)}">Remove</button></td></tr>`).join("") ||
+        `<tr><td colspan="3" class="muted">No invitations yet.</td></tr>`}</tbody></table></div>`;
     $("inv-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const emails = [...new Set(e.target.emails.value.split(/[\s,;]+/).map((x) => x.trim().toLowerCase()).filter((x) => x.includes("@")))];
-      if (emails.length) {
-        await W.client.from("invitations").upsert(emails.map((email) => ({ event_id: current.id, email })), { ignoreDuplicates: true });
-      }
+      const f = e.target;
+      const email = f.email.value.trim().toLowerCase();
+      const { error: err } = await W.client.from("invitations")
+        .upsert({ event_id: current.id, email, name: f.name.value.trim() || null }, { onConflict: "event_id,email" });
+      if (err) { const m = f.querySelector("[data-msg]"); m.className = "msg err"; m.textContent = err.message; return; }
       invites();
     });
     $("tab-body").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm(`Remove the invitation for ${b.dataset.rm}?`)) return;
       await W.client.from("invitations").delete().eq("event_id", current.id).eq("email", b.dataset.rm);
       invites();
     }));
