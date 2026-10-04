@@ -17,7 +17,7 @@ insert into public.events (
   'so-good-seafood',
   'Bring Something You Love',
   'Ten courses at So Good Seafood',
-  'Our first bring-your-own-bottle evening. Bring a bottle you love and would like to share: any colour, any region. Ten courses of seafood, with corkage on the house.',
+  'Our first bring-your-own-bottle evening. Bring a bottle you love and would like to share: any colour, any region.',
   'byob',
   '2026-10-12 19:00:00+08',
   'So Good Seafood, Singapore',
