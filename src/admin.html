@@ -247,7 +247,7 @@
             <label class="check" style="align-self:end;"><input name="invite_only" type="checkbox" ${e.invite_only ? "checked" : ""}> By invitation only</label>
           </div>
           <div class="row">
-            <label>Shared costs (S$) <span class="hint">venue, corkage, food: split across the table</span>
+            <label>Shared costs (S$) <span class="hint">optional: venue or corkage to split; leave 0 to split bottles only</span>
               <input name="shared" type="number" min="0" step="0.01" value="${toDollars(e.shared_costs_cents)}"></label>
             <label>Shared costs note <input name="shared_costs_note" placeholder="corkage and dinner" value="${esc(e.shared_costs_note || "")}"></label>
           </div>
@@ -423,7 +423,7 @@
     };
     $("tab-body").innerHTML = `
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Paid</th><th class="num">Market</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Shared for</th><th class="num">Market</th><th>Status</th><th></th></tr></thead>
         <tbody>${data.map((b) => `
           <tr>
             <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
@@ -463,10 +463,10 @@
     const owed = rows.filter((r) => r.balance_cents > 0).reduce((a, r) => a + r.balance_cents, 0);
     const back = rows.filter((r) => r.balance_cents < 0).reduce((a, r) => a - r.balance_cents, 0);
     $("tab-body").innerHTML = rows.length ? `
-      <p class="muted">Total ${W.money(total, c)} (bottles plus ${W.money(current.shared_costs_cents, c)} shared costs),
+      <p class="muted">Total ${W.money(total, c)}${current.shared_costs_cents ? ` (bottles plus ${W.money(current.shared_costs_cents, c)} shared costs)` : " (bottles only)"},
         split ${rows.length} ways. You collect ${W.money(owed, c)} and pay out ${W.money(back, c)}.</p>
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Guest</th><th class="num">Brought</th><th class="num">Deposit</th><th class="num">Share</th>
+        <thead><tr><th>Guest</th><th class="num">Shared</th><th class="num">Deposit</th><th class="num">Share</th>
           <th class="num">Balance</th><th>Settled</th></tr></thead>
         <tbody>${rows.map((r) => `
           <tr><td>${esc(r.guest)}</td><td class="num">${W.money(r.bottles_cents, c)}</td>

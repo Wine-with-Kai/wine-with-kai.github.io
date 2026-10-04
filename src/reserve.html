@@ -111,7 +111,8 @@
     document.title = `${ev.title} · Wine with Kai`;
     $("eyebrow").innerHTML = `Wine with Kai &nbsp;&middot;&nbsp; ${ev.format === "byob" ? "Bring your own bottle" : "Reserve a seat"}`;
     $("title").textContent = ev.title;
-    $("subtitle").textContent = ev.subtitle || "reserve a seat";
+    $("subtitle").textContent = ev.subtitle || "";
+    $("subtitle").hidden = !ev.subtitle;
     $("bar").hidden = false;
     $("bar-when").textContent = W.when(ev.starts_at);
     $("bar-where").textContent = ev.venue || "";
@@ -129,10 +130,11 @@
           ${ev.price_note ? `<p>${W.esc(ev.price_note)}</p>` : ""}
         </div>` : ""}
       <dl class="facts">
-        <div><dt>When</dt><dd>${W.esc(W.when(ev.starts_at))}</dd></div>
-        <div><dt>Where</dt><dd>${W.esc(ev.venue || "To be announced")}</dd></div>
-        <div><dt>Seats</dt><dd>${left ? `${left} of ${ev.seats} left` : `Full &middot; ${counts.waitlisted} waiting`}</dd></div>
-        <div><dt>Deposit</dt><dd>${ev.deposit_cents == null ? "To be confirmed" : ev.deposit_cents === 0 ? "None" : W.money(ev.deposit_cents, ev.currency)}</dd></div>
+        <div><dt>Date</dt><dd>${W.esc(W.when(ev.starts_at).split(" \u00b7 ")[0])}</dd></div>
+        <div><dt>Time</dt><dd>${W.esc(W.time(ev.starts_at))}</dd></div>
+        <div><dt>Location</dt><dd>${W.esc(ev.venue || "To be announced")}</dd></div>
+        ${left ? "" : `<div><dt>Seats</dt><dd>Full &middot; ${counts.waitlisted} waiting</dd></div>`}
+        ${ev.deposit_cents ? `<div><dt>Deposit</dt><dd>${W.money(ev.deposit_cents, ev.currency)}</dd></div>` : ""}
       </dl>
       ${ev.description ? `<p style="margin-top:26px;">${W.esc(ev.description)}</p>` : ""}
       ${ev.format === "byob" ? `
@@ -144,9 +146,10 @@
       ${ev.format === "byob" ? `
         <div class="panel" id="mine" hidden></div>
         <h2 id="line-up" style="scroll-margin-top:16px;">The line-up</h2>
-        <p class="muted">Bring a bottle you would like to share, or none at all. On the night, every bottle poured and the
-        evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} are added together and
-        split evenly across the table: if your bottle is worth more than your share, Kai pays you the difference.</p>
+        <p class="muted">Bring a bottle you would like to share, or none at all. Every bottle shared${ev.shared_costs_cents
+          ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
+        is added up and split evenly across the table: if your bottle comes to more than your share, Kai settles the
+        difference with you.</p>
         <div id="lineup"><p class="muted">Loading&hellip;</p></div>
         <div id="tally"></div>` : ""}
       ${ev.deposit_cents ? `
@@ -372,7 +375,7 @@
         </div>
         <div id="market" hidden></div>
         <div class="row">
-          <label>What you paid (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the price that goes into the tally"}</span>
+          <label>I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
             <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
           <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
             <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
@@ -485,7 +488,7 @@
       showMarket(r, false);
       if (!form.price.value && r.market_cents) {
         form.price.value = (r.market_cents / 100).toFixed(2);
-        $("price-hint").textContent = "filled in with the market price: change it to what you paid";
+        $("price-hint").textContent = "filled in with the market price; change it if you like";
       }
     } catch (e) {
       state.price = state.bg = "fail";
@@ -512,7 +515,7 @@
           `<a href="${W.esc(s.url)}" target="_blank" rel="noopener">${W.esc(s.title || new URL(s.url).hostname)}</a>`).join(" &middot; ")}</p>` : ""}
         ${r.background ? `<p class="kicker" style="margin-top:14px;">Background, for the line-up</p><p class="bgtext">${W.esc(r.background)}</p>` : ""}
         ${r.identified_as ? `<p class="foot-note">Researched as ${W.esc(r.identified_as)}. If that is not your bottle, correct the details and press Look it up again.</p>` : ""}
-        <p class="foot-note">Guests at the table see this market price beside what you paid.</p>
+        <p class="foot-note">Guests at the table see this market price beside your bottle&rsquo;s share price.</p>
       </div>`;
   }
 
@@ -577,7 +580,7 @@
       <h2>The tally</h2>
       <p class="muted">Shared with the guests at the table. It updates as bottles are added, and is final once the line-up closes.</p>
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Brought</th>
+        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Shared</th>
           <th class="num opt">Deposit</th><th class="num">Share</th><th class="num">On the night</th></tr></thead>
         <tbody>${rows.map((r) => `
           <tr class="${r.mine ? "me" : ""}"><td>${W.esc(r.guest)}${r.mine ? " (you)" : ""}${r.settled ? ` <span class="pill">settled</span>` : ""}</td>
@@ -586,14 +589,14 @@
             <td class="num">${balance(r.balance_cents)}</td></tr>`).join("")}
         </tbody>
       </table></div>
-      <p class="muted" style="font-size:16.5px;">Bottles brought ${W.money(bottlesTotal, c)} &middot;
-        shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;
+      <p class="muted" style="font-size:16.5px;">Bottles shared ${W.money(bottlesTotal, c)} &middot;
+        ${ev.shared_costs_cents ? `shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;` : ""}
         <strong>total ${W.money(total, c)}</strong>, split ${rows.length} ways.
-        <span class="only-narrow">Your deposit is already taken off your figure.</span></p>
+        ${ev.deposit_cents ? `<span class="only-narrow">Your deposit is already taken off your figure.</span>` : ""}</p>
       ${prices.length ? `
-      <h2 style="font-size:22px;">The bottles, paid and market</h2>
+      <h2 style="font-size:22px;">The bottles: share price and market</h2>
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Bottle</th><th class="num">Paid</th><th class="num">Market</th></tr></thead>
+        <thead><tr><th>Bottle</th><th class="num">Shared for</th><th class="num">Market</th></tr></thead>
         <tbody>${prices.map((p) => `
           <tr class="${p.mine ? "me" : ""}">
             <td>${p.vintage || "NV"} ${W.esc(p.producer)} &middot; ${W.esc(p.wine)}<small>${W.esc(p.guest)}${p.mine ? " (you)" : ""}</small></td>
@@ -605,9 +608,9 @@
         </tbody>
       </table></div>
       <p class="foot-note">Market prices are checked automatically against Singapore retailers and Wine-Searcher when a
-        bottle is added; tap one to see its source. The tally uses what each guest paid.</p>` : ""}
-      <p class="foot-note">Share = everything poured plus the shared costs, divided by the guests at the table.
-        On the night = share, less the bottles you brought and your deposit. Shares are rounded to the cent, so the
+        bottle is added; tap one to see its source. The tally uses each guest&rsquo;s share price.</p>` : ""}
+      <p class="foot-note">Share = every bottle shared${ev.shared_costs_cents ? " plus the shared costs" : ""}, divided by the guests at the table.
+        On the night = share, less your own bottles${ev.deposit_cents ? " and your deposit" : ""}. Shares are rounded to the cent, so the
         column may differ from the total by a few cents. All settling is with Kai.</p>`;
   }
 
