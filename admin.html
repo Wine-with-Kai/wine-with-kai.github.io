@@ -1126,12 +1126,13 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 /* =========================================================
    The evening as a story: one full-screen panel per step
    ========================================================= */
-html.story-mode { scroll-snap-type: y proximity; }
+html.story-mode { scroll-snap-type: y mandatory; }
 .story { padding-top: 0; padding-bottom: 0; }
 .sp {
   min-height: 100vh;
   min-height: 100svh;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   position: relative;
   display: flex; flex-direction: column; justify-content: center;
   padding: 56px 0 96px;
@@ -1156,12 +1157,10 @@ html.story-mode { scroll-snap-type: y proximity; }
 }
 .sp-sub { color: var(--ink-faint); font-style: italic; font-size: 16px; margin: 10px 0 0; }
 .sp-sub a { color: var(--gold); }
-.sp-count {
-  display: inline-block; margin: 26px 0 0; padding: 6px 16px; border-radius: 999px;
-  border: 1px solid rgba(201, 162, 75, 0.45); color: var(--gold-soft);
-  font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;
+.sp-in .sp-deadline {
+  display: inline-block; margin: 28px 0 0; padding: 12px 22px; border-radius: 4px;
+  background: var(--gold); color: #160a0c; font-size: 18px; line-height: 1.4; font-weight: 600;
 }
-.sp-count.soon { background: var(--gold); border-color: var(--gold); color: var(--bg); }
 .sp-toast {
   position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 60;
   margin: 0; padding: 12px 22px; border-radius: 999px;
@@ -1175,7 +1174,18 @@ html.story-mode { scroll-snap-type: y proximity; }
 .sp-in #guest, .sp-in .panel.center { text-align: center; }
 .sp-in #guest .actions, .sp-in .panel.center .actions { justify-content: center; }
 .sp-in .sp-h2 + .panel { margin-top: 0; }
-.sp-in #lineup, .sp-in #tally { text-align: left; }
+/* the line-up and the tally, centred like the rest of the story */
+.sp-in #lineup, .sp-in #tally { text-align: center; }
+.sp-theme { white-space: pre-line; }
+.sp-in #lineup .bottle { display: block; text-align: center; padding: 22px 0; }
+.sp-in #lineup .bottle .yr { font-size: 30px; margin-bottom: 8px; }
+.sp-in #lineup .bottle .bgtext { max-width: 460px; margin: 10px auto 0; }
+.sp-in #lineup .bottle img.label { display: block; margin: 14px auto 0; }
+.sp-in #lineup .bottle .side { text-align: center; margin-top: 10px; }
+.sp-in #lineup .bottle .side:empty { display: none; }
+.sp-in #tally .table-wrap { display: flex; justify-content: center; }
+.sp-in #tally table.ledger { margin: 0 auto; text-align: left; }
+.sp-in #tally .muted, .sp-in #tally .foot-note { max-width: 480px; margin-left: auto; margin-right: auto; }
 
 .sp-next {
   position: absolute; left: 0; right: 0; bottom: 22px;
@@ -1200,7 +1210,7 @@ html.story-mode { scroll-snap-type: y proximity; }
 }
 .sp-dots button[aria-current="true"] { background: var(--gold); opacity: 1; }
 
-.sp-in > * { transition: opacity 0.7s ease, transform 0.7s ease; }
+.sp-in > * { transition: opacity 0.45s ease, transform 0.45s ease; }
 .sp:not(.seen) .sp-in > * { opacity: 0; transform: translateY(16px); }
 @media (prefers-reduced-motion: reduce) {
   html.story-mode { scroll-snap-type: none; }

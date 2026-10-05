@@ -206,7 +206,7 @@
             <p>${W.esc(W.time(ev.starts_at))}</p>
             <p>${maps ? `<a href="${maps}" target="_blank" rel="noopener">` : ""}${W.esc(place)}${addr ? `<span class="addr">${W.esc(addr)}</span>` : ""}${maps ? `<span class="addr maps">Directions &rarr;</span></a>` : ""}</p>
           </div>
-          ${ev.description ? `<p class="sp-desc">${W.esc(ev.description)}</p>` : ""}
+          ${ev.description ? `<p class="sp-desc sp-theme">${W.esc(ev.description.trim())}</p>` : ""}
           <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
           <p class="foot-note" id="who"></p>
         </div>
@@ -223,8 +223,9 @@
             ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
             is added up and split evenly across the table. If your bottle comes to more than your share after dinner, Kai
             settles the difference with you.</p>
-          ${countdown()}
-          ${ev.bottle_lock_at && !locked() ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
+          ${ev.bottle_lock_at ? `<p class="sp-deadline">${locked()
+            ? "The line-up is closed."
+            : `Add your bottle by<br>${W.esc(W.when(ev.bottle_lock_at).replace(" \u00b7 ", ", "))}`}</p>` : ""}
         </div>
         ${nextHint(1)}
       </section>
@@ -260,17 +261,6 @@
     setupStory();
     await renderGuest();
     if (!resumed) { resumed = true; await resume(); }
-  }
-
-  // "4 days left to add your bottle", counted in Singapore calendar days
-  function countdown() {
-    if (!ev.bottle_lock_at) return "";
-    const lock = new Date(ev.bottle_lock_at);
-    if (locked()) return `<p class="sp-count">The line-up is closed.</p>`;
-    const sgDay = (d) => Math.floor((d.getTime() + 8 * 3600000) / 86400000);
-    const days = sgDay(lock) - sgDay(new Date());
-    const text = days <= 0 ? "Last day" : days === 1 ? "1 day left" : `${days} days left`;
-    return `<p class="sp-count${days <= 1 ? " soon" : ""}">${text}</p>`;
   }
 
   // a returning guest lands where they left off: with a seat but no bottle,

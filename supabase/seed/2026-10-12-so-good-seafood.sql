@@ -18,7 +18,7 @@ insert into public.events (
   'so-good-seafood',
   'Bring Something You Love',
   null,
-  'Our first bring-your-own-bottle evening. Any colour, any region.',
+  E'Our first bring-your-own-bottle evening.\nAny colour, any region, ready to drink.',
   'byob',
   '2026-10-12 19:00:00+08',
   'So Good Seafood, 391 Orchard Road, #05-13/14 Ngee Ann City, Podium Block, Singapore 238872',
