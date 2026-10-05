@@ -173,6 +173,29 @@
   }
 
   // ---------- the evening as a story of full-screen panels ----------
+  // Scroll smoothly to an element. The panels snap one at a time, which would
+  // catch a long jump part-way, so snapping is paused until the glide ends.
+  let glideTimer;
+  function glide(el) {
+    if (!el) return;
+    const root = document.documentElement;
+    const story = root.classList.contains("story-mode");
+    const offset = story && !el.classList.contains("sp") ? 64 : 0;
+    const top = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!story) { window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" }); return; }
+    root.classList.add("snap-free");
+    clearTimeout(glideTimer);
+    const release = () => {
+      window.removeEventListener("scrollend", release);
+      clearTimeout(glideTimer);
+      glideTimer = setTimeout(() => root.classList.remove("snap-free"), 80);
+    };
+    window.addEventListener("scrollend", release);
+    glideTimer = setTimeout(release, 1600);
+    window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+  }
+
   const PANELS = [
     ["sp-evening", "Your evening"],
     ["sp-bottle", "The bottle"],
@@ -253,8 +276,9 @@
           <p class="eyebrow">The tally</p>
           <h2 class="sp-h2">How the evening splits</h2>
           <div id="tally"></div>
-          <p class="sp-sub" style="margin-top:28px;">See you on ${W.esc(day)}.
-            <a href="#sp-evening" data-to="sp-evening">Back to the top &uarr;</a></p>
+          <p class="sp-sub" style="margin-top:28px;">See you on ${W.esc(day)}.</p>
+          <p class="sp-end"><a href="#sp-evening" data-to="sp-evening">Back to the top &uarr;</a>
+            <a href="index.html">Wine with Kai home &rarr;</a></p>
         </div>
       </section>`;
 
@@ -295,6 +319,8 @@
     let current = PANELS[0][0];
     PANELS.forEach(([id]) => { const sec = $(id); if (sec && sec.getBoundingClientRect().top <= mid) current = id; });
     dots.querySelectorAll("button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.to === current)));
+    const bar = document.querySelector(".sp-bar");
+    if (bar) bar.classList.toggle("past-first", current !== PANELS[0][0]);
   }
 
   // progress dots, "Next" links and the gentle fade-in
@@ -307,13 +333,23 @@
       `<button type="button" data-to="${id}" aria-label="${label}" title="${label}"></button>`).join("");
     document.body.appendChild(dots);
 
+    // a slim bar on every panel: home on the left, back to the top on the right
+    document.querySelectorAll(".sp-bar").forEach((b) => b.remove());
+    const bar = document.createElement("nav");
+    bar.className = "sp-bar";
+    bar.setAttribute("aria-label", "Page");
+    bar.innerHTML = `<a class="sp-home" href="index.html"><span aria-hidden="true">&lsaquo;</span> Wine with Kai</a>
+      <span class="sp-bar-title">${W.esc(ev.title)}</span>
+      <a class="sp-top" href="#sp-evening" data-to="sp-evening">Top</a>`;
+    document.body.appendChild(bar);
+
     if (!storyWired) {
       storyWired = true;
       document.addEventListener("click", (e) => {
         const t = e.target.closest("[data-to]");
         if (!t || !$(t.dataset.to)) return;
         e.preventDefault();
-        $(t.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" });
+        glide($(t.dataset.to));
       });
       window.addEventListener("scroll", markStory, { passive: true });
     }
@@ -372,7 +408,7 @@
     $("bar").hidden = true;
     document.querySelector(".page-head").hidden = false;
     document.documentElement.classList.remove("story-mode");
-    document.querySelectorAll(".sp-dots").forEach((d) => d.remove());
+    document.querySelectorAll(".sp-dots, .sp-bar").forEach((d) => d.remove());
     page.classList.remove("story");
     page.innerHTML = `
       <div class="panel gate">
@@ -544,7 +580,7 @@
         }
       }
       await load();
-      if (what === "reserve" && seated && $("sp-bottle")) $("sp-bottle").scrollIntoView({ behavior: "smooth", block: "start" });
+      if (what === "reserve" && seated && $("sp-bottle")) glide($("sp-bottle"));
     } catch (e) {
       if (e && e.code === "wrong_seat_code") { storeCode(""); seatCode = ""; showGate(W.errorText(e)); return; }
       fail(e);
@@ -680,7 +716,7 @@
     if (another) another.addEventListener("click", () => {
       $("add-another-row").hidden = true;
       $("add-wrap").hidden = false;
-      $("add-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+      glide($("add-wrap"));
     });
     const typeIt = $("type-it");
     if (typeIt) typeIt.addEventListener("click", () => { openCheck(form); form.producer.focus(); });
@@ -748,7 +784,7 @@
       if (!year) notes.push(r.vintage === "NV" ? "Read as non-vintage." : "We could not read a vintage: add it if there is one.");
       if (r.unsure) notes.push(`Please check: ${r.unsure}`);
       openCheck(form, notes.join(" "));
-      form.scrollIntoView({ behavior: "smooth", block: "start" });
+      glide(form);
       setTimeout(() => form.price.focus({ preventScroll: true }), 350);
     } catch (e) {
       state.label = state.bg = "fail";
@@ -834,7 +870,7 @@
       await refresh();
       if ($("sp-lineup")) {
         toast(b ? "Saved." : "Added. Thank you.");
-        if (!b) setTimeout(() => $("sp-lineup").scrollIntoView({ behavior: "smooth", block: "start" }), 700);
+        if (!b) setTimeout(() => glide($("sp-lineup")), 700);
       }
     } catch (e) {
       btn.disabled = false;

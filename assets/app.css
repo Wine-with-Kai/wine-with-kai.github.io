@@ -307,6 +307,29 @@ html.cam-open, html.cam-open body { overflow: hidden; }
    The evening as a story: one full-screen panel per step
    ========================================================= */
 html.story-mode { scroll-snap-type: y mandatory; }
+html.story-mode.snap-free { scroll-snap-type: none; }
+/* on the evening page the slim bar replaces the site header and footer */
+html.story-mode .site-top, html.story-mode .rule-crimson, html.story-mode .page-foot { display: none; }
+.sp-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 55; height: 48px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 18px; padding-top: env(safe-area-inset-top);
+  background: rgba(22, 10, 12, 0.72);
+  -webkit-backdrop-filter: saturate(160%) blur(16px); backdrop-filter: saturate(160%) blur(16px);
+  border-bottom: 1px solid rgba(236, 227, 214, 0.08);
+}
+.sp-bar a { color: var(--ink-soft); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.sp-bar a:hover { color: var(--gold); }
+.sp-bar .sp-home span { color: var(--gold); font-size: 20px; line-height: 1; margin-right: 2px; }
+.sp-bar .sp-top { color: var(--gold); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
+.sp-bar-title {
+  flex: 1 1 auto; min-width: 0; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--display); font-size: 15px; color: var(--ink);
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.sp-bar.past-first .sp-bar-title { opacity: 1; }
+.sp-end { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 26px; margin: 26px 0 0; }
+.sp-end a { color: var(--gold); text-decoration: none; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; }
 .story { padding-top: 0; padding-bottom: 0; }
 .sp {
   min-height: 100vh;
@@ -315,7 +338,7 @@ html.story-mode { scroll-snap-type: y mandatory; }
   scroll-snap-stop: always;
   position: relative;
   display: flex; flex-direction: column; justify-content: center;
-  padding: 56px 0 96px;
+  padding: 72px 0 96px;
 }
 .sp + .sp { border-top: 1px solid var(--line-soft); }
 .sp-in { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
@@ -398,7 +421,7 @@ html.story-mode { scroll-snap-type: y mandatory; }
   .sp-next .chev { animation: none; }
 }
 @media (max-width: 620px) {
-  .sp { padding: 44px 0 92px; }
+  .sp { padding: 64px 0 92px; }
   .sp-dots { right: 4px; }
 }
 
