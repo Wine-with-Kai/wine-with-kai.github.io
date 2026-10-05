@@ -1998,7 +1998,7 @@ window.WWK_CONFIG = {
     const back = rows.filter((r) => r.balance_cents < 0).reduce((a, r) => a - r.balance_cents, 0);
     $("tab-body").innerHTML = rows.length ? `
       <p class="muted">Total ${W.money(total, c)}${current.shared_costs_cents ? ` (bottles plus ${W.money(current.shared_costs_cents, c)} shared costs)` : " (bottles only)"},
-        split ${rows.length} ways. You collect ${W.money(owed, c)} and pay out ${W.money(back, c)}.</p>
+        split ${rows.length} way${rows.length === 1 ? "" : "s"}. You collect ${W.money(owed, c)} and pay out ${W.money(back, c)}.</p>
       <div class="table-wrap"><table class="ledger">
         <thead><tr><th>Guest</th><th class="num">Shared</th><th class="num">Deposit</th><th class="num">Share</th>
           <th class="num">Balance</th><th>Settled</th></tr></thead>

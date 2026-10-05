@@ -2215,7 +2215,7 @@ window.WWK_CONFIG = {
       </table></div>
       <p class="muted" style="font-size:16.5px;">Bottles shared ${W.money(bottlesTotal, c)} &middot;
         ${ev.shared_costs_cents ? `shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;` : ""}
-        <strong>total ${W.money(total, c)}</strong>, split ${rows.length} ways.
+        <strong>total ${W.money(total, c)}</strong>, split ${rows.length} way${rows.length === 1 ? "" : "s"}.
         ${ev.deposit_cents ? `<span class="only-narrow">Your deposit is already taken off your figure.</span>` : ""}</p>
       <p class="foot-note">Share = every bottle shared${ev.shared_costs_cents ? " plus the shared costs" : ""}, divided by the guests at the table.
         On the night = share, less your own bottles${ev.deposit_cents ? " and your deposit" : ""}. Shares are rounded to the cent, so the
