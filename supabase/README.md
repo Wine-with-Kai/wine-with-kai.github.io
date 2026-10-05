@@ -15,7 +15,7 @@ Server side, in this folder:
 - `functions/create-deposit-checkout`: holds a seat (35 min) and opens Stripe Checkout for the deposit, or waitlists the guest when the table is full.
 - `functions/stripe-webhook`: confirms the seat when Stripe reports the deposit paid; frees it if the checkout lapses.
 - `functions/cancel-reservation`: cancels, refunding the deposit in full when it is at least `refund_days` (14) before the evening.
-- `functions/bottle-assist`: the bottle assistant (Claude Opus 5.5). It reads the label photo, checks the market price in SGD with web search, and writes a short background. Results are stored in `bottle_lookups`, and a bottle copies them from there, so a guest cannot type in a market price.
+- `functions/bottle-assist`: the bottle assistant (Claude Opus 5.5). In one call, with no web search, it reads the label photo and writes a short background note. The note is stored in `bottle_lookups`, and a bottle copies it from there.
 
 ## One-time setup
 
@@ -86,21 +86,11 @@ Open `admin.html` and create an evening in **draft**. Set it to **open** and res
 - **Waitlist**: when a seat frees up, it goes to the waitlist in order before any newcomer. Guests see "a seat has opened for you" on the reservation page, but **no email is sent automatically**. Kai lets them know.
 
 ## The bottle assistant
-1. **Photo.** When a guest photographs a label, it is shrunk to a JPEG and saved in the `labels` bucket. Claude reads the producer, wine, vintage and region into the form.
-2. **Research.** Claude then searches the web, giving priority to Singapore merchants and Wine-Searcher. It returns:
-   - a typical SGD price and a price range;
-   - a basis and confidence for that price;
-   - up to four sources;
-   - a 50 to 90 word background.
-3. **Guest check.** The guest checks everything and adds the bottle. If the "what you paid" field is empty, it is pre-filled with the market price.
-4. **Who sees what:**
-   - The background appears on the public line-up.
-   - The market price sits next to what each guest paid, in a table only guests with a seat (and Kai) can see.
-   - Kai's Bottles tab flags a declared price that is 30% or more away from the market price.
-   - The tally always uses what the guest paid.
-5. **Limits:**
-   - Only guests with a seat can use the assistant.
-   - Each guest gets 30 look-ups a day (`DAILY_LIMIT` in the function).
-   - A full look-up (label plus research) is expected to cost roughly US$0.10 to US$0.40 in API usage and web searches. That is an estimate; check the Anthropic console after the first evening.
-6. **Refusals.** Requests use `fallbacks: "default"`: if Opus 5.5 declines a request on safety grounds, the API retries it on Anthropic's recommended fallback model.
-7. **When it fails**, the guest can still type the details and add the bottle without a market price.
+- One Claude Opus 5.5 call per bottle, with **no web search and no market price**. The tally uses the price each guest chooses to share their bottle for, so a market price is not needed.
+- **Photo:** the photo is shrunk to a JPEG and saved in the `labels` bucket. Claude reads the producer, wine, vintage and region into the form, and in the same call writes a 40 to 80 word background note from its own knowledge. It is told to keep to what it is sure of, to fall back to the appellation and style for producers it does not know well, and to leave the note empty rather than guess.
+- **No photo:** "Write the background" does the same for a wine typed in by hand.
+- **Guest check:** the guest sees the note before adding the bottle and can leave it out. It shows under the bottle on the public line-up.
+- **Safeguards:** the note is stored in `bottle_lookups` and copied onto the bottle by `bottles_guard`, so it is always the assistant's text, from the guest's own look-up.
+- **Limits and cost:** only seated guests can use it, 30 look-ups a day each (Kai exempt). Expect a few US cents per bottle.
+- **Refusals:** requests use `fallbacks: "default"`, so a safety decline is retried on Anthropic's recommended fallback model.
+- Apply `migrations/20261005010000_background_from_label.sql` after the earlier migrations.

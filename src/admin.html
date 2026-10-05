@@ -107,9 +107,8 @@
       <div class="panel">
         <p class="kicker">Test the bottle assistant</p>
         ${byob ? `
-        <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label,
-          then checks the market price and writes the background, exactly as it will for guests
-          (roughly US$0.10 to US$0.40 a test).</p>
+        <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label
+          and writes the background note in one step, exactly as it will for guests (a few US cents a test).</p>
         <label class="btn small solid snap">Choose a label photo <input type="file" id="lab-photo" accept="image/*" hidden></label>
         <div class="assist-row">
           <img id="lab-img" class="label" alt="The label being tested" hidden>
@@ -122,7 +121,7 @@
     const stepsEl = $("lab-steps");
     const show = (state, note) => {
       stepsEl.hidden = false;
-      const rows = [["label", "Reading the label"], ["research", "Checking the market price and writing the background"]];
+      const rows = [["label", "Reading the label and writing the background"]];
       stepsEl.innerHTML = rows.filter(([k]) => state[k]).map(([k, t]) => `
         <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
         ${t}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("") + (note ? `<li class="note">${esc(note)}</li>` : "");
@@ -144,38 +143,23 @@
         const path = `${g.user.id}/test/${Date.now()}.jpg`;
         const up = await W.client.storage.from("labels").upload(path, img, { contentType: img.type || "image/jpeg" });
         if (up.error) throw up.error;
-        const { label } = await W.callFn("bottle-assist", { slug: byob.slug, step: "label", photo_path: path });
+        const label = await W.callFn("bottle-assist", { slug: byob.slug, step: "label", photo_path: path });
         state.label = label.is_wine_label ? "done" : "fail";
-        const secs1 = Math.round((Date.now() - t0) / 1000);
+        show(state);
+        const secs = Math.round((Date.now() - t0) / 1000);
         out.innerHTML = `
-          <h2 style="font-size:20px;">What the label reader saw <span class="faint" style="font-size:14px;">(${secs1}s)</span></h2>
+          <h2 style="font-size:20px;">What the assistant saw <span class="faint" style="font-size:14px;">(${secs}s)</span></h2>
           <div class="table-wrap"><table class="ledger"><tbody>
             ${[["Wine label?", label.is_wine_label ? "yes" : "no"], ["Producer", label.producer], ["Wine", label.wine],
                ["Vintage", label.vintage], ["Region", label.region], ["Colour", label.colour], ["Unsure about", label.unsure]]
               .map(([k, v]) => `<tr><td style="width:150px;">${k}</td><td>${esc(v || "")}</td></tr>`).join("")}
-          </tbody></table></div><div id="lab-market"></div>`;
-        if (!label.is_wine_label || (!label.producer && !label.wine)) { show(state, "Nothing to look up."); return; }
-        state.research = "busy";
-        show(state, "This can take up to a minute.");
-        const t1 = Date.now();
-        const r = await W.callFn("bottle-assist", {
-          slug: byob.slug, step: "research", producer: label.producer, wine: label.wine,
-          vintage: label.vintage, region: label.region,
-        });
-        state.research = "done";
-        show(state);
-        const c = byob.currency;
-        $("lab-market").innerHTML = `
-          <h2 style="font-size:20px;">Market price and background <span class="faint" style="font-size:14px;">(${Math.round((Date.now() - t1) / 1000)}s)</span></h2>
-          <div class="market">
-            <p class="m-amt">${r.market_cents ? `About ${W.money(r.market_cents, c)}${r.market_low_cents && r.market_high_cents ? ` <span class="range">(${W.money(r.market_low_cents, c)} to ${W.money(r.market_high_cents, c)})</span>` : ""}` : "No reliable market price found"}</p>
-            <p class="sub">${esc(r.market_note || "")}</p>
-            ${(r.sources || []).length ? `<p class="sub">Sources: ${r.sources.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a>`).join(" &middot; ")}</p>` : ""}
-            <p class="kicker" style="margin-top:14px;">Background</p><p class="bgtext">${esc(r.background || "")}</p>
-            <p class="foot-note">Researched as ${esc(r.identified_as || "")}.</p>
+          </tbody></table></div>
+          <div class="market" style="margin-top:14px;">
+            <p class="kicker">Background, for the line-up</p>
+            <p class="bgtext">${label.background ? esc(label.background) : `<span class="faint">None: not confident enough to write one.</span>`}</p>
           </div>`;
       } catch (err) {
-        if (state.research === "busy") state.research = "fail"; else state.label = "fail";
+        state.label = "fail";
         show(state, err.message && !err.code ? err.message : W.errorText(err));
       }
     });
@@ -415,15 +399,9 @@
     if (error) throw error;
     const c = current.currency;
     const url = (p) => W.client.storage.from("labels").getPublicUrl(p).data.publicUrl;
-    // flag declared prices well away from the market estimate
-    const gap = (b) => {
-      if (!b.market_cents) return "";
-      const d = (b.price_cents - b.market_cents) / b.market_cents;
-      return Math.abs(d) < 0.3 ? "" : `<span class="pill ${d > 0 ? "declined" : ""}">${Math.round(Math.abs(d) * 100)}% ${d > 0 ? "above" : "below"}</span>`;
-    };
     $("tab-body").innerHTML = `
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Shared for</th><th class="num">Market</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Wine</th><th>Guest</th><th class="num">Shared for</th><th>Status</th><th></th></tr></thead>
         <tbody>${data.map((b) => `
           <tr>
             <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
@@ -432,16 +410,12 @@
               ${b.photo_path ? ` &middot; <a href="${esc(url(b.photo_path))}" target="_blank" style="color:var(--gold);">label</a>` : ""}</small></td>
             <td>${esc(b.profiles.full_name)}</td>
             <td class="num">${W.money(b.price_cents, c)}</td>
-            <td class="num">${b.market_cents ? W.money(b.market_cents, c) : `<span class="faint">none</span>`}
-              ${gap(b) ? `<small>${gap(b)}</small>` : ""}
-              ${b.market_note ? `<small title="${esc(b.market_note)}">${(b.market_sources || []).map((s, i) =>
-                `<a href="${esc(s.url)}" target="_blank" rel="noopener">${i + 1}</a>`).join(" ")}</small>` : ""}</td>
             <td><span class="pill ${b.status}">${b.status}</span>${b.admin_note ? `<small>${esc(b.admin_note)}</small>` : ""}</td>
             <td class="num">
               ${b.status !== "approved" ? `<button class="linkish" data-set="approved" data-id="${b.id}">Approve</button>` : ""}
               ${b.status !== "declined" ? `<button class="linkish danger" data-set="declined" data-id="${b.id}">Decline</button>` : ""}
             </td>
-          </tr>`).join("") || `<tr><td colspan="6" class="muted">No bottles yet.</td></tr>`}
+          </tr>`).join("") || `<tr><td colspan="5" class="muted">No bottles yet.</td></tr>`}
         </tbody></table></div>
       <p class="foot-note">Declined bottles leave the line-up and the tally. Approving is optional: bottles awaiting review still count.</p>`;
     $("tab-body").querySelectorAll("[data-set]").forEach((btn) => btn.addEventListener("click", async () => {

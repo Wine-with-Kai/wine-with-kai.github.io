@@ -352,8 +352,8 @@
       <div class="assist">
         <label class="btn small solid snap">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}
           <input type="file" id="photo-input" accept="image/*" hidden></label>
-        <p class="hint-line">We read the label, check the market price and write a short background for the
-          line-up. You look it over, then add it. No photo to hand? Type the wine below and press <em>Look it up</em>.</p>
+        <p class="hint-line">We read the label and write a short background for the line-up. You look it over,
+          then add it. No photo to hand? Type the wine below and press <em>Write the background</em>.</p>
         <div class="assist-row">
           <img id="photo-preview" class="label" alt="Your label photo" ${b && b.photo_path ? `src="${W.esc(labelUrl(b.photo_path))}"` : "hidden"}>
           <ol class="steps" id="steps" aria-live="polite" hidden></ol>
@@ -370,10 +370,10 @@
           <label>Region <input name="region" placeholder="Gevrey-Chambertin, Burgundy" value="${W.esc(b ? b.region || "" : "")}"></label>
         </div>
         <div class="actions" style="margin-top:0;">
-          <button class="linkish" type="button" id="look-up">Look it up</button>
-          <span class="hint">market price and background for the wine above</span>
+          <button class="linkish" type="button" id="look-up">Write the background</button>
+          <span class="hint">a short note on the wine above, for the line-up</span>
         </div>
-        <div id="market" hidden></div>
+        <div id="background" hidden></div>
         <div class="row">
           <label>I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
             <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
@@ -405,7 +405,7 @@
 
     // what the assistant has produced for this form so far
     const assist = { photo_path: null, lookup: null, busy: false };
-    if (b && (b.market_cents || b.background)) showMarket(b, true);
+    if (b && b.background) showBackground(b.background, assist);
 
     form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
     $("photo-input").addEventListener("change", (e) => {
@@ -418,7 +418,7 @@
 
   // ---------- the bottle assistant ----------
 
-  const STEPS = [["label", "Reading the label"], ["price", "Checking the market price"], ["bg", "Writing the background"]];
+  const STEPS = [["label", "Reading the label"], ["bg", "Writing the background"]];
 
   function steps(state, note) {
     const el = $("steps");
@@ -429,10 +429,11 @@
       + (note ? `<li class="note">${W.esc(note)}</li>` : "");
   }
 
+  // one call reads the label and writes the background
   async function fromPhoto(file, form, g, assist) {
     if (assist.busy) return;
     assist.busy = true;
-    const state = { label: "busy" };
+    const state = { label: "busy", bg: "busy" };
     steps(state);
     const preview = $("photo-preview");
     preview.src = URL.createObjectURL(file);
@@ -446,29 +447,31 @@
       if (assist.photo_path) W.client.storage.from("labels").remove([assist.photo_path]);
       assist.photo_path = path;
 
-      const { label } = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
-      if (!label.is_wine_label) {
-        state.label = "fail";
+      const r = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
+      if (!r.is_wine_label) {
+        state.label = state.bg = "fail";
         steps(state, "That does not look like a wine label. Try another photo, or type the details below.");
         return;
       }
-      if (label.producer) form.producer.value = label.producer;
-      if (label.wine) form.wine.value = label.wine;
-      form.vintage.value = /^\d{4}$/.test(label.vintage) ? label.vintage : "";
-      if (label.region) form.region.value = label.region;
+      if (r.producer) form.producer.value = r.producer;
+      if (r.wine) form.wine.value = r.wine;
+      form.vintage.value = /^\d{4}$/.test(r.vintage) ? r.vintage : "";
+      if (r.region) form.region.value = r.region;
       state.label = "done";
-      steps(state, label.unsure ? `Please check: ${label.unsure}` : "");
-      assist.busy = false;
-      await lookUp(form, assist, state, label.unsure);
+      state.bg = r.background ? "done" : "fail";
+      steps(state, r.unsure ? `Please check: ${r.unsure}` : r.background ? "" : "No background for this one; the line-up will show just the wine.");
+      assist.lookup = r;
+      if (r.background) showBackground(r.background, assist);
     } catch (e) {
-      state.label = "fail";
+      state.label = state.bg = "fail";
       steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details below instead.");
     } finally {
       assist.busy = false;
     }
   }
 
-  async function lookUp(form, assist, state, unsure) {
+  // background for a wine typed in by hand
+  async function lookUp(form, assist) {
     if (assist.busy) return;
     const wine = {
       producer: form.producer.value.trim(), wine: form.wine.value.trim(),
@@ -476,47 +479,36 @@
     };
     if (!wine.producer && !wine.wine) { form.producer.focus(); return; }
     assist.busy = true;
-    state = state || {};
-    state.price = state.bg = "busy";
-    steps(state, unsure ? `Please check: ${unsure}` : "This can take up to a minute.");
+    const state = { bg: "busy" };
+    steps(state);
     try {
-      const r = await W.callFn("bottle-assist", { slug, step: "research", ...wine });
-      assist.lookup = r;
-      state.price = r.market_cents ? "done" : "fail";
+      const r = await W.callFn("bottle-assist", { slug, step: "describe", ...wine });
       state.bg = r.background ? "done" : "fail";
-      steps(state, unsure ? `Please check: ${unsure}` : "");
-      showMarket(r, false);
-      if (!form.price.value && r.market_cents) {
-        form.price.value = (r.market_cents / 100).toFixed(2);
-        $("price-hint").textContent = "filled in with the market price; change it if you like";
-      }
+      steps(state, r.background ? "" : "No background for this one; the line-up will show just the wine.");
+      assist.lookup = r;
+      if (r.background) showBackground(r.background, assist);
     } catch (e) {
-      state.price = state.bg = "fail";
-      steps(state, W.errorText(e) + " You can still add the bottle; Kai will see it without a market price.");
+      state.bg = "fail";
+      steps(state, W.errorText(e) + " You can still add the bottle without it.");
     } finally {
       assist.busy = false;
     }
   }
 
-  // r: a fresh lookup, or a saved bottle's fields
-  function showMarket(r, saved) {
-    const c = ev.currency;
-    const el = $("market");
-    const range = r.market_low_cents && r.market_high_cents && r.market_low_cents !== r.market_high_cents
-      ? ` <span class="range">(${W.money(r.market_low_cents, c)} to ${W.money(r.market_high_cents, c)})</span>` : "";
-    const sources = r.sources || r.market_sources || [];
+  function showBackground(text, assist) {
+    const el = $("background");
     el.hidden = false;
     el.innerHTML = `
       <div class="market">
-        <p class="kicker">Market price${saved ? "" : ", just checked"}</p>
-        <p class="m-amt">${r.market_cents ? `About ${W.money(r.market_cents, c)}${range}` : "No reliable market price found"}</p>
-        ${r.market_note ? `<p class="sub">${W.esc(r.market_note)}</p>` : ""}
-        ${sources.length ? `<p class="sub">Sources: ${sources.map((s) =>
-          `<a href="${W.esc(s.url)}" target="_blank" rel="noopener">${W.esc(s.title || new URL(s.url).hostname)}</a>`).join(" &middot; ")}</p>` : ""}
-        ${r.background ? `<p class="kicker" style="margin-top:14px;">Background, for the line-up</p><p class="bgtext">${W.esc(r.background)}</p>` : ""}
-        ${r.identified_as ? `<p class="foot-note">Researched as ${W.esc(r.identified_as)}. If that is not your bottle, correct the details and press Look it up again.</p>` : ""}
-        <p class="foot-note">Guests at the table see this market price beside your bottle&rsquo;s share price.</p>
+        <p class="kicker">Background, for the line-up</p>
+        <p class="bgtext">${W.esc(text)}</p>
+        <p class="foot-note">Written by our assistant from the details above.
+          <button class="linkish" type="button" data-drop-bg>Leave it out</button></p>
       </div>`;
+    el.querySelector("[data-drop-bg]").addEventListener("click", () => {
+      assist.lookup = { lookup_id: null };
+      el.hidden = true;
+    });
   }
 
   async function save(form, g, b, assist) {
@@ -540,7 +532,7 @@
         price_cents,
         note: form.note.value.trim() || null,
       };
-      // the market price and background are copied server-side from this lookup
+      // the background is copied server-side from this lookup (null leaves it out)
       if (assist.lookup) row.lookup_id = assist.lookup.lookup_id;
       if (assist.photo_path) row.photo_path = assist.photo_path;
       const res = b
@@ -560,13 +552,9 @@
   async function renderTally() {
     const box = $("tally");
     if (!seated && !isAdmin) { box.innerHTML = ""; return; }
-    let rows, prices;
-    try {
-      [rows, prices] = await Promise.all([
-        W.rpc("event_tally", { p_slug: slug }),
-        W.rpc("event_bottle_prices", { p_slug: slug }),
-      ]);
-    } catch (e) { box.innerHTML = ""; return; }
+    let rows;
+    try { rows = await W.rpc("event_tally", { p_slug: slug }); }
+    catch (e) { box.innerHTML = ""; return; }
     if (!rows.length) { box.innerHTML = ""; return; }
 
     const c = ev.currency;
@@ -593,22 +581,6 @@
         ${ev.shared_costs_cents ? `shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;` : ""}
         <strong>total ${W.money(total, c)}</strong>, split ${rows.length} ways.
         ${ev.deposit_cents ? `<span class="only-narrow">Your deposit is already taken off your figure.</span>` : ""}</p>
-      ${prices.length ? `
-      <h2 style="font-size:22px;">The bottles: share price and market</h2>
-      <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Bottle</th><th class="num">Shared for</th><th class="num">Market</th></tr></thead>
-        <tbody>${prices.map((p) => `
-          <tr class="${p.mine ? "me" : ""}">
-            <td>${p.vintage || "NV"} ${W.esc(p.producer)} &middot; ${W.esc(p.wine)}<small>${W.esc(p.guest)}${p.mine ? " (you)" : ""}</small></td>
-            <td class="num">${W.money(p.price_cents, c)}</td>
-            <td class="num">${p.market_cents
-              ? `${(p.market_sources || []).length ? `<a href="${W.esc(p.market_sources[0].url)}" target="_blank" rel="noopener" title="${W.esc(p.market_note || "")}">${W.money(p.market_cents, c)}</a>` : W.money(p.market_cents, c)}`
-              : `<span class="faint">not found</span>`}</td>
-          </tr>`).join("")}
-        </tbody>
-      </table></div>
-      <p class="foot-note">Market prices are checked automatically against Singapore retailers and Wine-Searcher when a
-        bottle is added; tap one to see its source. The tally uses each guest&rsquo;s share price.</p>` : ""}
       <p class="foot-note">Share = every bottle shared${ev.shared_costs_cents ? " plus the shared costs" : ""}, divided by the guests at the table.
         On the night = share, less your own bottles${ev.deposit_cents ? " and your deposit" : ""}. Shares are rounded to the cent, so the
         column may differ from the total by a few cents. All settling is with Kai.</p>`;
