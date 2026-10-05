@@ -1830,12 +1830,11 @@ window.WWK_CONFIG = {
           <p class="eyebrow">The bottle</p>
           <p class="sp-lead">Suggested bottle price for the evening</p>
           ${range ? `<p class="sp-big">${W.esc(range)}</p>` : ""}
-          ${ev.price_note ? `<p class="sp-sub">${W.esc(ev.price_note)}</p>` : ""}
           <p class="sp-desc">Bring a bottle you would like to share, or none at all. You choose the price you share it for.</p>
           <p class="sp-desc">Every bottle shared${ev.shared_costs_cents
             ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
-            is added up and split evenly across the table. If your bottle comes to more than your share, Kai settles the
-            difference with you.</p>
+            is added up and split evenly across the table. If your bottle comes to more than your share after dinner, Kai
+            settles the difference with you.</p>
           ${ev.bottle_lock_at ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
         </div>
         ${nextHint(1)}
