@@ -1915,19 +1915,19 @@ window.WWK_CONFIG = {
     }
   }
 
-  // "Add to calendar": a small .ics file the phone opens in its calendar
+  // "Add to calendar": opens Google Calendar with the evening filled in
   function calendarLink() {
     const start = new Date(ev.starts_at), end = new Date(start.getTime() + 3 * 3600000);
     const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    const text = (t) => String(t || "").replace(/[\;,]/g, (m) => "\\" + m).replace(/\n/g, "\\n");
-    const ics = [
-      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Wine with Kai//EN", "BEGIN:VEVENT",
-      `UID:${ev.id}@wine-with-kai.github.io`, `DTSTAMP:${stamp(new Date())}`,
-      `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`,
-      `SUMMARY:${text(ev.title + " · Wine with Kai")}`, `LOCATION:${text(ev.venue)}`,
-      `URL:${location.href.split("#")[0]}`, "END:VEVENT", "END:VCALENDAR",
-    ].join("\r\n");
-    return URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+    const page = `${location.origin}${location.pathname}?event=${encodeURIComponent(slug)}`;
+    const q = new URLSearchParams({
+      action: "TEMPLATE",
+      text: `${ev.title} · Wine with Kai`,
+      dates: `${stamp(start)}/${stamp(end)}`,
+      location: ev.venue || "",
+      details: `The evening page, with the line-up and the tally: ${page}`,
+    });
+    return `https://calendar.google.com/calendar/render?${q}`;
   }
 
   // ---------- the seat code ----------
@@ -2043,7 +2043,7 @@ window.WWK_CONFIG = {
           ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
           : ""} We look forward to seeing you.</p>`);
       if (ev.format === "byob") {
-        html.push(`<div class="actions"><a class="btn small" href="${calendarLink()}" download="wine-with-kai.ics">Add to calendar</a>
+        html.push(`<div class="actions"><a class="btn small" href="${W.esc(calendarLink())}" target="_blank" rel="noopener">Add to Google Calendar</a>
           <button class="linkish" type="button" data-to="sp-bottle">Next: choose your bottle &darr;</button></div>`);
       }
       html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
