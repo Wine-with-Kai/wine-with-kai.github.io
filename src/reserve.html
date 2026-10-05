@@ -223,6 +223,7 @@
             ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
             is added up and split evenly across the table. If your bottle comes to more than your share after dinner, Kai
             settles the difference with you.</p>
+          ${countdown()}
           ${ev.bottle_lock_at ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
         </div>
         ${nextHint(1)}
@@ -257,6 +258,43 @@
 
     setupStory();
     await renderGuest();
+    if (!resumed) { resumed = true; await resume(); }
+  }
+
+  // "4 days left to add your bottle", counted in Singapore calendar days
+  function countdown() {
+    if (!ev.bottle_lock_at) return "";
+    const lock = new Date(ev.bottle_lock_at);
+    if (locked()) return `<p class="sp-count">The line-up is closed.</p>`;
+    const sgDay = (d) => Math.floor((d.getTime() + 8 * 3600000) / 86400000);
+    const days = sgDay(lock) - sgDay(new Date());
+    const text = days <= 0 ? `Last day: bottles close at ${W.esc(W.time(ev.bottle_lock_at))} tonight`
+      : days === 1 ? "1 day left to add your bottle"
+      : `${days} days left to add your bottle`;
+    return `<p class="sp-count${days <= 1 ? " soon" : ""}">${text}</p>`;
+  }
+
+  // a returning guest lands where they left off: with a seat but no bottle,
+  // on "Add your bottle"; with a bottle already in, on the line-up
+  let resumed = false;
+  async function resume() {
+    if (location.hash || !seated || !me) return;
+    const { data } = await W.client.from("bottles").select("id")
+      .eq("event_id", ev.id).eq("user_id", me.id).limit(1);
+    const to = data && data.length ? "sp-lineup" : locked() ? null : "sp-add";
+    if (to && $(to)) $(to).scrollIntoView({ block: "start" });
+  }
+
+  // a short note at the foot of the screen
+  function toast(text) {
+    document.querySelectorAll(".sp-toast").forEach((t) => t.remove());
+    const t = document.createElement("p");
+    t.className = "sp-toast";
+    t.setAttribute("role", "status");
+    t.textContent = text;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("gone"), 2600);
+    setTimeout(() => t.remove(), 3400);
   }
 
   // which panel is on screen: light its dot
@@ -796,6 +834,10 @@
       if (b && assist.photo_path && b.photo_path) await W.client.storage.from("labels").remove([b.photo_path]);
       editing = null;
       await refresh();
+      if ($("sp-lineup")) {
+        toast(b ? "Saved." : "Added. Thank you.");
+        if (!b) setTimeout(() => $("sp-lineup").scrollIntoView({ behavior: "smooth", block: "start" }), 700);
+      }
     } catch (e) {
       btn.disabled = false;
       msg.className = "msg err";

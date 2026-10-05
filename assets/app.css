@@ -336,6 +336,20 @@ html.story-mode { scroll-snap-type: y proximity; }
 }
 .sp-sub { color: var(--ink-faint); font-style: italic; font-size: 16px; margin: 10px 0 0; }
 .sp-sub a { color: var(--gold); }
+.sp-count {
+  display: inline-block; margin: 26px 0 0; padding: 6px 16px; border-radius: 999px;
+  border: 1px solid rgba(201, 162, 75, 0.45); color: var(--gold-soft);
+  font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.sp-count.soon { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+.sp-toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 60;
+  margin: 0; padding: 12px 22px; border-radius: 999px;
+  background: var(--gold); color: var(--bg); font-size: 17px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  animation: sp-toast-in 0.35s ease; transition: opacity 0.6s ease;
+}
+.sp-toast.gone { opacity: 0; }
+@keyframes sp-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 .sp-in .panel { text-align: left; margin: 30px 0 0; }
 .sp-in #lineup, .sp-in #tally { text-align: left; }
 
