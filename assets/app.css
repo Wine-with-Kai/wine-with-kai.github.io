@@ -286,3 +286,9 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 }
 .cam-sheet p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16.5px; line-height: 1.55; }
 .cam-sheet .btn { margin-bottom: 8px; }
+
+/* the "check and add" step after a label is read */
+.form.check { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 4px; }
+.form.check #check-note { margin: 0; color: var(--gold-soft); font-style: italic; }
+.form .price-ask { color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
+.form .price-ask input { font-size: 20px; border-color: rgba(201, 162, 75, 0.55); }

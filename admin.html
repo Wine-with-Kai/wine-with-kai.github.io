@@ -1107,6 +1107,12 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 .cam-sheet p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16.5px; line-height: 1.55; }
 .cam-sheet .btn { margin-bottom: 8px; }
 
+/* the "check and add" step after a label is read */
+.form.check { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 4px; }
+.form.check #check-note { margin: 0; color: var(--gold-soft); font-style: italic; }
+.form .price-ask { color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
+.form .price-ask input { font-size: 20px; border-color: rgba(201, 162, 75, 0.55); }
+
 </style>
 <style>
   /* the host's page runs a little wider for the ledgers */
@@ -1631,7 +1637,9 @@ window.WWK_CONFIG = {
         <p class="kicker">Test the bottle assistant</p>
         ${byob ? `
         <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label
-          and writes the background note in one step, exactly as it will for guests (a few US cents a test).</p>
+          and writes the background note in one step, exactly as it will for guests (a few US cents a test).
+          To add your own bottle to an evening, reserve your seat on the evening page: the same camera leads
+          straight to <em>Check and add</em>.</p>
         <button type="button" class="btn small solid snap" id="lab-photo">Photograph a label</button>
         <div class="assist-row">
           <img id="lab-img" class="label" alt="The label being tested" hidden>

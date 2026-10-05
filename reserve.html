@@ -1107,6 +1107,12 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 .cam-sheet p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16.5px; line-height: 1.55; }
 .cam-sheet .btn { margin-bottom: 8px; }
 
+/* the "check and add" step after a label is read */
+.form.check { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 4px; }
+.form.check #check-note { margin: 0; color: var(--gold-soft); font-style: italic; }
+.form .price-ask { color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
+.form .price-ask input { font-size: 20px; border-color: rgba(201, 162, 75, 0.55); }
+
 </style>
 </head>
 <body>
@@ -1871,43 +1877,46 @@ window.WWK_CONFIG = {
       ${closed
         ? `<p class="foot-note">The line-up is closed${ev.bottle_lock_at ? ` (it closed on ${W.esc(W.day(ev.bottle_lock_at))})` : ""}. For any change, please tell Kai.</p>`
         : `
+      ${bottles.length && !b ? `<div class="actions" id="add-another-row"><button class="btn small" type="button" id="add-another">+ Add another bottle</button></div>` : ""}
+      <div id="add-wrap" ${bottles.length && !b ? "hidden" : ""}>
       <h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>
       <div class="assist">
         <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
-        <p class="hint-line">We read the label and write a short background for the line-up. You look it over,
-          then add it. No photo to hand? Type the wine below and press <em>Write the background</em>.</p>
+        <p class="hint-line">We read the label and fill in the details for you; you check them, set your price, and add it.
+          ${b ? "" : `No photo to hand? <button class="linkish" type="button" id="type-it">Type it in instead</button>`}</p>
         <div class="assist-row">
           <img id="photo-preview" class="label" alt="Your label photo" ${b && b.photo_path ? `src="${W.esc(labelUrl(b.photo_path))}"` : "hidden"}>
           <ol class="steps" id="steps" aria-live="polite" hidden></ol>
         </div>
       </div>
-      <form class="form" id="bottle-form">
+      <form class="form check" id="bottle-form" ${b ? "" : "hidden"}>
+        ${b ? "" : `<p class="kicker" style="margin:0;">Check and add</p>`}
+        <p class="msg" id="check-note" hidden></p>
         <div class="row">
           <label>Producer <input name="producer" required placeholder="Domaine Armand Rousseau" value="${W.esc(b ? b.producer : "")}"></label>
           <label>Wine <input name="wine" required placeholder="Gevrey-Chambertin 1er Cru Clos Saint-Jacques" value="${W.esc(b ? b.wine : "")}"></label>
         </div>
         <div class="row">
-          <label>Vintage <span class="hint">leave blank for non-vintage</span>
+          <label>Vintage <span class="hint">leave blank if there is none</span>
             <input name="vintage" type="number" min="1800" max="2100" inputmode="numeric" value="${b && b.vintage ? b.vintage : ""}"></label>
           <label>Region <input name="region" placeholder="Gevrey-Chambertin, Burgundy" value="${W.esc(b ? b.region || "" : "")}"></label>
         </div>
-        <div class="actions" style="margin-top:0;">
-          <button class="linkish" type="button" id="look-up">Write the background</button>
-          <span class="hint">a short note on the wine above, for the line-up</span>
-        </div>
+        <label class="price-ask">I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
+          <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
         <div id="background" hidden></div>
-        <div class="row">
-          <label>I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
-            <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
-          <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
-            <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
+        <div class="actions" id="bg-row" style="margin-top:0;" ${b && b.background ? "hidden" : ""}>
+          <button class="linkish" type="button" id="look-up">Write the background</button>
+          <span class="hint">a short note on the wine, for the line-up</span>
         </div>
+        <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
+          <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
         <div class="actions">
-          <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the line-up"}</button>
+          <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the evening"}</button>
           ${b ? `<button class="linkish" type="button" id="cancel-edit">Cancel</button>` : ""}
         </div>
         <p class="msg" data-msg aria-live="polite"></p>
-      </form>`}`;
+      </form>
+      </div>`}`;
 
     box.querySelectorAll("[data-edit]").forEach((el) => el.addEventListener("click", () => {
       editing = el.dataset.edit; renderMine();
@@ -1935,6 +1944,14 @@ window.WWK_CONFIG = {
       if (file) fromPhoto(file, form, g, assist);
     });
     $("look-up").addEventListener("click", () => lookUp(form, assist));
+    const another = $("add-another");
+    if (another) another.addEventListener("click", () => {
+      $("add-another-row").hidden = true;
+      $("add-wrap").hidden = false;
+      $("add-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    const typeIt = $("type-it");
+    if (typeIt) typeIt.addEventListener("click", () => { openCheck(form); form.producer.focus(); });
   }
 
   // ---------- the bottle assistant ----------
@@ -1948,6 +1965,15 @@ window.WWK_CONFIG = {
       <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
         ${label}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("")
       + (note ? `<li class="note">${W.esc(note)}</li>` : "");
+  }
+
+  // the "check and add" step: the filled-in form, ready for the price
+  function openCheck(form, note) {
+    form.hidden = false;
+    const n = $("check-note");
+    n.hidden = !note;
+    n.className = "msg";
+    n.textContent = note || "";
   }
 
   // one call reads the label and writes the background
@@ -1971,21 +1997,31 @@ window.WWK_CONFIG = {
       const r = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
       if (!r.is_wine_label) {
         state.label = state.bg = "fail";
-        steps(state, "That does not look like a wine label. Try another photo, or type the details below.");
+        steps(state, "That does not look like a wine label. Try another photo, or type the details in.");
+        openCheck(form);
         return;
       }
       if (r.producer) form.producer.value = r.producer;
       if (r.wine) form.wine.value = r.wine;
-      form.vintage.value = /^\d{4}$/.test(r.vintage) ? r.vintage : "";
+      const year = /^\d{4}$/.test(r.vintage);
+      form.vintage.value = year ? r.vintage : "";
       if (r.region) form.region.value = r.region;
       state.label = "done";
       state.bg = r.background ? "done" : "fail";
-      steps(state, r.unsure ? `Please check: ${r.unsure}` : r.background ? "" : "No background for this one; the line-up will show just the wine.");
+      steps(state);
       assist.lookup = r;
-      if (r.background) showBackground(r.background, assist);
+      if (r.background) { showBackground(r.background, assist); $("bg-row").hidden = true; }
+      // point out what needs a look, then go straight to the price
+      const notes = [];
+      if (!year) notes.push(r.vintage === "NV" ? "Read as non-vintage." : "We could not read a vintage: add it if there is one.");
+      if (r.unsure) notes.push(`Please check: ${r.unsure}`);
+      openCheck(form, notes.join(" "));
+      form.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => form.price.focus({ preventScroll: true }), 350);
     } catch (e) {
       state.label = state.bg = "fail";
-      steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details below instead.");
+      steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details in instead.");
+      openCheck(form);
     } finally {
       assist.busy = false;
     }
@@ -2007,7 +2043,7 @@ window.WWK_CONFIG = {
       state.bg = r.background ? "done" : "fail";
       steps(state, r.background ? "" : "No background for this one; the line-up will show just the wine.");
       assist.lookup = r;
-      if (r.background) showBackground(r.background, assist);
+      if (r.background) { showBackground(r.background, assist); $("bg-row").hidden = true; }
     } catch (e) {
       state.bg = "fail";
       steps(state, W.errorText(e) + " You can still add the bottle without it.");
@@ -2029,6 +2065,7 @@ window.WWK_CONFIG = {
     el.querySelector("[data-drop-bg]").addEventListener("click", () => {
       assist.lookup = { lookup_id: null };
       el.hidden = true;
+      $("bg-row").hidden = false;
     });
   }
 
