@@ -1123,6 +1123,77 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 }
 .code-input:focus { outline: none; border-color: var(--gold); }
 
+/* =========================================================
+   The evening as a story: one full-screen panel per step
+   ========================================================= */
+html.story-mode { scroll-snap-type: y proximity; }
+.story { padding-top: 0; padding-bottom: 0; }
+.sp {
+  min-height: 100vh;
+  min-height: 100svh;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 56px 0 96px;
+}
+.sp + .sp { border-top: 1px solid var(--line-soft); }
+.sp-in { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
+.sp-in .eyebrow { margin-bottom: 18px; }
+.sp-lead { color: var(--ink-soft); font-style: italic; font-size: 19px; margin: 0 0 4px; }
+.sp-title {
+  font-family: var(--display); font-weight: 700; line-height: 1.04;
+  font-size: clamp(42px, 10vw, 64px); margin: 0 0 26px;
+}
+.sp-h2 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 6.5vw, 38px); margin: 0 0 22px; line-height: 1.15; }
+.sp-when p { margin: 0 0 6px; font-size: 22px; line-height: 1.35; }
+.sp-when a { color: inherit; text-decoration: none; }
+.sp-when .addr { display: block; color: var(--ink-soft); font-size: 16px; font-style: italic; margin-top: 4px; }
+.sp-when .addr.maps { color: var(--gold); font-style: normal; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 8px; }
+.sp-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.6; margin: 22px auto 0; max-width: 520px; }
+.sp-big {
+  font-family: var(--display); color: var(--gold-soft); line-height: 1.05;
+  font-size: clamp(46px, 13vw, 76px); margin: 14px 0 10px;
+}
+.sp-sub { color: var(--ink-faint); font-style: italic; font-size: 16px; margin: 10px 0 0; }
+.sp-sub a { color: var(--gold); }
+.sp-in .panel { text-align: left; margin: 30px 0 0; }
+.sp-in #lineup, .sp-in #tally { text-align: left; }
+
+.sp-next {
+  position: absolute; left: 0; right: 0; bottom: 22px;
+  text-align: center; text-decoration: none;
+  color: var(--ink-faint); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.sp-next:hover { color: var(--gold); }
+.sp-next .chev {
+  display: block; width: 11px; height: 11px; margin: 8px auto 0;
+  border-right: 1.5px solid var(--gold); border-bottom: 1.5px solid var(--gold);
+  transform: rotate(45deg); animation: sp-bob 1.8s ease-in-out infinite;
+}
+@keyframes sp-bob { 0%, 100% { transform: translateY(0) rotate(45deg); } 50% { transform: translateY(5px) rotate(45deg); } }
+
+.sp-dots {
+  position: fixed; right: 10px; top: 50%; transform: translateY(-50%); z-index: 50;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sp-dots button {
+  width: 9px; height: 9px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--gold); background: transparent; opacity: 0.8;
+}
+.sp-dots button[aria-current="true"] { background: var(--gold); opacity: 1; }
+
+.sp-in > * { transition: opacity 0.7s ease, transform 0.7s ease; }
+.sp:not(.seen) .sp-in > * { opacity: 0; transform: translateY(16px); }
+@media (prefers-reduced-motion: reduce) {
+  html.story-mode { scroll-snap-type: none; }
+  .sp:not(.seen) .sp-in > * { opacity: 1; transform: none; }
+  .sp-next .chev { animation: none; }
+}
+@media (max-width: 620px) {
+  .sp { padding: 44px 0 92px; }
+  .sp-dots { right: 4px; }
+}
+
 </style>
 </head>
 <body>
@@ -1657,6 +1728,7 @@ window.WWK_CONFIG = {
 
     // an evening with a seat code opens only once the code is entered
     if (!(await unlocked())) { showGate(); return; }
+    if (ev.format === "byob") { await renderStory(); return; }
 
     $("bar").hidden = false;
     $("bar-when").textContent = W.when(ev.starts_at);
@@ -1712,6 +1784,153 @@ window.WWK_CONFIG = {
     await renderGuest();
   }
 
+  // ---------- the evening as a story of full-screen panels ----------
+  const PANELS = [
+    ["sp-evening", "Your evening"],
+    ["sp-bottle", "The bottle"],
+    ["sp-add", "Add your bottle"],
+    ["sp-lineup", "The line-up"],
+    ["sp-tally", "The tally"],
+  ];
+  const nextHint = (i) => i < PANELS.length - 1
+    ? `<a class="sp-next" href="#${PANELS[i + 1][0]}" data-to="${PANELS[i + 1][0]}">Next: ${PANELS[i + 1][1]}<span class="chev" aria-hidden="true"></span></a>` : "";
+
+  async function renderStory() {
+    document.querySelector(".page-head").hidden = true;
+    $("bar").hidden = true;
+    document.documentElement.classList.add("story-mode");
+    counts = (await W.rpc("event_counts", { p_slug: slug }))[0] || { seats_taken: 0, waitlisted: 0 };
+    const range = priceRange();
+    const parts = (ev.venue || "Venue to be announced").split(",");
+    const place = parts[0].trim(), addr = parts.slice(1).join(",").trim();
+    const maps = ev.venue ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.venue)}` : null;
+    const day = W.when(ev.starts_at).split(" · ")[0];
+
+    page.classList.add("story");
+    page.innerHTML = `
+      <section class="sp" id="sp-evening">
+        <div class="sp-in">
+          <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Bring your own bottle</p>
+          <p class="sp-lead" id="sp-lead">You&rsquo;re reserving a seat at</p>
+          <h1 class="sp-title">${W.esc(ev.title)}</h1>
+          <div class="sp-when">
+            <p>${W.esc(day)}</p>
+            <p>${W.esc(W.time(ev.starts_at))}</p>
+            <p>${maps ? `<a href="${maps}" target="_blank" rel="noopener">` : ""}${W.esc(place)}${addr ? `<span class="addr">${W.esc(addr)}</span>` : ""}${maps ? `<span class="addr maps">Directions &rarr;</span></a>` : ""}</p>
+          </div>
+          ${ev.description ? `<p class="sp-desc">${W.esc(ev.description)}</p>` : ""}
+          <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
+          <p class="foot-note" id="who"></p>
+        </div>
+        ${nextHint(0)}
+      </section>
+
+      <section class="sp" id="sp-bottle">
+        <div class="sp-in">
+          <p class="eyebrow">The bottle</p>
+          <p class="sp-lead">Suggested bottle price for the evening</p>
+          ${range ? `<p class="sp-big">${W.esc(range)}</p>` : ""}
+          ${ev.price_note ? `<p class="sp-sub">${W.esc(ev.price_note)}</p>` : ""}
+          <p class="sp-desc">Bring a bottle you would like to share, or none at all. You choose the price you share it for.</p>
+          <p class="sp-desc">Every bottle shared${ev.shared_costs_cents
+            ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
+            is added up and split evenly across the table. If your bottle comes to more than your share, Kai settles the
+            difference with you.</p>
+          ${ev.bottle_lock_at ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
+        </div>
+        ${nextHint(1)}
+      </section>
+
+      <section class="sp" id="sp-add">
+        <div class="sp-in">
+          <p class="eyebrow">Add your bottle</p>
+          <div class="panel" id="mine"></div>
+        </div>
+        ${nextHint(2)}
+      </section>
+
+      <section class="sp" id="sp-lineup">
+        <div class="sp-in">
+          <p class="eyebrow">The line-up</p>
+          <h2 class="sp-h2" id="line-up">What the table is pouring</h2>
+          <div id="lineup"><p class="muted">Loading&hellip;</p></div>
+        </div>
+        ${nextHint(3)}
+      </section>
+
+      <section class="sp" id="sp-tally">
+        <div class="sp-in">
+          <p class="eyebrow">The tally</p>
+          <h2 class="sp-h2">How the evening splits</h2>
+          <div id="tally"></div>
+          <p class="sp-sub" style="margin-top:28px;">See you on ${W.esc(day)}.
+            <a href="#sp-evening" data-to="sp-evening">Back to the top &uarr;</a></p>
+        </div>
+      </section>`;
+
+    setupStory();
+    await renderGuest();
+  }
+
+  // which panel is on screen: light its dot
+  let storyWired = false;
+  function markStory() {
+    const dots = document.querySelector(".sp-dots");
+    if (!dots) return;
+    const mid = window.innerHeight * 0.45;
+    let current = PANELS[0][0];
+    PANELS.forEach(([id]) => { const sec = $(id); if (sec && sec.getBoundingClientRect().top <= mid) current = id; });
+    dots.querySelectorAll("button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.to === current)));
+  }
+
+  // progress dots, "Next" links and the gentle fade-in
+  function setupStory() {
+    document.querySelectorAll(".sp-dots").forEach((d) => d.remove());
+    const dots = document.createElement("nav");
+    dots.className = "sp-dots";
+    dots.setAttribute("aria-label", "Sections");
+    dots.innerHTML = PANELS.map(([id, label]) =>
+      `<button type="button" data-to="${id}" aria-label="${label}" title="${label}"></button>`).join("");
+    document.body.appendChild(dots);
+
+    if (!storyWired) {
+      storyWired = true;
+      document.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-to]");
+        if (!t || !$(t.dataset.to)) return;
+        e.preventDefault();
+        $(t.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      window.addEventListener("scroll", markStory, { passive: true });
+    }
+    markStory();
+
+    const sections = PANELS.map(([id]) => $(id));
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+        if (en.isIntersecting) { en.target.classList.add("seen"); io.unobserve(en.target); }
+      }), { threshold: 0.15 });
+      sections.forEach((sec) => io.observe(sec));
+    } else {
+      sections.forEach((sec) => sec.classList.add("seen"));
+    }
+  }
+
+  // "Add to calendar": a small .ics file the phone opens in its calendar
+  function calendarLink() {
+    const start = new Date(ev.starts_at), end = new Date(start.getTime() + 3 * 3600000);
+    const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const text = (t) => String(t || "").replace(/[\;,]/g, (m) => "\\" + m).replace(/\n/g, "\\n");
+    const ics = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Wine with Kai//EN", "BEGIN:VEVENT",
+      `UID:${ev.id}@wine-with-kai.github.io`, `DTSTAMP:${stamp(new Date())}`,
+      `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`,
+      `SUMMARY:${text(ev.title + " · Wine with Kai")}`, `LOCATION:${text(ev.venue)}`,
+      `URL:${location.href.split("#")[0]}`, "END:VEVENT", "END:VCALENDAR",
+    ].join("\r\n");
+    return URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+  }
+
   // ---------- the seat code ----------
   const CODE_KEY = `wwk-code-${slug}`;
   let seatCode = "";
@@ -1737,6 +1956,10 @@ window.WWK_CONFIG = {
 
   function showGate(note) {
     $("bar").hidden = true;
+    document.querySelector(".page-head").hidden = false;
+    document.documentElement.classList.remove("story-mode");
+    document.querySelectorAll(".sp-dots").forEach((d) => d.remove());
+    page.classList.remove("story");
     page.innerHTML = `
       <div class="panel gate">
         <p class="kicker">Private evening</p>
@@ -1796,6 +2019,7 @@ window.WWK_CONFIG = {
       && new Date(mine.hold_expires_at) < new Date();
     const status = !mine ? "none" : lapsed ? "interested" : mine.status;
     seated = status === "reserved";
+    if ($("sp-lead")) $("sp-lead").innerHTML = seated ? "You have a seat at" : "You&rsquo;re reserving a seat at";
 
     if (ev.invite_only && status === "none") {
       const { data: inv } = await W.client.from("invitations").select("email").eq("event_id", ev.id);
@@ -1816,11 +2040,12 @@ window.WWK_CONFIG = {
 
     if (status === "reserved") {
       html.push(`<p class="kicker">Your seat</p>
-        <p><strong>Your seat is reserved.</strong> ${mine.deposit_paid_cents
+        <p><strong>${ev.format === "byob" ? "You&rsquo;re in." : "Your seat is reserved."}</strong> ${mine.deposit_paid_cents
           ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
           : ""} We look forward to seeing you.</p>`);
       if (ev.format === "byob") {
-        html.push(`<p class="muted" style="margin-top:8px;">Add the bottle you will bring just below.</p>`);
+        html.push(`<div class="actions"><a class="btn small" href="${calendarLink()}" download="wine-with-kai.ics">Add to calendar</a>
+          <button class="linkish" type="button" data-to="sp-bottle">Next: choose your bottle &darr;</button></div>`);
       }
       html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
           ? "Plans changed?"
@@ -1901,7 +2126,7 @@ window.WWK_CONFIG = {
         }
       }
       await load();
-      if (what === "reserve" && seated && $("mine")) $("mine").scrollIntoView({ behavior: "smooth", block: "start" });
+      if (what === "reserve" && seated && $("sp-bottle")) $("sp-bottle").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) {
       if (e && e.code === "wrong_seat_code") { storeCode(""); seatCode = ""; showGate(W.errorText(e)); return; }
       fail(e);
@@ -1918,7 +2143,7 @@ window.WWK_CONFIG = {
             <p class="nm">${W.esc(b.producer)} &middot; ${W.esc(b.wine)}</p>
             <p class="sub">${b.region ? W.esc(b.region) + " &middot; " : ""}brought by ${W.esc(b.guest)}</p>
             ${b.background ? `<p class="bgtext">${W.esc(b.background)}</p>` : ""}
-            ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy">` : ""}
+            ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy" onerror="this.hidden=true">` : ""}
           </div>
           <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? "awaiting Kai" : W.esc(b.status)}</span>` : ""}</div>
         </div>`).join("")
@@ -1927,7 +2152,13 @@ window.WWK_CONFIG = {
 
   async function renderMine() {
     const box = $("mine");
-    if (!seated || !me) { box.hidden = true; return; }
+    if (!seated || !me) {
+      box.hidden = false;
+      box.innerHTML = `<p class="kicker">Your bottle</p>
+        <p>Once your seat is reserved, photograph your bottle&rsquo;s label here and we fill in the details for you.</p>
+        <div class="actions"><button class="btn small" type="button" data-to="sp-evening">Reserve my seat &uarr;</button></div>`;
+      return;
+    }
     box.hidden = false;
     const g = { user: me };
 
@@ -2187,11 +2418,14 @@ window.WWK_CONFIG = {
 
   async function renderTally() {
     const box = $("tally");
-    if (!seated && !isAdmin) { box.innerHTML = ""; return; }
+    if (!seated && !isAdmin) {
+      box.innerHTML = `<p class="muted">The tally is shared with the guests at the table. It appears here once your seat is reserved.</p>`;
+      return;
+    }
     let rows;
     try { rows = await W.rpc("event_tally", { p_slug: slug }); }
     catch (e) { box.innerHTML = ""; return; }
-    if (!rows.length) { box.innerHTML = ""; return; }
+    if (!rows.length) { box.innerHTML = `<p class="muted">No one is seated yet.</p>`; return; }
 
     const c = ev.currency;
     const bottlesTotal = rows.reduce((a, r) => a + r.bottles_cents, 0);
@@ -2201,7 +2435,6 @@ window.WWK_CONFIG = {
       : v < 0 ? `<span class="gets">receives ${W.money(-v, c)}</span>` : "square";
 
     box.innerHTML = `
-      <h2>The tally</h2>
       <p class="muted">Shared with the guests at the table. It updates as bottles are added, and is final once the line-up closes.</p>
       <div class="table-wrap"><table class="ledger">
         <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Shared</th>

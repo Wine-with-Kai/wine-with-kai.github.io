@@ -1123,6 +1123,77 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 }
 .code-input:focus { outline: none; border-color: var(--gold); }
 
+/* =========================================================
+   The evening as a story: one full-screen panel per step
+   ========================================================= */
+html.story-mode { scroll-snap-type: y proximity; }
+.story { padding-top: 0; padding-bottom: 0; }
+.sp {
+  min-height: 100vh;
+  min-height: 100svh;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 56px 0 96px;
+}
+.sp + .sp { border-top: 1px solid var(--line-soft); }
+.sp-in { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
+.sp-in .eyebrow { margin-bottom: 18px; }
+.sp-lead { color: var(--ink-soft); font-style: italic; font-size: 19px; margin: 0 0 4px; }
+.sp-title {
+  font-family: var(--display); font-weight: 700; line-height: 1.04;
+  font-size: clamp(42px, 10vw, 64px); margin: 0 0 26px;
+}
+.sp-h2 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 6.5vw, 38px); margin: 0 0 22px; line-height: 1.15; }
+.sp-when p { margin: 0 0 6px; font-size: 22px; line-height: 1.35; }
+.sp-when a { color: inherit; text-decoration: none; }
+.sp-when .addr { display: block; color: var(--ink-soft); font-size: 16px; font-style: italic; margin-top: 4px; }
+.sp-when .addr.maps { color: var(--gold); font-style: normal; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 8px; }
+.sp-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.6; margin: 22px auto 0; max-width: 520px; }
+.sp-big {
+  font-family: var(--display); color: var(--gold-soft); line-height: 1.05;
+  font-size: clamp(46px, 13vw, 76px); margin: 14px 0 10px;
+}
+.sp-sub { color: var(--ink-faint); font-style: italic; font-size: 16px; margin: 10px 0 0; }
+.sp-sub a { color: var(--gold); }
+.sp-in .panel { text-align: left; margin: 30px 0 0; }
+.sp-in #lineup, .sp-in #tally { text-align: left; }
+
+.sp-next {
+  position: absolute; left: 0; right: 0; bottom: 22px;
+  text-align: center; text-decoration: none;
+  color: var(--ink-faint); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.sp-next:hover { color: var(--gold); }
+.sp-next .chev {
+  display: block; width: 11px; height: 11px; margin: 8px auto 0;
+  border-right: 1.5px solid var(--gold); border-bottom: 1.5px solid var(--gold);
+  transform: rotate(45deg); animation: sp-bob 1.8s ease-in-out infinite;
+}
+@keyframes sp-bob { 0%, 100% { transform: translateY(0) rotate(45deg); } 50% { transform: translateY(5px) rotate(45deg); } }
+
+.sp-dots {
+  position: fixed; right: 10px; top: 50%; transform: translateY(-50%); z-index: 50;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sp-dots button {
+  width: 9px; height: 9px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--gold); background: transparent; opacity: 0.8;
+}
+.sp-dots button[aria-current="true"] { background: var(--gold); opacity: 1; }
+
+.sp-in > * { transition: opacity 0.7s ease, transform 0.7s ease; }
+.sp:not(.seen) .sp-in > * { opacity: 0; transform: translateY(16px); }
+@media (prefers-reduced-motion: reduce) {
+  html.story-mode { scroll-snap-type: none; }
+  .sp:not(.seen) .sp-in > * { opacity: 1; transform: none; }
+  .sp-next .chev { animation: none; }
+}
+@media (max-width: 620px) {
+  .sp { padding: 44px 0 92px; }
+  .sp-dots { right: 4px; }
+}
+
 </style>
 <style>
   /* the host's page runs a little wider for the ledgers */
