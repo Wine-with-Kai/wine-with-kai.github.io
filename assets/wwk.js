@@ -407,8 +407,25 @@
     return data;
   }
 
+  // Kai's invitation, ready to send: WhatsApp opens with it and Kai picks the chat
+  function inviteMessage(ev, name, code) {
+    const link = new URL(`reserve.html?event=${encodeURIComponent(ev.slug)}`, location.href).href;
+    const [day, at] = when(ev.starts_at).split(" \u00b7 ");
+    return [
+      `${name ? `Hi ${name}! ` : ""}You're invited to ${ev.title}${ev.format === "byob" ? ", a bring-your-own-bottle dinner" : ""}.`,
+      "",
+      `${day}, ${at}`,
+      ...(ev.venue ? [ev.venue] : []),
+      "",
+      `Reserve your seat${ev.format === "byob" ? " and add your bottle" : ""}: ${link}`,
+      ...(code ? [`Your code: ${code}`] : []),
+    ].join("\n");
+  }
+  const whatsappLink = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
     errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
+    inviteMessage, whatsappLink,
   };
 })();

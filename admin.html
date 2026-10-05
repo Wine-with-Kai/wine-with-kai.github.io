@@ -1171,6 +1171,10 @@ html.story-mode { scroll-snap-type: y proximity; }
 .sp-toast.gone { opacity: 0; }
 @keyframes sp-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 .sp-in .panel { text-align: left; margin: 30px 0 0; }
+/* the seat and sign-in boxes sit centred under the centred heading */
+.sp-in #guest, .sp-in .panel.center { text-align: center; }
+.sp-in #guest .actions, .sp-in .panel.center .actions { justify-content: center; }
+.sp-in .sp-h2 + .panel { margin-top: 0; }
 .sp-in #lineup, .sp-in #tally { text-align: left; }
 
 .sp-next {
@@ -1207,6 +1211,26 @@ html.story-mode { scroll-snap-type: y proximity; }
   .sp { padding: 44px 0 92px; }
   .sp-dots { right: 4px; }
 }
+
+/* host page: invite on WhatsApp */
+.wa-card { margin-bottom: 22px; }
+.wa-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; margin: 12px 0 0; }
+.wa-row input {
+  flex: 1 1 180px; font: inherit; font-size: 17px; padding: 9px 12px; color: var(--ink);
+  background: var(--bg-2); border: 1px solid rgba(201, 162, 75, 0.35); border-radius: 3px;
+}
+.wa-row input:focus { outline: none; border-color: var(--gold); }
+.btn.wa-btn { background: #25d366; border-color: #25d366; color: #0b2a17; }
+.btn.wa-btn:hover { background: #1fbd5a; border-color: #1fbd5a; color: #0b2a17; }
+.wa-preview {
+  white-space: pre-wrap; font-family: inherit; font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+  background: var(--bg-2); border-left: 2px solid #25d366; padding: 10px 14px; margin: 14px 0 0;
+}
+.wa-link { color: #25d366; }
+/* on the evening page, the bottle box needs no second frame */
+.sp-in #mine:not(.center) { background: none; border: 0; padding: 0; }
+.sp-in #mine .assist { text-align: center; }
+.sp-in #mine .assist .assist-row { justify-content: center; }
 
 </style>
 <style>
@@ -1677,9 +1701,26 @@ window.WWK_CONFIG = {
     return data;
   }
 
+  // Kai's invitation, ready to send: WhatsApp opens with it and Kai picks the chat
+  function inviteMessage(ev, name, code) {
+    const link = new URL(`reserve.html?event=${encodeURIComponent(ev.slug)}`, location.href).href;
+    const [day, at] = when(ev.starts_at).split(" \u00b7 ");
+    return [
+      `${name ? `Hi ${name}! ` : ""}You're invited to ${ev.title}${ev.format === "byob" ? ", a bring-your-own-bottle dinner" : ""}.`,
+      "",
+      `${day}, ${at}`,
+      ...(ev.venue ? [ev.venue] : []),
+      "",
+      `Reserve your seat${ev.format === "byob" ? " and add your bottle" : ""}: ${link}`,
+      ...(code ? [`Your code: ${code}`] : []),
+    ].join("\n");
+  }
+  const whatsappLink = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
     errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
+    inviteMessage, whatsappLink,
   };
 })();
 
@@ -1813,13 +1854,14 @@ window.WWK_CONFIG = {
           <span><span class="pill">${e.format === "byob" ? "BYOB" : "curated"}</span> <span class="pill ${e.status}">${esc(e.status)}</span></span>
         </button>`).join("") || `<p class="muted">No evenings yet.</p>`}
       </div>
+      <div id="invite"></div>
       <div id="editor"></div>
       <div id="detail"></div>`;
-    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; });
+    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; $("invite").innerHTML = ""; });
     page.querySelectorAll("[data-ev]").forEach((b) => b.addEventListener("click", () => {
       current = events.find((e) => e.id === b.dataset.ev); render();
     }));
-    if (current) { renderEditor(false); renderDetail(); }
+    if (current) { renderInvite(); renderEditor(false); renderDetail(); }
   }
 
   // ---------- create / edit an evening ----------
@@ -1979,15 +2021,35 @@ window.WWK_CONFIG = {
   }
 
   // the message Kai sends; WhatsApp opens with it ready, Kai picks the chat
-  function inviteMessage(name, code) {
-    const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
-    return `${name ? `Hi ${name}! ` : ""}You're invited to ${current.title}, ${W.when(current.starts_at)}` +
-      `${current.venue ? ` at ${current.venue}` : ""}.\n\n` +
-      `Reserve your seat${current.format === "byob" ? " and add your bottle" : ""} here: ${link}` +
-      `${code ? `\nYour code to open the page: ${code}` : ""}\n` +
-      `Sign in with Google, or with your email for a one-time code.`;
+  const inviteMessage = (name, code) => W.inviteMessage(current, name, code);
+  const whatsapp = W.whatsappLink;
+
+  // the box at the top of an evening: a name in, WhatsApp out
+  async function renderInvite() {
+    if (current.status !== "open") { $("invite").innerHTML = ""; return; }
+    $("invite").innerHTML = `
+      <div class="panel wa-card">
+        <p class="kicker">Invite on WhatsApp</p>
+        <p>Type the guest&rsquo;s name, tap the button and pick the chat. The message carries the link and the seat code.</p>
+        <div class="wa-row">
+          <input id="wa-name" placeholder="Name, e.g. Alvin" autocomplete="off" aria-label="Guest name">
+          <a class="btn small solid wa-btn" id="wa-go" href="#" target="_blank" rel="noopener">Open WhatsApp</a>
+        </div>
+        <pre class="wa-preview" id="wa-preview"></pre>
+      </div>`;
+    const ev = current;
+    const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", ev.id).maybeSingle();
+    if (ev !== current || !$("wa-name")) return;
+    const code = codeRow ? codeRow.code : "";
+    const name = $("wa-name"), go = $("wa-go"), preview = $("wa-preview");
+    const update = () => {
+      const text = inviteMessage(name.value.trim(), code);
+      go.href = whatsapp(text);
+      preview.textContent = text;
+    };
+    name.addEventListener("input", update);
+    update();
   }
-  const whatsapp = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
 
   async function invites() {
     const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", current.id).maybeSingle();

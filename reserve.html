@@ -1171,6 +1171,10 @@ html.story-mode { scroll-snap-type: y proximity; }
 .sp-toast.gone { opacity: 0; }
 @keyframes sp-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 .sp-in .panel { text-align: left; margin: 30px 0 0; }
+/* the seat and sign-in boxes sit centred under the centred heading */
+.sp-in #guest, .sp-in .panel.center { text-align: center; }
+.sp-in #guest .actions, .sp-in .panel.center .actions { justify-content: center; }
+.sp-in .sp-h2 + .panel { margin-top: 0; }
 .sp-in #lineup, .sp-in #tally { text-align: left; }
 
 .sp-next {
@@ -1207,6 +1211,26 @@ html.story-mode { scroll-snap-type: y proximity; }
   .sp { padding: 44px 0 92px; }
   .sp-dots { right: 4px; }
 }
+
+/* host page: invite on WhatsApp */
+.wa-card { margin-bottom: 22px; }
+.wa-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; margin: 12px 0 0; }
+.wa-row input {
+  flex: 1 1 180px; font: inherit; font-size: 17px; padding: 9px 12px; color: var(--ink);
+  background: var(--bg-2); border: 1px solid rgba(201, 162, 75, 0.35); border-radius: 3px;
+}
+.wa-row input:focus { outline: none; border-color: var(--gold); }
+.btn.wa-btn { background: #25d366; border-color: #25d366; color: #0b2a17; }
+.btn.wa-btn:hover { background: #1fbd5a; border-color: #1fbd5a; color: #0b2a17; }
+.wa-preview {
+  white-space: pre-wrap; font-family: inherit; font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+  background: var(--bg-2); border-left: 2px solid #25d366; padding: 10px 14px; margin: 14px 0 0;
+}
+.wa-link { color: #25d366; }
+/* on the evening page, the bottle box needs no second frame */
+.sp-in #mine:not(.center) { background: none; border: 0; padding: 0; }
+.sp-in #mine .assist { text-align: center; }
+.sp-in #mine .assist .assist-row { justify-content: center; }
 
 </style>
 </head>
@@ -1671,9 +1695,26 @@ window.WWK_CONFIG = {
     return data;
   }
 
+  // Kai's invitation, ready to send: WhatsApp opens with it and Kai picks the chat
+  function inviteMessage(ev, name, code) {
+    const link = new URL(`reserve.html?event=${encodeURIComponent(ev.slug)}`, location.href).href;
+    const [day, at] = when(ev.starts_at).split(" \u00b7 ");
+    return [
+      `${name ? `Hi ${name}! ` : ""}You're invited to ${ev.title}${ev.format === "byob" ? ", a bring-your-own-bottle dinner" : ""}.`,
+      "",
+      `${day}, ${at}`,
+      ...(ev.venue ? [ev.venue] : []),
+      "",
+      `Reserve your seat${ev.format === "byob" ? " and add your bottle" : ""}: ${link}`,
+      ...(code ? [`Your code: ${code}`] : []),
+    ].join("\n");
+  }
+  const whatsappLink = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
     errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
+    inviteMessage, whatsappLink,
   };
 })();
 
@@ -1735,7 +1776,7 @@ window.WWK_CONFIG = {
       return;
     }
     document.title = `${ev.title} · Wine with Kai`;
-    $("eyebrow").innerHTML = `Wine with Kai &nbsp;&middot;&nbsp; ${ev.format === "byob" ? "Bring your own bottle" : "Reserve a seat"}`;
+    $("eyebrow").innerHTML = ev.format === "byob" ? "Bring your own bottle" : "Wine with Kai &nbsp;&middot;&nbsp; Reserve a seat";
     $("title").textContent = ev.title;
     $("subtitle").textContent = ev.subtitle || "";
     $("subtitle").hidden = !ev.subtitle;
@@ -1824,7 +1865,7 @@ window.WWK_CONFIG = {
     page.innerHTML = `
       <section class="sp" id="sp-evening">
         <div class="sp-in">
-          <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Bring your own bottle</p>
+          <p class="eyebrow">Bring your own bottle</p>
           <p class="sp-lead" id="sp-lead">You&rsquo;re reserving a seat at</p>
           <h1 class="sp-title">${W.esc(ev.title)}</h1>
           <div class="sp-when">
@@ -1842,7 +1883,7 @@ window.WWK_CONFIG = {
       <section class="sp" id="sp-bottle">
         <div class="sp-in">
           <p class="eyebrow">The bottle</p>
-          <p class="sp-lead">Suggested bottle price for the evening</p>
+          <p class="sp-lead">Suggested price for the evening</p>
           ${range ? `<p class="sp-big">${W.esc(range)}</p>` : ""}
           <p class="sp-desc">Bring a bottle you would like to share, or none at all. You choose the price you share it for.</p>
           <p class="sp-desc">Every bottle shared${ev.shared_costs_cents
@@ -1850,7 +1891,7 @@ window.WWK_CONFIG = {
             is added up and split evenly across the table. If your bottle comes to more than your share after dinner, Kai
             settles the difference with you.</p>
           ${countdown()}
-          ${ev.bottle_lock_at ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
+          ${ev.bottle_lock_at && !locked() ? `<p class="sp-sub">Add your bottle by ${W.esc(W.when(ev.bottle_lock_at))}.</p>` : ""}
         </div>
         ${nextHint(1)}
       </section>
@@ -1858,6 +1899,7 @@ window.WWK_CONFIG = {
       <section class="sp" id="sp-add">
         <div class="sp-in">
           <p class="eyebrow">Add your bottle</p>
+          <h2 class="sp-h2" id="mine-h">What are you bringing?</h2>
           <div class="panel" id="mine"></div>
         </div>
         ${nextHint(2)}
@@ -1894,9 +1936,7 @@ window.WWK_CONFIG = {
     if (locked()) return `<p class="sp-count">The line-up is closed.</p>`;
     const sgDay = (d) => Math.floor((d.getTime() + 8 * 3600000) / 86400000);
     const days = sgDay(lock) - sgDay(new Date());
-    const text = days <= 0 ? `Last day: bottles close at ${W.esc(W.time(ev.bottle_lock_at))} tonight`
-      : days === 1 ? "1 day left to add your bottle"
-      : `${days} days left to add your bottle`;
+    const text = days <= 0 ? "Last day" : days === 1 ? "1 day left" : `${days} days left`;
     return `<p class="sp-count${days <= 1 ? " soon" : ""}">${text}</p>`;
   }
 
@@ -2095,8 +2135,12 @@ window.WWK_CONFIG = {
           ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
           : ""} We look forward to seeing you.</p>`);
       if (ev.format === "byob") {
-        html.push(`<div class="actions"><a class="btn small" href="${W.esc(calendarLink())}" target="_blank" rel="noopener">Add to Google Calendar</a>
-          <button class="linkish" type="button" data-to="sp-bottle">Next: choose your bottle &darr;</button></div>`);
+        html.push(`<div class="actions"><a class="btn small" href="${W.esc(calendarLink())}" target="_blank" rel="noopener">Add to Google Calendar</a></div>`);
+      }
+      if (isAdmin && ev.format === "byob") {
+        const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", ev.id).maybeSingle();
+        html.push(`<p class="foot-note" style="margin-top:18px;">Host: <a class="wa-link" href="${W.esc(W.whatsappLink(W.inviteMessage(ev, "", codeRow ? codeRow.code : "")))}"
+          target="_blank" rel="noopener">invite a guest on WhatsApp</a>, or add their name on the <a href="admin.html">host page</a>.</p>`);
       }
       html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
           ? "Plans changed?"
@@ -2196,30 +2240,35 @@ window.WWK_CONFIG = {
             ${b.background ? `<p class="bgtext">${W.esc(b.background)}</p>` : ""}
             ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy" onerror="this.hidden=true">` : ""}
           </div>
-          <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? "awaiting Kai" : W.esc(b.status)}</span>` : ""}</div>
+          <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? (isAdmin ? "in" : "awaiting Kai") : W.esc(b.status)}</span>` : ""}</div>
         </div>`).join("")
       : `<p class="muted">No bottles yet. The line-up builds here, oldest to youngest, as guests add their wines.</p>`;
   }
 
   async function renderMine() {
     const box = $("mine");
+    const heading = (t) => { if ($("mine-h")) $("mine-h").textContent = t; };
     if (!seated || !me) {
       box.hidden = false;
-      box.innerHTML = `<p class="kicker">Your bottle</p>
-        <p>Once your seat is reserved, photograph your bottle&rsquo;s label here and we fill in the details for you.</p>
+      heading("Reserve your seat first");
+      box.classList.add("center");
+      box.innerHTML = `<p>Then photograph your bottle&rsquo;s label here and we fill in the details for you.</p>
         <div class="actions"><button class="btn small" type="button" data-to="sp-evening">Reserve my seat &uarr;</button></div>`;
       return;
     }
     box.hidden = false;
+    box.classList.remove("center");
     const g = { user: me };
 
     const { data: bottles } = await W.client.from("bottles").select("*")
       .eq("event_id", ev.id).eq("user_id", g.user.id).order("created_at");
     const closed = locked();
     const b = editing && bottles.find((x) => x.id === editing);
+    const story = !!$("mine-h");
+    heading(b ? "Edit your bottle" : bottles.length > 1 ? "Your bottles" : bottles.length ? "Your bottle" : "What are you bringing?");
 
     box.innerHTML = `
-      <p class="kicker">Your bottles</p>
+      ${story ? "" : `<p class="kicker">Your bottles</p>`}
       ${bottles.length ? bottles.map((x) => `
         <div class="bottle">
           <div class="yr">${x.vintage || "NV"}</div>
@@ -2229,17 +2278,17 @@ window.WWK_CONFIG = {
               ${x.admin_note ? ` &middot; Kai: ${W.esc(x.admin_note)}` : ""}</p>
           </div>
           <div class="side">
-            <span class="pill ${x.status}">${x.status === "proposed" ? "awaiting Kai" : W.esc(x.status)}</span><br>
+            <span class="pill ${x.status}">${x.status === "proposed" ? (isAdmin ? "in" : "awaiting Kai") : W.esc(x.status)}</span><br>
             ${closed ? "" : `<button class="linkish" type="button" data-edit="${x.id}">Edit</button> &middot;
             <button class="linkish danger" type="button" data-del="${x.id}">Remove</button>`}
           </div>
-        </div>`).join("") : `<p class="muted">You have not added a bottle. That is fine: bringing one is optional.</p>`}
+        </div>`).join("") : story ? "" : `<p class="muted">You have not added a bottle. That is fine: bringing one is optional.</p>`}
       ${closed
         ? `<p class="foot-note">The line-up is closed${ev.bottle_lock_at ? ` (it closed on ${W.esc(W.day(ev.bottle_lock_at))})` : ""}. For any change, please tell Kai.</p>`
         : `
       ${bottles.length && !b ? `<div class="actions" id="add-another-row"><button class="btn small" type="button" id="add-another">+ Add another bottle</button></div>` : ""}
       <div id="add-wrap" ${bottles.length && !b ? "hidden" : ""}>
-      <h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>
+      ${story && (b || !bottles.length) ? "" : `<h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>`}
       <div class="assist">
         <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
         <p class="hint-line">We read the label and fill in the details for you; you check them, set your price, and add it.
@@ -2492,7 +2541,7 @@ window.WWK_CONFIG = {
     box.innerHTML = `
       <p class="muted">Shared with the guests at the table. It updates as bottles are added, and is final once the line-up closes.</p>
       <div class="table-wrap"><table class="ledger">
-        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Shared</th>
+        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Brought</th>
           <th class="num opt">Deposit</th><th class="num">Share</th><th class="num">On the night</th></tr></thead>
         <tbody>${rows.map((r) => `
           <tr class="${r.mine ? "me" : ""}"><td>${W.esc(r.guest)}${r.mine ? " (you)" : ""}${r.settled ? ` <span class="pill">settled</span>` : ""}</td>
@@ -2501,13 +2550,12 @@ window.WWK_CONFIG = {
             <td class="num">${balance(r.balance_cents)}</td></tr>`).join("")}
         </tbody>
       </table></div>
-      <p class="muted" style="font-size:16.5px;">Bottles shared ${W.money(bottlesTotal, c)} &middot;
-        ${ev.shared_costs_cents ? `shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot;` : ""}
-        <strong>total ${W.money(total, c)}</strong>, split ${rows.length} way${rows.length === 1 ? "" : "s"}.
+      <p class="muted" style="font-size:16.5px;">${ev.shared_costs_cents
+          ? `Bottles shared ${W.money(bottlesTotal, c)} &middot; shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot; <strong>total ${W.money(total, c)}</strong>`
+          : `Bottles shared <strong>${W.money(total, c)}</strong>`}, split ${rows.length} way${rows.length === 1 ? "" : "s"}: ${W.money(Math.round(total / rows.length), c)} each.
         ${ev.deposit_cents ? `<span class="only-narrow">Your deposit is already taken off your figure.</span>` : ""}</p>
-      <p class="foot-note">Share = every bottle shared${ev.shared_costs_cents ? " plus the shared costs" : ""}, divided by the guests at the table.
-        On the night = share, less your own bottles${ev.deposit_cents ? " and your deposit" : ""}. Shares are rounded to the cent, so the
-        column may differ from the total by a few cents. All settling is with Kai.</p>`;
+      <p class="foot-note">On the night = your share, less the bottles you brought${ev.deposit_cents ? " and your deposit" : ""}.
+        Shares are rounded to the cent. All settling is with Kai, after dinner.</p>`;
   }
 
   async function refresh() {

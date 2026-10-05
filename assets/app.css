@@ -351,6 +351,10 @@ html.story-mode { scroll-snap-type: y proximity; }
 .sp-toast.gone { opacity: 0; }
 @keyframes sp-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 .sp-in .panel { text-align: left; margin: 30px 0 0; }
+/* the seat and sign-in boxes sit centred under the centred heading */
+.sp-in #guest, .sp-in .panel.center { text-align: center; }
+.sp-in #guest .actions, .sp-in .panel.center .actions { justify-content: center; }
+.sp-in .sp-h2 + .panel { margin-top: 0; }
 .sp-in #lineup, .sp-in #tally { text-align: left; }
 
 .sp-next {
@@ -387,3 +391,23 @@ html.story-mode { scroll-snap-type: y proximity; }
   .sp { padding: 44px 0 92px; }
   .sp-dots { right: 4px; }
 }
+
+/* host page: invite on WhatsApp */
+.wa-card { margin-bottom: 22px; }
+.wa-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; margin: 12px 0 0; }
+.wa-row input {
+  flex: 1 1 180px; font: inherit; font-size: 17px; padding: 9px 12px; color: var(--ink);
+  background: var(--bg-2); border: 1px solid rgba(201, 162, 75, 0.35); border-radius: 3px;
+}
+.wa-row input:focus { outline: none; border-color: var(--gold); }
+.btn.wa-btn { background: #25d366; border-color: #25d366; color: #0b2a17; }
+.btn.wa-btn:hover { background: #1fbd5a; border-color: #1fbd5a; color: #0b2a17; }
+.wa-preview {
+  white-space: pre-wrap; font-family: inherit; font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+  background: var(--bg-2); border-left: 2px solid #25d366; padding: 10px 14px; margin: 14px 0 0;
+}
+.wa-link { color: #25d366; }
+/* on the evening page, the bottle box needs no second frame */
+.sp-in #mine:not(.center) { background: none; border: 0; padding: 0; }
+.sp-in #mine .assist { text-align: center; }
+.sp-in #mine .assist .assist-row { justify-content: center; }

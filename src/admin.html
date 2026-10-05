@@ -187,13 +187,14 @@
           <span><span class="pill">${e.format === "byob" ? "BYOB" : "curated"}</span> <span class="pill ${e.status}">${esc(e.status)}</span></span>
         </button>`).join("") || `<p class="muted">No evenings yet.</p>`}
       </div>
+      <div id="invite"></div>
       <div id="editor"></div>
       <div id="detail"></div>`;
-    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; });
+    $("new-ev").addEventListener("click", () => { current = null; renderEditor(true); $("detail").innerHTML = ""; $("invite").innerHTML = ""; });
     page.querySelectorAll("[data-ev]").forEach((b) => b.addEventListener("click", () => {
       current = events.find((e) => e.id === b.dataset.ev); render();
     }));
-    if (current) { renderEditor(false); renderDetail(); }
+    if (current) { renderInvite(); renderEditor(false); renderDetail(); }
   }
 
   // ---------- create / edit an evening ----------
@@ -353,15 +354,35 @@
   }
 
   // the message Kai sends; WhatsApp opens with it ready, Kai picks the chat
-  function inviteMessage(name, code) {
-    const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
-    return `${name ? `Hi ${name}! ` : ""}You're invited to ${current.title}, ${W.when(current.starts_at)}` +
-      `${current.venue ? ` at ${current.venue}` : ""}.\n\n` +
-      `Reserve your seat${current.format === "byob" ? " and add your bottle" : ""} here: ${link}` +
-      `${code ? `\nYour code to open the page: ${code}` : ""}\n` +
-      `Sign in with Google, or with your email for a one-time code.`;
+  const inviteMessage = (name, code) => W.inviteMessage(current, name, code);
+  const whatsapp = W.whatsappLink;
+
+  // the box at the top of an evening: a name in, WhatsApp out
+  async function renderInvite() {
+    if (current.status !== "open") { $("invite").innerHTML = ""; return; }
+    $("invite").innerHTML = `
+      <div class="panel wa-card">
+        <p class="kicker">Invite on WhatsApp</p>
+        <p>Type the guest&rsquo;s name, tap the button and pick the chat. The message carries the link and the seat code.</p>
+        <div class="wa-row">
+          <input id="wa-name" placeholder="Name, e.g. Alvin" autocomplete="off" aria-label="Guest name">
+          <a class="btn small solid wa-btn" id="wa-go" href="#" target="_blank" rel="noopener">Open WhatsApp</a>
+        </div>
+        <pre class="wa-preview" id="wa-preview"></pre>
+      </div>`;
+    const ev = current;
+    const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", ev.id).maybeSingle();
+    if (ev !== current || !$("wa-name")) return;
+    const code = codeRow ? codeRow.code : "";
+    const name = $("wa-name"), go = $("wa-go"), preview = $("wa-preview");
+    const update = () => {
+      const text = inviteMessage(name.value.trim(), code);
+      go.href = whatsapp(text);
+      preview.textContent = text;
+    };
+    name.addEventListener("input", update);
+    update();
   }
-  const whatsapp = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
 
   async function invites() {
     const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", current.id).maybeSingle();
