@@ -8,7 +8,10 @@
 import Anthropic from "npm:@anthropic-ai/sdk@0.131.0";
 import { currentUser, db, isAdmin, json, preflight } from "../_shared/common.ts";
 
-const anthropic = new Anthropic(); // ANTHROPIC_API_KEY, set with `supabase secrets set`
+// ANTHROPIC_API_KEY, set with `supabase secrets set`. A key that is not tied to a
+// workspace must name one on every request: set ANTHROPIC_WORKSPACE_ID for that.
+const WORKSPACE = Deno.env.get("ANTHROPIC_WORKSPACE_ID");
+const anthropic = new Anthropic(WORKSPACE ? { defaultHeaders: { "anthropic-workspace-id": WORKSPACE } } : {});
 const MODEL = "claude-opus-5-5";
 const DAILY_LIMIT = 30; // lookups per guest per 24 hours, to keep costs predictable
 
