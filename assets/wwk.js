@@ -281,6 +281,124 @@
     }
   }
 
+  // ---------- the label camera ----------
+  // Opens the rear camera inside the page with a label-shaped frame, and
+  // resolves with the photo cropped to that frame (a Blob), or the file the
+  // guest picked from their photos, or null if they closed it. Where the
+  // camera is not available (permission refused, an in-app browser, a
+  // desktop without a camera) it falls back to the phone's photo picker.
+  function pickFile(capture) {
+    return new Promise((resolve) => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "image/*";
+      if (capture) inp.setAttribute("capture", "environment");
+      inp.addEventListener("change", () => resolve(inp.files[0] || null), { once: true });
+      inp.click();
+    });
+  }
+
+  function cameraUnavailable() {
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam cam-off";
+      cam.setAttribute("role", "dialog");
+      cam.innerHTML = `
+        <div class="cam-sheet">
+          <p>The camera is not available here, perhaps because access was not allowed, or the link
+            opened inside another app.</p>
+          <button type="button" class="btn small solid" data-pick>Take or choose a photo</button>
+          <button type="button" class="linkish" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      const done = (r) => { cam.remove(); resolve(r); };
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-pick]").addEventListener("click", () => {
+        const pick = pickFile(true);
+        cam.remove();
+        pick.then(resolve);
+      });
+    });
+  }
+
+  async function captureLabel() {
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return pickFile(true);
+
+    let stream;
+    try {
+      stream = await md.getUserMedia({
+        audio: false,
+        // ask for the sharpest picture the rear camera offers; the crop is
+        // only the label, so it needs the pixels for small print
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 4096 }, height: { ideal: 3072 } },
+      });
+    } catch (_) {
+      // Safari only opens the photo picker straight from a tap, so offer a button
+      return cameraUnavailable();
+    }
+
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam";
+      cam.setAttribute("role", "dialog");
+      cam.setAttribute("aria-label", "Photograph the label");
+      cam.innerHTML = `
+        <video playsinline autoplay muted></video>
+        <div class="cam-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p class="cam-hint">Fit the front label inside the frame</p>
+        <div class="cam-bar">
+          <button type="button" class="cam-side" data-photos>Choose from photos</button>
+          <button type="button" class="cam-shutter" data-shoot aria-label="Take the photo"></button>
+          <button type="button" class="cam-side" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      document.documentElement.classList.add("cam-open");
+      const video = cam.querySelector("video");
+      video.srcObject = stream;
+
+      const done = (result) => {
+        stream.getTracks().forEach((t) => t.stop());
+        document.removeEventListener("keydown", onKey);
+        document.documentElement.classList.remove("cam-open");
+        cam.remove();
+        resolve(result);
+      };
+      const onKey = (e) => { if (e.key === "Escape") done(null); };
+      document.addEventListener("keydown", onKey);
+
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-photos]").addEventListener("click", async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const file = await pickFile(false);
+        done(file);
+      });
+      cam.querySelector("[data-shoot]").addEventListener("click", () => {
+        const vw = video.videoWidth, vh = video.videoHeight;
+        if (!vw || !vh) return;
+        // the video fills the screen with object-fit: cover; map the frame
+        // on screen back to the camera's own pixels, with a little margin
+        const box = cam.getBoundingClientRect();
+        const fr = cam.querySelector(".cam-frame").getBoundingClientRect();
+        const k = Math.max(box.width / vw, box.height / vh);
+        const offX = (box.width - vw * k) / 2, offY = (box.height - vh * k) / 2;
+        const pad = 0.06;
+        let sx = (fr.left - box.left - offX) / k, sy = (fr.top - box.top - offY) / k;
+        let sw = fr.width / k, sh = fr.height / k;
+        sx -= sw * pad; sy -= sh * pad; sw *= 1 + 2 * pad; sh *= 1 + 2 * pad;
+        sx = Math.max(0, sx); sy = Math.max(0, sy);
+        sw = Math.min(vw - sx, sw); sh = Math.min(vh - sy, sh);
+        const scale = Math.min(1, 1600 / Math.max(sw, sh));
+        const c = document.createElement("canvas");
+        c.width = Math.round(sw * scale);
+        c.height = Math.round(sh * scale);
+        c.getContext("2d").drawImage(video, sx, sy, sw, sh, 0, 0, c.width, c.height);
+        cam.classList.add("cam-flash");
+        c.toBlob((blob) => done(blob), "image/jpeg", 0.9);
+      });
+    });
+  }
+
   async function event(slug) {
     const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
     if (error) throw error;
@@ -289,6 +407,6 @@
 
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
-    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
   };
 })();

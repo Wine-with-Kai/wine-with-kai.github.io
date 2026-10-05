@@ -350,8 +350,7 @@
         : `
       <h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>
       <div class="assist">
-        <label class="btn small solid snap">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}
-          <input type="file" id="photo-input" accept="image/*" hidden></label>
+        <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
         <p class="hint-line">We read the label and write a short background for the line-up. You look it over,
           then add it. No photo to hand? Type the wine below and press <em>Write the background</em>.</p>
         <div class="assist-row">
@@ -408,9 +407,8 @@
     if (b && b.background) showBackground(b.background, assist);
 
     form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
-    $("photo-input").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      e.target.value = "";
+    $("photo-btn").addEventListener("click", async () => {
+      const file = await W.captureLabel();
       if (file) fromPhoto(file, form, g, assist);
     });
     $("look-up").addEventListener("click", () => lookUp(form, assist));

@@ -109,7 +109,7 @@
         ${byob ? `
         <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label
           and writes the background note in one step, exactly as it will for guests (a few US cents a test).</p>
-        <label class="btn small solid snap">Choose a label photo <input type="file" id="lab-photo" accept="image/*" hidden></label>
+        <button type="button" class="btn small solid snap" id="lab-photo">Photograph a label</button>
         <div class="assist-row">
           <img id="lab-img" class="label" alt="The label being tested" hidden>
           <ol class="steps" id="lab-steps" aria-live="polite" hidden></ol>
@@ -127,9 +127,8 @@
         ${t}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("") + (note ? `<li class="note">${esc(note)}</li>` : "");
     };
 
-    $("lab-photo").addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      e.target.value = "";
+    $("lab-photo").addEventListener("click", async () => {
+      const file = await W.captureLabel();
       if (!file) return;
       const out = $("lab-out");
       out.innerHTML = "";

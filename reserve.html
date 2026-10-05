@@ -1056,6 +1056,57 @@ table.ledger a { color: var(--gold-soft); }
   .bottle .yr { font-size: 22px; }
 }
 
+/* ---------- the label camera ---------- */
+html.cam-open, html.cam-open body { overflow: hidden; }
+.cam {
+  position: fixed; inset: 0; z-index: 1000; background: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+.cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cam-frame {
+  position: relative;
+  width: min(72vw, 360px);
+  aspect-ratio: 3 / 4;
+  max-height: 62vh;
+  border-radius: 10px;
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.55);
+  outline: 1px solid rgba(236, 227, 214, 0.35);
+}
+.cam-frame i { position: absolute; width: 28px; height: 28px; border: 3px solid var(--gold); }
+.cam-frame i:nth-child(1) { top: -3px; left: -3px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+.cam-frame i:nth-child(2) { top: -3px; right: -3px; border-left: 0; border-bottom: 0; border-top-right-radius: 10px; }
+.cam-frame i:nth-child(3) { bottom: -3px; left: -3px; border-right: 0; border-top: 0; border-bottom-left-radius: 10px; }
+.cam-frame i:nth-child(4) { bottom: -3px; right: -3px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+.cam-hint {
+  position: absolute; top: max(20px, env(safe-area-inset-top)); left: 16px; right: 16px; margin: 0;
+  text-align: center; color: #fff; font-size: 17px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.cam-bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 18px 16px max(22px, env(safe-area-inset-bottom));
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+}
+.cam-side {
+  font: inherit; font-size: 15px; color: #fff; background: none; border: 0; padding: 10px 4px; cursor: pointer;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.cam-side:first-child { justify-self: start; }
+.cam-side:last-child { justify-self: end; }
+.cam-shutter {
+  width: 74px; height: 74px; border-radius: 50%; cursor: pointer;
+  background: #fff; border: 5px solid var(--gold); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6);
+}
+.cam-shutter:active { transform: scale(0.94); }
+.cam-flash::after { content: ""; position: absolute; inset: 0; background: #fff; animation: cam-flash 0.25s ease-out forwards; }
+@keyframes cam-flash { from { opacity: 0.85; } to { opacity: 0; } }
+.cam-off { background: rgba(0, 0, 0, 0.7); padding: 16px; }
+.cam-sheet {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+  padding: 22px; max-width: 360px; text-align: center;
+}
+.cam-sheet p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16.5px; line-height: 1.55; }
+.cam-sheet .btn { margin-bottom: 8px; }
+
 </style>
 </head>
 <body>
@@ -1393,6 +1444,124 @@ window.WWK_CONFIG = {
     }
   }
 
+  // ---------- the label camera ----------
+  // Opens the rear camera inside the page with a label-shaped frame, and
+  // resolves with the photo cropped to that frame (a Blob), or the file the
+  // guest picked from their photos, or null if they closed it. Where the
+  // camera is not available (permission refused, an in-app browser, a
+  // desktop without a camera) it falls back to the phone's photo picker.
+  function pickFile(capture) {
+    return new Promise((resolve) => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "image/*";
+      if (capture) inp.setAttribute("capture", "environment");
+      inp.addEventListener("change", () => resolve(inp.files[0] || null), { once: true });
+      inp.click();
+    });
+  }
+
+  function cameraUnavailable() {
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam cam-off";
+      cam.setAttribute("role", "dialog");
+      cam.innerHTML = `
+        <div class="cam-sheet">
+          <p>The camera is not available here, perhaps because access was not allowed, or the link
+            opened inside another app.</p>
+          <button type="button" class="btn small solid" data-pick>Take or choose a photo</button>
+          <button type="button" class="linkish" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      const done = (r) => { cam.remove(); resolve(r); };
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-pick]").addEventListener("click", () => {
+        const pick = pickFile(true);
+        cam.remove();
+        pick.then(resolve);
+      });
+    });
+  }
+
+  async function captureLabel() {
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return pickFile(true);
+
+    let stream;
+    try {
+      stream = await md.getUserMedia({
+        audio: false,
+        // ask for the sharpest picture the rear camera offers; the crop is
+        // only the label, so it needs the pixels for small print
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 4096 }, height: { ideal: 3072 } },
+      });
+    } catch (_) {
+      // Safari only opens the photo picker straight from a tap, so offer a button
+      return cameraUnavailable();
+    }
+
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam";
+      cam.setAttribute("role", "dialog");
+      cam.setAttribute("aria-label", "Photograph the label");
+      cam.innerHTML = `
+        <video playsinline autoplay muted></video>
+        <div class="cam-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p class="cam-hint">Fit the front label inside the frame</p>
+        <div class="cam-bar">
+          <button type="button" class="cam-side" data-photos>Choose from photos</button>
+          <button type="button" class="cam-shutter" data-shoot aria-label="Take the photo"></button>
+          <button type="button" class="cam-side" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      document.documentElement.classList.add("cam-open");
+      const video = cam.querySelector("video");
+      video.srcObject = stream;
+
+      const done = (result) => {
+        stream.getTracks().forEach((t) => t.stop());
+        document.removeEventListener("keydown", onKey);
+        document.documentElement.classList.remove("cam-open");
+        cam.remove();
+        resolve(result);
+      };
+      const onKey = (e) => { if (e.key === "Escape") done(null); };
+      document.addEventListener("keydown", onKey);
+
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-photos]").addEventListener("click", async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const file = await pickFile(false);
+        done(file);
+      });
+      cam.querySelector("[data-shoot]").addEventListener("click", () => {
+        const vw = video.videoWidth, vh = video.videoHeight;
+        if (!vw || !vh) return;
+        // the video fills the screen with object-fit: cover; map the frame
+        // on screen back to the camera's own pixels, with a little margin
+        const box = cam.getBoundingClientRect();
+        const fr = cam.querySelector(".cam-frame").getBoundingClientRect();
+        const k = Math.max(box.width / vw, box.height / vh);
+        const offX = (box.width - vw * k) / 2, offY = (box.height - vh * k) / 2;
+        const pad = 0.06;
+        let sx = (fr.left - box.left - offX) / k, sy = (fr.top - box.top - offY) / k;
+        let sw = fr.width / k, sh = fr.height / k;
+        sx -= sw * pad; sy -= sh * pad; sw *= 1 + 2 * pad; sh *= 1 + 2 * pad;
+        sx = Math.max(0, sx); sy = Math.max(0, sy);
+        sw = Math.min(vw - sx, sw); sh = Math.min(vh - sy, sh);
+        const scale = Math.min(1, 1600 / Math.max(sw, sh));
+        const c = document.createElement("canvas");
+        c.width = Math.round(sw * scale);
+        c.height = Math.round(sh * scale);
+        c.getContext("2d").drawImage(video, sx, sy, sw, sh, 0, 0, c.width, c.height);
+        cam.classList.add("cam-flash");
+        c.toBlob((blob) => done(blob), "image/jpeg", 0.9);
+      });
+    });
+  }
+
   async function event(slug) {
     const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
     if (error) throw error;
@@ -1401,7 +1570,7 @@ window.WWK_CONFIG = {
 
   window.WWK = {
     client, ready, esc, money, when, day, time, param, refundCutoff,
-    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
   };
 })();
 
@@ -1704,8 +1873,7 @@ window.WWK_CONFIG = {
         : `
       <h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>
       <div class="assist">
-        <label class="btn small solid snap">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}
-          <input type="file" id="photo-input" accept="image/*" hidden></label>
+        <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
         <p class="hint-line">We read the label and write a short background for the line-up. You look it over,
           then add it. No photo to hand? Type the wine below and press <em>Write the background</em>.</p>
         <div class="assist-row">
@@ -1762,9 +1930,8 @@ window.WWK_CONFIG = {
     if (b && b.background) showBackground(b.background, assist);
 
     form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
-    $("photo-input").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      e.target.value = "";
+    $("photo-btn").addEventListener("click", async () => {
+      const file = await W.captureLabel();
       if (file) fromPhoto(file, form, g, assist);
     });
     $("look-up").addEventListener("click", () => lookUp(form, assist));

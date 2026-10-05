@@ -235,3 +235,54 @@ table.ledger a { color: var(--gold-soft); }
   .bottle .side { grid-column: 2; text-align: left; }
   .bottle .yr { font-size: 22px; }
 }
+
+/* ---------- the label camera ---------- */
+html.cam-open, html.cam-open body { overflow: hidden; }
+.cam {
+  position: fixed; inset: 0; z-index: 1000; background: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+.cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cam-frame {
+  position: relative;
+  width: min(72vw, 360px);
+  aspect-ratio: 3 / 4;
+  max-height: 62vh;
+  border-radius: 10px;
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.55);
+  outline: 1px solid rgba(236, 227, 214, 0.35);
+}
+.cam-frame i { position: absolute; width: 28px; height: 28px; border: 3px solid var(--gold); }
+.cam-frame i:nth-child(1) { top: -3px; left: -3px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+.cam-frame i:nth-child(2) { top: -3px; right: -3px; border-left: 0; border-bottom: 0; border-top-right-radius: 10px; }
+.cam-frame i:nth-child(3) { bottom: -3px; left: -3px; border-right: 0; border-top: 0; border-bottom-left-radius: 10px; }
+.cam-frame i:nth-child(4) { bottom: -3px; right: -3px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+.cam-hint {
+  position: absolute; top: max(20px, env(safe-area-inset-top)); left: 16px; right: 16px; margin: 0;
+  text-align: center; color: #fff; font-size: 17px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.cam-bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 18px 16px max(22px, env(safe-area-inset-bottom));
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+}
+.cam-side {
+  font: inherit; font-size: 15px; color: #fff; background: none; border: 0; padding: 10px 4px; cursor: pointer;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.cam-side:first-child { justify-self: start; }
+.cam-side:last-child { justify-self: end; }
+.cam-shutter {
+  width: 74px; height: 74px; border-radius: 50%; cursor: pointer;
+  background: #fff; border: 5px solid var(--gold); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6);
+}
+.cam-shutter:active { transform: scale(0.94); }
+.cam-flash::after { content: ""; position: absolute; inset: 0; background: #fff; animation: cam-flash 0.25s ease-out forwards; }
+@keyframes cam-flash { from { opacity: 0.85; } to { opacity: 0; } }
+.cam-off { background: rgba(0, 0, 0, 0.7); padding: 16px; }
+.cam-sheet {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+  padding: 22px; max-width: 360px; text-align: center;
+}
+.cam-sheet p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16.5px; line-height: 1.55; }
+.cam-sheet .btn { margin-bottom: 8px; }
