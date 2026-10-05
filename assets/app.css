@@ -292,3 +292,13 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 .form.check #check-note { margin: 0; color: var(--gold-soft); font-style: italic; }
 .form .price-ask { color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
 .form .price-ask input { font-size: 20px; border-color: rgba(201, 162, 75, 0.55); }
+
+/* the seat-code screen */
+.gate { text-align: center; max-width: 420px; margin: 26px auto; }
+.gate form { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 8px; }
+.code-input {
+  font: inherit; font-size: 30px; letter-spacing: 0.45em; text-align: center; width: 6.2em;
+  padding: 8px 0 8px 0.45em; color: var(--ink); background: var(--bg-2);
+  border: 1px solid rgba(201, 162, 75, 0.6); border-radius: 3px;
+}
+.code-input:focus { outline: none; border-color: var(--gold); }

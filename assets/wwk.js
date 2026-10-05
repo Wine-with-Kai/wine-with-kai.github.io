@@ -79,6 +79,8 @@
     assist_failed: "The assistant could not finish this time.",
     assist_busy: "The assistant is busy just now. Please try again in a minute.",
     nothing_to_look_up: "Add the producer or the wine first.",
+    wrong_seat_code: "That code doesn't match. Check the code in Kai's invitation.",
+    too_many_code_tries: "Too many wrong codes. Please try again in an hour, or ask Kai.",
     bad_photo: "That photo could not be used. Please try another.",
   };
   function errorText(e) {

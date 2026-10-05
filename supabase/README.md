@@ -94,3 +94,6 @@ Open `admin.html` and create an evening in **draft**. Set it to **open** and res
 - **Limits and cost:** only seated guests can use it, 30 look-ups a day each (Kai exempt). Expect a few US cents per bottle.
 - **Refusals:** requests use `fallbacks: "default"`, so a safety decline is retried on Anthropic's recommended fallback model.
 - Apply `migrations/20261005010000_background_from_label.sql` after the earlier migrations.
+
+## Seat codes
+An evening can have a 4-digit seat code (host page, "Seat code"). The evening page then asks for it before showing anything, and reserving checks it again on the server. Codes live in `event_codes`, readable only by Kai; visitors only learn whether a code is needed (`event_needs_code`) and whether theirs is right (`unlock_event`). Wrong tries are counted per signed-in guest, or per network address before sign-in: 10 an hour, then a one-hour wait. Never commit a real code to this repository. Apply `migrations/20261005020000_seat_codes.sql`.

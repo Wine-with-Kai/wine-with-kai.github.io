@@ -113,6 +113,10 @@
     $("title").textContent = ev.title;
     $("subtitle").textContent = ev.subtitle || "";
     $("subtitle").hidden = !ev.subtitle;
+
+    // an evening with a seat code opens only once the code is entered
+    if (!(await unlocked())) { showGate(); return; }
+
     $("bar").hidden = false;
     $("bar-when").textContent = W.when(ev.starts_at);
     $("bar-where").textContent = ev.venue || "";
@@ -165,6 +169,64 @@
     });
 
     await renderGuest();
+  }
+
+  // ---------- the seat code ----------
+  const CODE_KEY = `wwk-code-${slug}`;
+  let seatCode = "";
+  const storedCode = () => { try { return localStorage.getItem(CODE_KEY) || ""; } catch (_) { return ""; } };
+  const storeCode = (c) => { try { c ? localStorage.setItem(CODE_KEY, c) : localStorage.removeItem(CODE_KEY); } catch (_) {} };
+
+  // true when the evening has no code, the phone remembers the right one,
+  // or the visitor is Kai or already holds a seat
+  async function unlocked() {
+    if (!(await W.rpc("event_needs_code", { p_slug: slug }))) return true;
+    const u = await W.user();
+    if (u) {
+      const { data: adm } = await W.client.from("admins").select("email").limit(1);
+      const { data: res } = await W.client.from("reservations").select("id")
+        .eq("event_id", ev.id).eq("user_id", u.id).neq("status", "cancelled").limit(1);
+      if ((adm && adm.length) || (res && res.length)) return true;
+    }
+    const c = storedCode();
+    if (c && (await W.rpc("unlock_event", { p_slug: slug, p_code: c })) === "ok") { seatCode = c; return true; }
+    storeCode("");
+    return false;
+  }
+
+  function showGate(note) {
+    $("bar").hidden = true;
+    page.innerHTML = `
+      <div class="panel gate">
+        <p class="kicker">Private evening</p>
+        <p>Enter the 4-digit code from Kai&rsquo;s invitation.</p>
+        <form id="gate-form" autocomplete="off">
+          <input name="code" class="code-input" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+            autocomplete="one-time-code" aria-label="4-digit code" placeholder="&bull;&bull;&bull;&bull;" required>
+          <button class="btn small solid" type="submit">Open</button>
+        </form>
+        <p class="msg ${note ? "err" : ""}" data-msg aria-live="polite">${note ? W.esc(note) : ""}</p>
+      </div>`;
+    const f = $("gate-form");
+    const input = f.code;
+    const msg = page.querySelector("[data-msg]");
+    const tryCode = async () => {
+      const c = input.value.replace(/\D/g, "").slice(0, 4);
+      if (c.length !== 4) return;
+      f.querySelector("button").disabled = true;
+      const v = await W.rpc("unlock_event", { p_slug: slug, p_code: c }).catch(() => "wrong");
+      f.querySelector("button").disabled = false;
+      if (v === "ok") { storeCode(c); seatCode = c; load(); return; }
+      msg.className = "msg err";
+      msg.textContent = W.errorText(v === "locked" ? "too_many_code_tries" : "wrong_seat_code");
+      input.select();
+    };
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "").slice(0, 4);
+      if (input.value.length === 4) tryCode();
+    });
+    f.addEventListener("submit", (e) => { e.preventDefault(); tryCode(); });
+    input.focus();
   }
 
   // the guest panel, then (for BYOB evenings) the bottle sections beneath it
@@ -278,10 +340,11 @@
     btn.disabled = true;
     try {
       if (what === "reserve") {
-        const r = await W.callFn("create-deposit-checkout", { slug });
+        const r = await W.callFn("create-deposit-checkout", { slug, code: seatCode });
         if (r.url) { location.href = r.url; return; }
       } else if (what === "interest") {
-        await W.rpc("register_interest", { p_slug: slug });
+        const st = await W.rpc("register_interest", { p_slug: slug, p_code: seatCode });
+        if (st === "wrong_seat_code" || st === "too_many_code_tries") throw { code: st };
       } else if (what === "withdraw") {
         await W.rpc("withdraw", { p_slug: slug });
       } else if (what === "cancel") {
@@ -298,7 +361,10 @@
       }
       await load();
       if (what === "reserve" && seated && $("mine")) $("mine").scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (e) { fail(e); }
+    } catch (e) {
+      if (e && e.code === "wrong_seat_code") { storeCode(""); seatCode = ""; showGate(W.errorText(e)); return; }
+      fail(e);
+    }
   }
 
   async function renderLineup() {

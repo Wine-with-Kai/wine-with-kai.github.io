@@ -5,8 +5,9 @@
 -- confirmed straight away and Stripe is not needed. Dinner is settled
 -- separately: only the bottles are split, at the price each guest shares
 -- theirs for.
--- Open to anyone with the link (invite_only false): Kai shares it with Alvin
--- and Joshua on WhatsApp, and the 3-seat limit keeps the table to three.
+-- Not invite-only: the evening is guarded by a 4-digit seat code that Kai
+-- sends with the invitation. Set it on the host page (it is stored in
+-- event_codes, never in this public repository).
 
 insert into public.events (
   slug, title, subtitle, description, format, starts_at, venue, seats,

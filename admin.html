@@ -1113,6 +1113,16 @@ html.cam-open, html.cam-open body { overflow: hidden; }
 .form .price-ask { color: var(--ink); font-size: 16px; letter-spacing: 0.02em; }
 .form .price-ask input { font-size: 20px; border-color: rgba(201, 162, 75, 0.55); }
 
+/* the seat-code screen */
+.gate { text-align: center; max-width: 420px; margin: 26px auto; }
+.gate form { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 8px; }
+.code-input {
+  font: inherit; font-size: 30px; letter-spacing: 0.45em; text-align: center; width: 6.2em;
+  padding: 8px 0 8px 0.45em; color: var(--ink); background: var(--bg-2);
+  border: 1px solid rgba(201, 162, 75, 0.6); border-radius: 3px;
+}
+.code-input:focus { outline: none; border-color: var(--gold); }
+
 </style>
 <style>
   /* the host's page runs a little wider for the ledgers */
@@ -1254,6 +1264,8 @@ window.WWK_CONFIG = {
     assist_failed: "The assistant could not finish this time.",
     assist_busy: "The assistant is busy just now. Please try again in a minute.",
     nothing_to_look_up: "Add the producer or the wine first.",
+    wrong_seat_code: "That code doesn't match. Check the code in Kai's invitation.",
+    too_many_code_tries: "Too many wrong codes. Please try again in an hour, or ask Kai.",
     bad_photo: "That photo could not be used. Please try another.",
   };
   function errorText(e) {
@@ -1761,6 +1773,11 @@ window.WWK_CONFIG = {
             <label class="check" style="align-self:end;"><input name="invite_only" type="checkbox" ${e.invite_only ? "checked" : ""}> By invitation only</label>
           </div>
           <div class="row">
+            <label>Seat code <span class="hint">4 digits guests enter to open the evening page; blank = no code</span>
+              <input name="seat_code" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="e.g. 4821"></label>
+            <span></span>
+          </div>
+          <div class="row">
             <label>Shared costs (S$) <span class="hint">optional: venue or corkage to split; leave 0 to split bottles only</span>
               <input name="shared" type="number" min="0" step="0.01" value="${toDollars(e.shared_costs_cents)}"></label>
             <label>Shared costs note <input name="shared_costs_note" placeholder="corkage and dinner" value="${esc(e.shared_costs_note || "")}"></label>
@@ -1782,8 +1799,14 @@ window.WWK_CONFIG = {
         </form>
       </div>`;
     const f = $("ev-form");
+    if (!isNew) W.client.from("event_codes").select("code").eq("event_id", e.id).maybeSingle()
+      .then(({ data }) => { if (data) f.seat_code.value = data.code; });
     f.addEventListener("submit", async (ev) => {
       ev.preventDefault();
+      const code = f.seat_code.value.trim();
+      if (code && !/^[0-9]{4}$/.test(code)) {
+        const m = f.querySelector("[data-msg]"); m.className = "msg err"; m.textContent = "The seat code must be 4 digits, or blank."; return;
+      }
       const row = {
         title: f.title.value.trim(), slug: f.slug.value.trim(), subtitle: f.subtitle.value.trim() || null,
         description: f.description.value.trim() || null, format: f.format.value, status: f.status.value,
@@ -1799,6 +1822,10 @@ window.WWK_CONFIG = {
         : await W.client.from("events").update(row).eq("id", current.id).select().single();
       const msg = f.querySelector("[data-msg]");
       if (res.error) { msg.className = "msg err"; msg.textContent = res.error.message; return; }
+      const saved = code
+        ? await W.client.from("event_codes").upsert({ event_id: res.data.id, code, updated_at: new Date().toISOString() })
+        : await W.client.from("event_codes").delete().eq("event_id", res.data.id);
+      if (saved.error) { msg.className = "msg err"; msg.textContent = saved.error.message; return; }
       await loadEvents(res.data.id);
     });
   }
@@ -1867,16 +1894,19 @@ window.WWK_CONFIG = {
   }
 
   // the message Kai sends; WhatsApp opens with it ready, Kai picks the chat
-  function inviteMessage(name) {
+  function inviteMessage(name, code) {
     const link = new URL(`reserve.html?event=${encodeURIComponent(current.slug)}`, location.href).href;
     return `${name ? `Hi ${name}! ` : ""}You're invited to ${current.title}, ${W.when(current.starts_at)}` +
       `${current.venue ? ` at ${current.venue}` : ""}.\n\n` +
-      `Reserve your seat${current.format === "byob" ? " and add your bottle" : ""} here: ${link}\n` +
-      `Sign in with the email address you gave me; you'll get a 6-digit code.`;
+      `Reserve your seat${current.format === "byob" ? " and add your bottle" : ""} here: ${link}` +
+      `${code ? `\nYour code to open the page: ${code}` : ""}\n` +
+      `Sign in with Google, or with your email for a one-time code.`;
   }
   const whatsapp = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
 
   async function invites() {
+    const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", current.id).maybeSingle();
+    const code = codeRow ? codeRow.code : "";
     const [{ data, error }, { data: res }] = await Promise.all([
       W.client.from("invitations").select("*").eq("event_id", current.id).order("created_at"),
       W.client.from("reservations").select("status, profiles(email)").eq("event_id", current.id).neq("status", "cancelled"),
@@ -1896,7 +1926,7 @@ window.WWK_CONFIG = {
           <label>Email <input name="email" type="email" required placeholder="alvin@example.com" autocomplete="off"></label>
         </div>
         <div class="actions"><button class="btn small" type="submit">Invite</button>
-          <a class="linkish" href="${esc(whatsapp(inviteMessage("")))}" target="_blank" rel="noopener">Share the evening on WhatsApp</a></div>
+          <a class="linkish" href="${esc(whatsapp(inviteMessage("", code)))}" target="_blank" rel="noopener">Share the evening on WhatsApp</a></div>
         <p class="msg" data-msg aria-live="polite"></p>
       </form>
       <div class="table-wrap"><table class="ledger">
@@ -1904,7 +1934,7 @@ window.WWK_CONFIG = {
         <tbody>${data.map((i) => `
         <tr><td>${esc(i.name || "")}<small>${esc(i.email)}</small></td>
           <td><span class="pill ${statusOf(i.email)}">${statusOf(i.email)}</span></td>
-          <td class="num"><a class="btn small" href="${esc(whatsapp(inviteMessage(i.name)))}" target="_blank" rel="noopener">WhatsApp</a>
+          <td class="num"><a class="btn small" href="${esc(whatsapp(inviteMessage(i.name, code)))}" target="_blank" rel="noopener">WhatsApp</a>
             <button class="linkish danger" data-rm="${esc(i.email)}">Remove</button></td></tr>`).join("") ||
         `<tr><td colspan="3" class="muted">No invitations yet.</td></tr>`}</tbody></table></div>`;
     $("inv-form").addEventListener("submit", async (e) => {

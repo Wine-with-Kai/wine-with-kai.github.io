@@ -12,12 +12,17 @@ Deno.serve(async (req) => {
   const user = await currentUser(req);
   if (!user) return json(req, { error: "not_signed_in" }, 401);
 
-  const { slug } = await req.json().catch(() => ({}));
+  const { slug, code } = await req.json().catch(() => ({}));
   const { data: ev } = await db.from("events").select("*").eq("slug", slug ?? "").maybeSingle();
   if (!ev) return json(req, { error: "event_not_found" }, 404);
 
   const { data: profile } = await db.from("profiles").select("id").eq("id", user.id).maybeSingle();
   if (!profile) return json(req, { error: "no_profile" }, 400);
+
+  // the evening's seat code, if Kai set one (checked here, never sent to browsers)
+  const { data: verdict } = await db.rpc("check_seat_code", { p_event: ev.id, p_user: user.id, p_code: code ?? "" });
+  if (verdict === "wrong") return json(req, { error: "wrong_seat_code" }, 403);
+  if (verdict === "locked") return json(req, { error: "too_many_code_tries" }, 429);
 
   // an earlier unpaid checkout for this seat is closed before a new one opens
   const { data: previous } = await db.from("reservations")
