@@ -1265,6 +1265,27 @@ html.story-mode .site-top, html.story-mode .rule-crimson, html.story-mode .page-
 .sp-in #mine .assist { text-align: center; }
 .sp-in #mine .assist .assist-row { justify-content: center; }
 
+/* the sheet shown while the line-up note is written */
+.busy-sheet {
+  position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(12, 5, 7, 0.72);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  animation: busy-in 0.25s ease; transition: opacity 0.3s ease;
+}
+.busy-sheet.gone { opacity: 0; }
+@keyframes busy-in { from { opacity: 0; } }
+.busy-card {
+  width: 100%; max-width: 340px; text-align: center; padding: 28px 26px 24px;
+  background: var(--bg-2); border: 1px solid rgba(201, 162, 75, 0.35); border-radius: 6px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+.busy-card .kicker { margin: 0 0 10px; }
+.busy-line { margin: 0 0 18px; font-size: 18px; line-height: 1.45; color: var(--ink); }
+.busy-bar { height: 4px; border-radius: 4px; background: rgba(201, 162, 75, 0.18); overflow: hidden; }
+.busy-bar span { display: block; height: 100%; width: 4%; background: var(--gold); border-radius: 4px; transition: width 0.3s ease; }
+.busy-hint { margin: 12px 0 0; font-size: 14px; font-style: italic; color: var(--ink-faint); }
+@media (prefers-reduced-motion: reduce) { .busy-sheet { animation: none; } }
+
 </style>
 </head>
 <body>
@@ -2489,6 +2510,34 @@ window.WWK_CONFIG = {
     }
   }
 
+  // a sheet over the page while the note is written: what is happening, and a bar that moves
+  function progressSheet(title, line) {
+    const el = document.createElement("div");
+    el.className = "busy-sheet";
+    el.innerHTML = `<div class="busy-card" role="status" aria-live="polite">
+        <p class="kicker">${title}</p>
+        <p class="busy-line">${line}</p>
+        <div class="busy-bar" aria-hidden="true"><span></span></div>
+        <p class="busy-hint">This takes a few seconds.</p>
+      </div>`;
+    document.body.appendChild(el);
+    const bar = el.querySelector(".busy-bar span");
+    const t0 = performance.now();
+    // eases towards 90% while waiting; the last stretch is filled when the work is done
+    const tick = setInterval(() => {
+      bar.style.width = `${4 + 86 * (1 - Math.exp(-(performance.now() - t0) / 6000))}%`;
+    }, 150);
+    return {
+      line(text) { el.querySelector(".busy-line").textContent = text; },
+      async close(ok) {
+        clearInterval(tick);
+        if (ok) { bar.style.width = "100%"; await new Promise((r) => setTimeout(r, 400)); }
+        el.classList.add("gone");
+        setTimeout(() => el.remove(), 300);
+      },
+    };
+  }
+
   // the note for the line-up, written from the details as the guest left them
   async function writeNote(row) {
     try {
@@ -2512,6 +2561,7 @@ window.WWK_CONFIG = {
       if (!confirm(`${W.money(price_cents, ev.currency)} is outside the evening's suggested range of ${priceRange()}. Add it anyway?`)) return;
     }
     btn.disabled = true;
+    let sheet = null;
     try {
       const row = {
         event_id: ev.id,
@@ -2530,16 +2580,17 @@ window.WWK_CONFIG = {
         && (b.vintage || null) === row.vintage && (b.region || null) === row.region;
       let noNote = false;
       if (!same) {
-        btn.textContent = "Writing the line-up note\u2026";
+        sheet = progressSheet(b ? "Saving your bottle" : "Adding your bottle", "Writing the note for the line-up from your details\u2026");
         row.lookup_id = await writeNote(row);
         noNote = !row.lookup_id;
-        btn.textContent = "Adding\u2026";
+        sheet.line(b ? "Saving your changes\u2026" : "Adding it to the evening\u2026");
       }
       const res = b
         ? await W.client.from("bottles").update(row).eq("id", b.id)
         : await W.client.from("bottles").insert(row);
       if (res.error) throw res.error;
       if (b && assist.photo_path && b.photo_path) await W.client.storage.from("labels").remove([b.photo_path]);
+      if (sheet) { await sheet.close(true); sheet = null; }
       editing = null;
       await refresh();
       if ($("sp-lineup")) {
@@ -2548,8 +2599,8 @@ window.WWK_CONFIG = {
         if (!b) setTimeout(() => glide($("sp-lineup")), 700);
       }
     } catch (e) {
+      if (sheet) sheet.close(false);
       btn.disabled = false;
-      btn.textContent = b ? "Save changes" : "Add to the evening";
       msg.className = "msg err";
       msg.textContent = e.message || W.errorText(e);
     }

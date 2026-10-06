@@ -789,6 +789,34 @@
     }
   }
 
+  // a sheet over the page while the note is written: what is happening, and a bar that moves
+  function progressSheet(title, line) {
+    const el = document.createElement("div");
+    el.className = "busy-sheet";
+    el.innerHTML = `<div class="busy-card" role="status" aria-live="polite">
+        <p class="kicker">${title}</p>
+        <p class="busy-line">${line}</p>
+        <div class="busy-bar" aria-hidden="true"><span></span></div>
+        <p class="busy-hint">This takes a few seconds.</p>
+      </div>`;
+    document.body.appendChild(el);
+    const bar = el.querySelector(".busy-bar span");
+    const t0 = performance.now();
+    // eases towards 90% while waiting; the last stretch is filled when the work is done
+    const tick = setInterval(() => {
+      bar.style.width = `${4 + 86 * (1 - Math.exp(-(performance.now() - t0) / 6000))}%`;
+    }, 150);
+    return {
+      line(text) { el.querySelector(".busy-line").textContent = text; },
+      async close(ok) {
+        clearInterval(tick);
+        if (ok) { bar.style.width = "100%"; await new Promise((r) => setTimeout(r, 400)); }
+        el.classList.add("gone");
+        setTimeout(() => el.remove(), 300);
+      },
+    };
+  }
+
   // the note for the line-up, written from the details as the guest left them
   async function writeNote(row) {
     try {
@@ -812,6 +840,7 @@
       if (!confirm(`${W.money(price_cents, ev.currency)} is outside the evening's suggested range of ${priceRange()}. Add it anyway?`)) return;
     }
     btn.disabled = true;
+    let sheet = null;
     try {
       const row = {
         event_id: ev.id,
@@ -830,16 +859,17 @@
         && (b.vintage || null) === row.vintage && (b.region || null) === row.region;
       let noNote = false;
       if (!same) {
-        btn.textContent = "Writing the line-up note\u2026";
+        sheet = progressSheet(b ? "Saving your bottle" : "Adding your bottle", "Writing the note for the line-up from your details\u2026");
         row.lookup_id = await writeNote(row);
         noNote = !row.lookup_id;
-        btn.textContent = "Adding\u2026";
+        sheet.line(b ? "Saving your changes\u2026" : "Adding it to the evening\u2026");
       }
       const res = b
         ? await W.client.from("bottles").update(row).eq("id", b.id)
         : await W.client.from("bottles").insert(row);
       if (res.error) throw res.error;
       if (b && assist.photo_path && b.photo_path) await W.client.storage.from("labels").remove([b.photo_path]);
+      if (sheet) { await sheet.close(true); sheet = null; }
       editing = null;
       await refresh();
       if ($("sp-lineup")) {
@@ -848,8 +878,8 @@
         if (!b) setTimeout(() => glide($("sp-lineup")), 700);
       }
     } catch (e) {
+      if (sheet) sheet.close(false);
       btn.disabled = false;
-      btn.textContent = b ? "Save changes" : "Add to the evening";
       msg.className = "msg err";
       msg.textContent = e.message || W.errorText(e);
     }
