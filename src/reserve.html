@@ -650,7 +650,7 @@
       ${story && (b || !bottles.length) ? "" : `<h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>`}
       <div class="assist">
         <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
-        <p class="hint-line">We read the label and fill in the details for you; you check them, set your price, and add it.
+        <p class="hint-line">We read the label and fill in the details; you check them, add anything missing and set your price.
           ${b ? "" : `No photo to hand? <button class="linkish" type="button" id="type-it">Type it in instead</button>`}</p>
         <div class="assist-row">
           <img id="photo-preview" class="label" alt="Your label photo" ${b && b.photo_path ? `src="${W.esc(labelUrl(b.photo_path))}"` : "hidden"}>
@@ -671,13 +671,10 @@
         </div>
         <label class="price-ask">I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
           <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
-        <div id="background" hidden></div>
-        <div class="actions" id="bg-row" style="margin-top:0;" ${b && b.background ? "hidden" : ""}>
-          <button class="linkish" type="button" id="look-up">Write the background</button>
-          <span class="hint">a short note on the wine, for the line-up</span>
-        </div>
         <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
           <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
+        <p class="hint-line">${b ? "If you change the wine or the vintage, we rewrite its note for the line-up." 
+          : "When you add it, we write a short note on the wine for the line-up, from the details above."}</p>
         <div class="actions">
           <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the evening"}</button>
           ${b ? `<button class="linkish" type="button" id="cancel-edit">Cancel</button>` : ""}
@@ -703,15 +700,13 @@
     if (!form) return;
 
     // what the assistant has produced for this form so far
-    const assist = { photo_path: null, lookup: null, busy: false };
-    if (b && b.background) showBackground(b.background, assist);
+    const assist = { photo_path: null, busy: false };
 
     form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
     $("photo-btn").addEventListener("click", async () => {
       const file = await W.captureLabel();
       if (file) fromPhoto(file, form, g, assist);
     });
-    $("look-up").addEventListener("click", () => lookUp(form, assist));
     const another = $("add-another");
     if (another) another.addEventListener("click", () => {
       $("add-another-row").hidden = true;
@@ -724,7 +719,7 @@
 
   // ---------- the bottle assistant ----------
 
-  const STEPS = [["label", "Reading the label"], ["bg", "Writing the background"]];
+  const STEPS = [["label", "Reading the label"]];
 
   function steps(state, note) {
     const el = $("steps");
@@ -744,11 +739,11 @@
     n.textContent = note || "";
   }
 
-  // one call reads the label and writes the background
+  // the photo fills in the form; the note for the line-up waits for the checked details
   async function fromPhoto(file, form, g, assist) {
     if (assist.busy) return;
     assist.busy = true;
-    const state = { label: "busy", bg: "busy" };
+    const state = { label: "busy" };
     steps(state);
     const preview = $("photo-preview");
     preview.src = URL.createObjectURL(file);
@@ -764,7 +759,7 @@
 
       const r = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
       if (!r.is_wine_label) {
-        state.label = state.bg = "fail";
+        state.label = "fail";
         steps(state, "That does not look like a wine label. Try another photo, or type the details in.");
         openCheck(form);
         return;
@@ -775,19 +770,18 @@
       form.vintage.value = year ? r.vintage : "";
       if (r.region) form.region.value = r.region;
       state.label = "done";
-      state.bg = r.background ? "done" : "fail";
       steps(state);
-      assist.lookup = r;
-      if (r.background) { showBackground(r.background, assist); $("bg-row").hidden = true; }
-      // point out what needs a look, then go straight to the price
+      // point out what needs a look, then go to the first thing to fill in
       const notes = [];
       if (!year) notes.push(r.vintage === "NV" ? "Read as non-vintage." : "We could not read a vintage: add it if there is one.");
       if (r.unsure) notes.push(`Please check: ${r.unsure}`);
       openCheck(form, notes.join(" "));
       glide(form);
-      setTimeout(() => form.price.focus({ preventScroll: true }), 350);
+      const first = !form.producer.value ? form.producer : !form.wine.value ? form.wine
+        : !year && r.vintage !== "NV" ? form.vintage : form.price;
+      setTimeout(() => first.focus({ preventScroll: true }), 350);
     } catch (e) {
-      state.label = state.bg = "fail";
+      state.label = "fail";
       steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details in instead.");
       openCheck(form);
     } finally {
@@ -795,52 +789,23 @@
     }
   }
 
-  // background for a wine typed in by hand
-  async function lookUp(form, assist) {
-    if (assist.busy) return;
-    const wine = {
-      producer: form.producer.value.trim(), wine: form.wine.value.trim(),
-      vintage: form.vintage.value.trim(), region: form.region.value.trim(),
-    };
-    if (!wine.producer && !wine.wine) { form.producer.focus(); return; }
-    assist.busy = true;
-    const state = { bg: "busy" };
-    steps(state);
+  // the note for the line-up, written from the details as the guest left them
+  async function writeNote(row) {
     try {
-      const r = await W.callFn("bottle-assist", { slug, step: "describe", ...wine });
-      state.bg = r.background ? "done" : "fail";
-      steps(state, r.background ? "" : "No background for this one; the line-up will show just the wine.");
-      assist.lookup = r;
-      if (r.background) { showBackground(r.background, assist); $("bg-row").hidden = true; }
-    } catch (e) {
-      state.bg = "fail";
-      steps(state, W.errorText(e) + " You can still add the bottle without it.");
-    } finally {
-      assist.busy = false;
+      const r = await W.callFn("bottle-assist", {
+        slug, step: "describe", producer: row.producer, wine: row.wine,
+        vintage: row.vintage ? String(row.vintage) : "", region: row.region || "",
+      });
+      return r.background ? r.lookup_id : null;
+    } catch (_) {
+      return null;
     }
-  }
-
-  function showBackground(text, assist) {
-    const el = $("background");
-    el.hidden = false;
-    el.innerHTML = `
-      <div class="market">
-        <p class="kicker">Background, for the line-up</p>
-        <p class="bgtext">${W.esc(text)}</p>
-        <p class="foot-note">Written by our assistant from the details above.
-          <button class="linkish" type="button" data-drop-bg>Leave it out</button></p>
-      </div>`;
-    el.querySelector("[data-drop-bg]").addEventListener("click", () => {
-      assist.lookup = { lookup_id: null };
-      el.hidden = true;
-      $("bg-row").hidden = false;
-    });
   }
 
   async function save(form, g, b, assist) {
     const msg = form.querySelector("[data-msg]");
     const btn = form.querySelector("button[type=submit]");
-    if (assist.busy && !confirm("The assistant is still working. Add the bottle without waiting for it?")) return;
+    if (assist.busy) return;
     const price_cents = Math.round(parseFloat(form.price.value) * 100);
     const lo = ev.price_min_cents, hi = ev.price_max_cents;
     if ((lo != null && price_cents < lo) || (hi != null && price_cents > hi)) {
@@ -858,9 +823,18 @@
         price_cents,
         note: form.note.value.trim() || null,
       };
-      // the background is copied server-side from this lookup (null leaves it out)
-      if (assist.lookup) row.lookup_id = assist.lookup.lookup_id;
       if (assist.photo_path) row.photo_path = assist.photo_path;
+      // a new bottle, a changed wine or one without a note gets a fresh note; the
+      // background is copied server-side from the lookup (null leaves it out)
+      const same = b && b.background && b.producer === row.producer && b.wine === row.wine
+        && (b.vintage || null) === row.vintage && (b.region || null) === row.region;
+      let noNote = false;
+      if (!same) {
+        btn.textContent = "Writing the line-up note\u2026";
+        row.lookup_id = await writeNote(row);
+        noNote = !row.lookup_id;
+        btn.textContent = "Adding\u2026";
+      }
       const res = b
         ? await W.client.from("bottles").update(row).eq("id", b.id)
         : await W.client.from("bottles").insert(row);
@@ -869,11 +843,13 @@
       editing = null;
       await refresh();
       if ($("sp-lineup")) {
-        toast(b ? "Saved." : "Added. Thank you.");
+        toast(noNote ? (b ? "Saved, without a note this time." : "Added, without a note this time.")
+          : b ? "Saved." : "Added. Thank you.");
         if (!b) setTimeout(() => glide($("sp-lineup")), 700);
       }
     } catch (e) {
       btn.disabled = false;
+      btn.textContent = b ? "Save changes" : "Add to the evening";
       msg.className = "msg err";
       msg.textContent = e.message || W.errorText(e);
     }

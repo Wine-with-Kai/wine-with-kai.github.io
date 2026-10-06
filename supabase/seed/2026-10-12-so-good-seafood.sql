@@ -16,7 +16,7 @@ insert into public.events (
   invite_only, status
 ) values (
   'so-good-seafood',
-  'Something You Love',
+  'Tally Get Together',
   null,
   E'Our first bring-your-own-bottle evening.\nAny colour, any region, ready to drink.',
   'byob',

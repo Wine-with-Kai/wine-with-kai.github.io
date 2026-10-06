@@ -1,7 +1,7 @@
-// The bottle assistant behind "Add your bottle". One Claude call per bottle, no web search:
-//   step "label":    reads the label photo into producer, wine, vintage, region, and writes
-//                    a short background note for the line-up from Claude's own knowledge
-//   step "describe": the same background note for a wine the guest typed in (no photo)
+// The bottle assistant behind "Add your bottle". Two short Claude calls per bottle, no web search:
+//   step "label":    reads the label photo into producer, wine, vintage, region
+//   step "describe": writes the background note for the line-up from the details the guest
+//                    has checked and completed (so a vintage added by hand is in the note)
 // There is no market price: the tally uses the price each guest shares their bottle for.
 // Results are stored in bottle_lookups; the bottle row copies the background from
 // there (see bottles_guard), so it is always the assistant's note, never typed text.
@@ -27,7 +27,7 @@ function ask(params: Record<string, unknown>) {
   } as Parameters<typeof anthropic.beta.messages.create>[0]) as Promise<Anthropic.Beta.Messages.BetaMessage>;
 }
 
-// ---------- the background note, shared by both steps ----------
+// ---------- the background note ----------
 
 const BACKGROUND_RULES = `The background is 40 to 80 words of plain, factual prose for guests at the dinner:
 who makes the wine, where the vineyard or appellation sits, what the vintage was like in that region,
@@ -46,15 +46,13 @@ and for the wine give the cuvee, appellation, vineyard and classification as the
 for a non-vintage wine, or "" if it is not visible. For the region give the appellation's region and
 country in plain words (for example "Gevrey-Chambertin, Burgundy, France"). Use "" for anything you
 cannot read; do not guess at text that is cut off or blurred, and mention it in "unsure" instead.
-If the photo is not of a wine label, set is_wine_label to false and leave the background "".
-
-${BACKGROUND_RULES}
+If the photo is not of a wine label, set is_wine_label to false.
 
 When you are done, call record_label once.`;
 
 const RECORD_LABEL = {
   name: "record_label",
-  description: "Record what the wine label in the photo says, with the background note. Call it exactly once.",
+  description: "Record what the wine label in the photo says. Call it exactly once.",
   strict: true,
   input_schema: {
     type: "object",
@@ -66,9 +64,8 @@ const RECORD_LABEL = {
       region: { type: "string", description: "Region and country, or \"\"." },
       colour: { type: "string", enum: ["red", "white", "rose", "sparkling", "sweet", "fortified", "unknown"] },
       unsure: { type: "string", description: "Anything that could not be read clearly, or \"\"." },
-      background: { type: "string", description: "40 to 80 words for the line-up, or \"\"." },
     },
-    required: ["is_wine_label", "producer", "wine", "vintage", "region", "colour", "unsure", "background"],
+    required: ["is_wine_label", "producer", "wine", "vintage", "region", "colour", "unsure"],
     additionalProperties: false,
   },
 };
@@ -78,7 +75,7 @@ async function readLabel(imageUrl: string) {
     role: "user",
     content: [
       { type: "image", source: { type: "url", url: imageUrl } },
-      { type: "text", text: "Read this label, write the background, and record both with record_label." },
+      { type: "text", text: "Read this label and record it with record_label." },
     ],
   }];
   return await untilToolCall("record_label", messages, {
@@ -88,7 +85,7 @@ async function readLabel(imageUrl: string) {
   });
 }
 
-// ---------- background for a typed-in wine ----------
+// ---------- background, from the details the guest confirmed ----------
 
 const DESCRIBE_SYSTEM = `You write short background notes on wines for a private wine-dinner group in Singapore.
 
@@ -111,7 +108,7 @@ const RECORD_BACKGROUND = {
 };
 
 async function describe(w: { producer: string; wine: string; vintage: string; region: string }) {
-  const described = [w.producer, w.wine, w.vintage || "vintage unknown", w.region].filter(Boolean).join(", ");
+  const described = [w.producer, w.wine, w.vintage || "no vintage given (it may be non-vintage)", w.region].filter(Boolean).join(", ");
   const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{
     role: "user",
     content: `The wine: ${described}.\nWrite the background and record it with record_background.`,
@@ -196,7 +193,6 @@ Deno.serve(async (req) => {
         is_wine_label: !!r.is_wine_label,
         producer: clip(r.producer), wine: clip(r.wine), vintage: clip(r.vintage, 8),
         region: clip(r.region), colour: r.colour, unsure: clip(r.unsure, 300),
-        background: r.is_wine_label ? tidy(r.background) : "",
       };
     } else if (body.step === "describe") {
       const wine = {

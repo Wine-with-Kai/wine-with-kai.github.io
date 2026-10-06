@@ -1807,8 +1807,9 @@ window.WWK_CONFIG = {
       <div class="panel">
         <p class="kicker">Test the bottle assistant</p>
         ${byob ? `
-        <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label
-          and writes the background note in one step, exactly as it will for guests (a few US cents a test).
+        <p class="muted">Try the label reader on any bottle. Nothing is added to an evening. Each test reads the label,
+          then writes the line-up note from what it read (a few US cents a test). Guests check and complete the
+          details first, so their note is written from the corrected wine.
           To add your own bottle to an evening, reserve your seat on the evening page: the same camera leads
           straight to <em>Check and add</em>.</p>
         <button type="button" class="btn small solid snap" id="lab-photo">Photograph a label</button>
@@ -1823,7 +1824,7 @@ window.WWK_CONFIG = {
     const stepsEl = $("lab-steps");
     const show = (state, note) => {
       stepsEl.hidden = false;
-      const rows = [["label", "Reading the label and writing the background"]];
+      const rows = [["label", "Reading the label"], ["bg", "Writing the line-up note"]];
       stepsEl.innerHTML = rows.filter(([k]) => state[k]).map(([k, t]) => `
         <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
         ${t}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("") + (note ? `<li class="note">${esc(note)}</li>` : "");
@@ -1846,7 +1847,16 @@ window.WWK_CONFIG = {
         if (up.error) throw up.error;
         const label = await W.callFn("bottle-assist", { slug: byob.slug, step: "label", photo_path: path });
         state.label = label.is_wine_label ? "done" : "fail";
+        if (label.is_wine_label) state.bg = "busy";
         show(state);
+        if (label.is_wine_label) {
+          const d = await W.callFn("bottle-assist", { slug: byob.slug, step: "describe",
+            producer: label.producer, wine: label.wine, vintage: /^\d{4}$/.test(label.vintage) ? label.vintage : "", region: label.region })
+            .catch(() => ({ background: "" }));
+          label.background = d.background;
+          state.bg = d.background ? "done" : "fail";
+          show(state);
+        }
         const secs = Math.round((Date.now() - t0) / 1000);
         out.innerHTML = `
           <h2 style="font-size:20px;">What the assistant saw <span class="faint" style="font-size:14px;">(${secs}s)</span></h2>
