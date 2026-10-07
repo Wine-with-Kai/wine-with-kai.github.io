@@ -1025,6 +1025,11 @@ table.ledger tfoot td { border-top: 1px solid var(--line); border-bottom: 0; col
 .market a { color: var(--gold); }
 .bgtext { color: var(--ink-soft); font-size: 16px; line-height: 1.6; margin: 6px 0 0; }
 .bottle .bgtext { font-size: 15.5px; }
+.bottle .taste { font-size: 15.5px; font-style: italic; color: var(--ink-soft); margin: 8px 0 0; }
+.bottle .taste-k {
+  display: block; font-style: normal; color: var(--gold); font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 2px;
+}
 .faint { color: var(--ink-faint); font-style: italic; }
 table.ledger td small { color: var(--ink-faint); display: block; font-size: 13.5px; }
 table.ledger a { color: var(--gold-soft); }
@@ -1202,7 +1207,9 @@ html.story-mode .site-top, html.story-mode .rule-crimson, html.story-mode .page-
 .sp-theme { white-space: pre-line; }
 .sp-in #lineup .bottle { display: block; text-align: center; padding: 22px 0; }
 .sp-in #lineup .bottle .yr { font-size: 30px; margin-bottom: 8px; }
-.sp-in #lineup .bottle .bgtext { max-width: 460px; margin: 10px auto 0; }
+.sp-in #lineup .bottle .bgtext, .sp-in #lineup .bottle .taste { max-width: 460px; margin-left: auto; margin-right: auto; }
+.sp-in #lineup .bottle .bgtext { margin-top: 10px; }
+.sp-in #lineup .bottle .taste { margin-top: 12px; }
 .sp-in #lineup .bottle img.label { display: block; margin: 14px auto 0; }
 .sp-in #lineup .bottle .side { text-align: center; margin-top: 10px; }
 .sp-in #lineup .bottle .side:empty { display: none; }
@@ -2170,14 +2177,20 @@ window.WWK_CONFIG = {
     if (error) throw error;
     const c = current.currency;
     const url = (p) => W.client.storage.from("labels").getPublicUrl(p).data.publicUrl;
+    const missing = data.filter((b) => !b.background || !b.tasting_note);
     $("tab-body").innerHTML = `
+      ${missing.length ? `<div class="actions" style="margin:0 0 10px;">
+        <button class="btn small solid" type="button" id="write-notes">Write the missing notes (${missing.length})</button>
+        <span class="hint">the assistant writes them from each bottle&rsquo;s details</span></div>
+        <p class="msg" id="notes-msg" aria-live="polite"></p>` : ""}
       <div class="table-wrap"><table class="ledger">
         <thead><tr><th>Wine</th><th>Guest</th><th class="num">Shared for</th><th>Status</th><th></th></tr></thead>
         <tbody>${data.map((b) => `
           <tr>
             <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
               <small>${esc(b.region || "")}${b.note ? ` &middot; &ldquo;${esc(b.note)}&rdquo;` : ""}
-              ${b.background ? `<br>${esc(b.background)}` : ""}
+              ${b.background ? `<br>${esc(b.background)}` : `<br><em>No background yet.</em>`}
+              ${b.tasting_note ? `<br><em>In the glass:</em> ${esc(b.tasting_note)}` : `<br><em>No tasting note yet.</em>`}
               ${b.photo_path ? ` &middot; <a href="${esc(url(b.photo_path))}" target="_blank" style="color:var(--gold);">label</a>` : ""}</small></td>
             <td>${esc(b.profiles.full_name)}</td>
             <td class="num">${W.money(b.price_cents, c)}</td>
@@ -2199,6 +2212,31 @@ window.WWK_CONFIG = {
       await W.client.from("bottles").update(upd).eq("id", btn.dataset.id);
       bottles();
     }));
+    // fill in what is missing; a bottle that already has its background keeps it
+    const write = $("write-notes");
+    if (write) write.addEventListener("click", async () => {
+      write.disabled = true;
+      const msg = $("notes-msg");
+      let done = 0, failed = 0;
+      for (const b of missing) {
+        msg.className = "msg";
+        msg.textContent = `Writing ${done + failed + 1} of ${missing.length}: ${b.producer} ${b.wine}\u2026`;
+        try {
+          const r = await W.callFn("bottle-assist", { slug: current.slug, step: "describe",
+            producer: b.producer, wine: b.wine, vintage: b.vintage ? String(b.vintage) : "", region: b.region || "" });
+          const upd = b.background ? { tasting_note: r.tasting_note || null }
+            : { background: r.background || null, tasting_note: r.tasting_note || null };
+          const { error: err } = await W.client.from("bottles").update(upd).eq("id", b.id);
+          if (err) throw err;
+          done++;
+        } catch (_) { failed++; }
+      }
+      await bottles();
+      const m = $("notes-msg") || document.createElement("p");
+      if (!$("notes-msg")) { m.className = "msg"; $("tab-body").prepend(m); }
+      m.className = failed ? "msg err" : "msg ok";
+      m.textContent = failed ? `Wrote ${done}; ${failed} could not be written, try again.` : `Wrote the notes for ${done} bottle${done === 1 ? "" : "s"}.`;
+    });
   }
 
   async function tally() {

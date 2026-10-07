@@ -205,6 +205,11 @@ table.ledger tfoot td { border-top: 1px solid var(--line); border-bottom: 0; col
 .market a { color: var(--gold); }
 .bgtext { color: var(--ink-soft); font-size: 16px; line-height: 1.6; margin: 6px 0 0; }
 .bottle .bgtext { font-size: 15.5px; }
+.bottle .taste { font-size: 15.5px; font-style: italic; color: var(--ink-soft); margin: 8px 0 0; }
+.bottle .taste-k {
+  display: block; font-style: normal; color: var(--gold); font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 2px;
+}
 .faint { color: var(--ink-faint); font-style: italic; }
 table.ledger td small { color: var(--ink-faint); display: block; font-size: 13.5px; }
 table.ledger a { color: var(--gold-soft); }
@@ -382,7 +387,9 @@ html.story-mode .site-top, html.story-mode .rule-crimson, html.story-mode .page-
 .sp-theme { white-space: pre-line; }
 .sp-in #lineup .bottle { display: block; text-align: center; padding: 22px 0; }
 .sp-in #lineup .bottle .yr { font-size: 30px; margin-bottom: 8px; }
-.sp-in #lineup .bottle .bgtext { max-width: 460px; margin: 10px auto 0; }
+.sp-in #lineup .bottle .bgtext, .sp-in #lineup .bottle .taste { max-width: 460px; margin-left: auto; margin-right: auto; }
+.sp-in #lineup .bottle .bgtext { margin-top: 10px; }
+.sp-in #lineup .bottle .taste { margin-top: 12px; }
 .sp-in #lineup .bottle img.label { display: block; margin: 14px auto 0; }
 .sp-in #lineup .bottle .side { text-align: center; margin-top: 10px; }
 .sp-in #lineup .bottle .side:empty { display: none; }

@@ -34,8 +34,14 @@ who makes the wine, where the vineyard or appellation sits, what the vintage was
 and whether it is likely to be drinking well now. Write it from what you know; there is no web search.
 Only state facts you are confident are true of this producer and wine. If the producer is not one you
 know well, keep to the appellation and the style of wine instead of guessing, and if you cannot say
-anything reliable, leave the background as "". No tasting notes presented as fact, no scores, no
+anything reliable, leave the background as "". No tasting notes in the background, no scores, no
 prices, no marketing language, and no em or en dashes (use commas).`;
+
+const TASTING_RULES = `The tasting note is 20 to 35 words on what to expect in the glass: colour, the main
+aromas and flavours, body, acidity and tannin. It describes what this wine
+and vintage typically show, so open with "Expect" or similar rather than claiming to have tasted the bottle.
+Keep it to the style you are confident of for this wine; if you cannot say anything reliable, leave it as "".
+No scores, no prices, and no em or en dashes (use commas).`;
 
 // ---------- label reader ----------
 
@@ -85,24 +91,28 @@ async function readLabel(imageUrl: string) {
   });
 }
 
-// ---------- background, from the details the guest confirmed ----------
+// ---------- background and tasting note, from the details the guest confirmed ----------
 
-const DESCRIBE_SYSTEM = `You write short background notes on wines for a private wine-dinner group in Singapore.
+const DESCRIBE_SYSTEM = `You write short notes on wines for a private wine-dinner group in Singapore,
+for the evening's line-up: a background and a tasting note for each bottle.
 
 ${BACKGROUND_RULES}
+
+${TASTING_RULES}
 
 When you are done, call record_background once.`;
 
 const RECORD_BACKGROUND = {
   name: "record_background",
-  description: "Record the background note for the wine. Call it exactly once.",
+  description: "Record the background and tasting note for the wine. Call it exactly once.",
   strict: true,
   input_schema: {
     type: "object",
     properties: {
       background: { type: "string", description: "40 to 80 words for the line-up, or \"\"." },
+      tasting_note: { type: "string", description: "20 to 35 words on what to expect in the glass, or \"\"." },
     },
-    required: ["background"],
+    required: ["background", "tasting_note"],
     additionalProperties: false,
   },
 };
@@ -111,7 +121,7 @@ async function describe(w: { producer: string; wine: string; vintage: string; re
   const described = [w.producer, w.wine, w.vintage || "no vintage given (it may be non-vintage)", w.region].filter(Boolean).join(", ");
   const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{
     role: "user",
-    content: `The wine: ${described}.\nWrite the background and record it with record_background.`,
+    content: `The wine: ${described}.\nWrite the background and the tasting note, and record both with record_background.`,
   }];
   return await untilToolCall("record_background", messages, {
     system: DESCRIBE_SYSTEM,
@@ -202,7 +212,7 @@ Deno.serve(async (req) => {
       if (!wine.producer && !wine.wine) return json(req, { error: "nothing_to_look_up" }, 400);
       const r = await describe(wine);
       query = wine;
-      result = { background: tidy(r.background) };
+      result = { background: tidy(r.background), tasting_note: tidy(r.tasting_note) };
     } else {
       return json(req, { error: "unknown_step" }, 400);
     }

@@ -449,14 +449,20 @@
     if (error) throw error;
     const c = current.currency;
     const url = (p) => W.client.storage.from("labels").getPublicUrl(p).data.publicUrl;
+    const missing = data.filter((b) => !b.background || !b.tasting_note);
     $("tab-body").innerHTML = `
+      ${missing.length ? `<div class="actions" style="margin:0 0 10px;">
+        <button class="btn small solid" type="button" id="write-notes">Write the missing notes (${missing.length})</button>
+        <span class="hint">the assistant writes them from each bottle&rsquo;s details</span></div>
+        <p class="msg" id="notes-msg" aria-live="polite"></p>` : ""}
       <div class="table-wrap"><table class="ledger">
         <thead><tr><th>Wine</th><th>Guest</th><th class="num">Shared for</th><th>Status</th><th></th></tr></thead>
         <tbody>${data.map((b) => `
           <tr>
             <td>${b.vintage || "NV"} ${esc(b.producer)} &middot; ${esc(b.wine)}
               <small>${esc(b.region || "")}${b.note ? ` &middot; &ldquo;${esc(b.note)}&rdquo;` : ""}
-              ${b.background ? `<br>${esc(b.background)}` : ""}
+              ${b.background ? `<br>${esc(b.background)}` : `<br><em>No background yet.</em>`}
+              ${b.tasting_note ? `<br><em>In the glass:</em> ${esc(b.tasting_note)}` : `<br><em>No tasting note yet.</em>`}
               ${b.photo_path ? ` &middot; <a href="${esc(url(b.photo_path))}" target="_blank" style="color:var(--gold);">label</a>` : ""}</small></td>
             <td>${esc(b.profiles.full_name)}</td>
             <td class="num">${W.money(b.price_cents, c)}</td>
@@ -478,6 +484,31 @@
       await W.client.from("bottles").update(upd).eq("id", btn.dataset.id);
       bottles();
     }));
+    // fill in what is missing; a bottle that already has its background keeps it
+    const write = $("write-notes");
+    if (write) write.addEventListener("click", async () => {
+      write.disabled = true;
+      const msg = $("notes-msg");
+      let done = 0, failed = 0;
+      for (const b of missing) {
+        msg.className = "msg";
+        msg.textContent = `Writing ${done + failed + 1} of ${missing.length}: ${b.producer} ${b.wine}\u2026`;
+        try {
+          const r = await W.callFn("bottle-assist", { slug: current.slug, step: "describe",
+            producer: b.producer, wine: b.wine, vintage: b.vintage ? String(b.vintage) : "", region: b.region || "" });
+          const upd = b.background ? { tasting_note: r.tasting_note || null }
+            : { background: r.background || null, tasting_note: r.tasting_note || null };
+          const { error: err } = await W.client.from("bottles").update(upd).eq("id", b.id);
+          if (err) throw err;
+          done++;
+        } catch (_) { failed++; }
+      }
+      await bottles();
+      const m = $("notes-msg") || document.createElement("p");
+      if (!$("notes-msg")) { m.className = "msg"; $("tab-body").prepend(m); }
+      m.className = failed ? "msg err" : "msg ok";
+      m.textContent = failed ? `Wrote ${done}; ${failed} could not be written, try again.` : `Wrote the notes for ${done} bottle${done === 1 ? "" : "s"}.`;
+    });
   }
 
   async function tally() {

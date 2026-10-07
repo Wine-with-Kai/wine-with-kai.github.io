@@ -597,6 +597,7 @@
             <p class="nm">${W.esc(b.producer)} &middot; ${W.esc(b.wine)}</p>
             <p class="sub">${b.region ? W.esc(b.region) + " &middot; " : ""}brought by ${W.esc(b.guest)}</p>
             ${b.background ? `<p class="bgtext">${W.esc(b.background)}</p>` : ""}
+            ${b.tasting_note ? `<p class="taste"><span class="taste-k">In the glass</span>${W.esc(b.tasting_note)}</p>` : ""}
             ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy" onerror="this.hidden=true">` : ""}
           </div>
           <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? (isAdmin ? "in" : "awaiting Kai") : W.esc(b.status)}</span>` : ""}</div>
@@ -673,8 +674,8 @@
           <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
         <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
           <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
-        <p class="hint-line">${b ? "If you change the wine or the vintage, we rewrite its note for the line-up." 
-          : "When you add it, we write a short note on the wine for the line-up, from the details above."}</p>
+        <p class="hint-line">${b ? "If you change the wine or the vintage, we rewrite its notes for the line-up."
+          : "When you add it, we write a short background and tasting note for the line-up, from the details above."}</p>
         <div class="actions">
           <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the evening"}</button>
           ${b ? `<button class="linkish" type="button" id="cancel-edit">Cancel</button>` : ""}
@@ -824,7 +825,7 @@
         slug, step: "describe", producer: row.producer, wine: row.wine,
         vintage: row.vintage ? String(row.vintage) : "", region: row.region || "",
       });
-      return r.background ? r.lookup_id : null;
+      return r.background || r.tasting_note ? r.lookup_id : null;
     } catch (_) {
       return null;
     }
@@ -859,7 +860,7 @@
         && (b.vintage || null) === row.vintage && (b.region || null) === row.region;
       let noNote = false;
       if (!same) {
-        sheet = progressSheet(b ? "Saving your bottle" : "Adding your bottle", "Writing the note for the line-up from your details\u2026");
+        sheet = progressSheet(b ? "Saving your bottle" : "Adding your bottle", "Writing the background and tasting note from your details\u2026");
         row.lookup_id = await writeNote(row);
         noNote = !row.lookup_id;
         sheet.line(b ? "Saving your changes\u2026" : "Adding it to the evening\u2026");
