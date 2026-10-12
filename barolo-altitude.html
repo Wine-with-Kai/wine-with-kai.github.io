@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Altitude, Terroir &amp; Vintage · Wine with Kai</title>
+<meta name="description" content="Altitude, Terroir &amp; Vintage: a simple deep dive into Barolo. Eight wines in four flights, from the 2021 vintage to the heights of Serradenari and a mature Rocche dell&rsquo;Annunziata. Wednesday 4 November 2026, So Good Seafood, Singapore.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+
+/* =========================================================
+   Wine with Kai · shared styles
+   Curated wine dinners, Singapore
+   ========================================================= */
+
+:root {
+  --bg:        #160a0c;
+  --bg-2:      #1d1013;
+  --panel:     #201215;
+  --ink:       #ece3d6;
+  --ink-soft:  #bdae9f;
+  --ink-faint: #8c7d71;
+  --gold:      #c9a24b;
+  --gold-soft: #d8bd7e;
+  /* red removed from the palette; these now carry the gold accent */
+  --crimson:   #c9a24b;
+  --crimson-2: #c9a24b;
+  --line:      rgba(236, 227, 214, 0.11);
+  --line-soft: rgba(236, 227, 214, 0.06);
+
+  --serif:   'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  /* headers now share the eyebrow's serif (EB Garamond) for consistency */
+  --display: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
+  --maxw: 820px;
+
+  --kai-mark: url(data:image/png;base64,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);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.72;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--gold); color: #201013; }
+
+a { color: inherit; }
+
+/* Visible keyboard focus, on-brand for the dark theme.
+   Uses :focus-visible so it shows for keyboard/switch users
+   without ringing on mouse clicks. */
+a:focus-visible,
+.btn:focus-visible,
+.next-card:focus-visible,
+.home-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img { max-width: 100%; display: block; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Eyebrow / small-caps kicker ---------- */
+.eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Thin rules ---------- */
+.rule-crimson {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 14%, var(--gold) 86%, transparent);
+  border: 0;
+  opacity: 0.72;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: calc(100% - 56px);
+}
+.tick {
+  width: 44px;
+  height: 1px;
+  background: var(--gold);
+  border: 0;
+  opacity: 0.85;
+  margin: 0 0 20px;
+}
+
+/* =========================================================
+   HERO (landing)
+   ========================================================= */
+.hero-scene {
+  position: relative;
+  height: 40vh;
+  min-height: 300px;
+  max-height: 440px;
+  overflow: hidden;
+  background: #0d0708;
+}
+.hero-scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-scene::after {
+  /* fade the bottom of the scene into the page */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 46%;
+  background: linear-gradient(to bottom, rgba(22,10,12,0) 0%, var(--bg) 96%);
+}
+
+.hero-body { padding: 46px 0 8px; }
+
+.masthead {
+  text-align: center;
+  padding-top: 30px;
+}
+.masthead .kick { margin-bottom: 26px; }
+
+.title-display {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: 0;
+  font-size: clamp(46px, 9vw, 74px);
+}
+.title-connector {
+  display: block;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.2;
+  margin: 2px 0;
+  letter-spacing: 0.01em;
+}
+
+.gold-divider {
+  width: min(560px, 82%);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 18%, var(--gold) 82%, transparent);
+  border: 0;
+  margin: 30px auto 26px;
+  opacity: 0.85;
+}
+
+.lede {
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(21px, 3.1vw, 27px);
+  color: var(--ink);
+  margin: 0 auto 8px;
+  max-width: 640px;
+  line-height: 1.35;
+}
+.lede-sub {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 auto 4px;
+  max-width: 560px;
+}
+
+/* =========================================================
+   WINE LINEUP (landing list)
+   ========================================================= */
+.lineup { margin: 6px 0 4px; }
+
+.flight {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 6px 22px;
+  align-items: baseline;
+  padding: 22px 4px;
+  border-top: 1px solid var(--line-soft);
+}
+.flight:last-child { border-bottom: 1px solid var(--line-soft); }
+
+.flight-yr {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.flight-main { }
+.flight-name {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.18;
+  margin: 0 0 4px;
+}
+.flight-sub {
+  color: var(--ink-faint);
+  font-size: 16.5px;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+.flight-order {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+}
+
+/* ---------- CTA ---------- */
+.cta-row { text-align: center; margin: 40px 0 8px; }
+.btn {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 15px 34px;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  transition: background .25s ease, color .25s ease;
+}
+.btn:hover { background: var(--gold); color: #201013; }
+.btn .arw { color: var(--gold); margin-left: 8px; transition: color .25s ease; }
+.btn:hover .arw { color: #201013; }
+
+.note-line {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 620px;
+  margin: 26px auto 0;
+}
+
+/* =========================================================
+   EVENT FOOTER BAR
+   ========================================================= */
+.event-bar {
+  background: var(--bg-2);
+  border-top: 1px solid rgba(201, 162, 75, 0.5);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.5);
+  color: var(--ink);
+  text-align: center;
+  padding: 30px 24px;
+  margin-top: 54px;
+}
+.event-bar .when {
+  font-family: var(--display);
+  font-weight: 500;
+  color: var(--gold-soft);
+  font-size: clamp(21px, 3.4vw, 27px);
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+.event-bar .where {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.page-foot {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-style: italic;
+  padding: 26px 20px 40px;
+}
+
+/* =========================================================
+   WINES PAGE
+   ========================================================= */
+.page-head { text-align: center; padding: 40px 0 6px; }
+.page-head .eyebrow { margin-bottom: 20px; }
+.page-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(40px, 7vw, 60px);
+  line-height: 1.05;
+  margin: 0;
+}
+.page-title .it {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+  font-size: clamp(19px, 3vw, 26px);
+  margin-top: 4px;
+}
+
+.section { padding: 20px 0; }
+.section h2 {
+  font-family: var(--display);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 27px;
+  margin: 30px 0 14px;
+  letter-spacing: 0.01em;
+}
+.section p { margin: 0 0 18px; color: var(--ink); }
+.section p.muted { color: var(--ink-soft); }
+em, .i { font-style: italic; }
+strong, .b { font-weight: 600; color: var(--ink); }
+
+/* ---------- Wine entries ---------- */
+.wines { margin-top: 8px; }
+
+.wine {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  scroll-margin-top: 20px;
+}
+.wine-head {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 4px 20px;
+  align-items: start;
+}
+.wine-num {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  padding-top: 6px;
+}
+.wine-titles { }
+.wine-name {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.16;
+  margin: 0 0 2px;
+  color: var(--ink);
+}
+.wine-vintage {
+  color: var(--crimson);
+  font-weight: 600;
+  font-style: normal;
+}
+.wine-producer {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 2px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 14px 0 4px;
+  padding-left: 94px;
+}
+.tag {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border: 1px solid rgba(201,162,75,0.4);
+  border-radius: 2px;
+  padding: 4px 11px;
+  white-space: nowrap;
+}
+
+.wine-body { padding-left: 94px; margin-top: 14px; }
+.wine-body p { margin: 0 0 16px; }
+
+.lookfor {
+  padding-left: 94px;
+  margin-top: 6px;
+}
+.lookfor .lf-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+.lookfor p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.scores {
+  padding-left: 94px;
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.scores .sc-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12.5px;
+}
+.scores .sc {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+.scores .sc b { color: var(--ink); font-weight: 600; }
+.scores .sc .star { color: var(--crimson); }
+
+.source-note {
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  font-style: italic;
+  padding-left: 94px;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 620px) {
+  body { font-size: 18px; }
+  .wrap, .topnav { padding-left: 20px; padding-right: 20px; }
+
+  .flight { grid-template-columns: 66px 1fr; gap: 4px 16px; padding: 18px 2px; }
+  .flight-yr { font-size: 26px; }
+  .flight-name { font-size: 21px; }
+  .flight-sub { font-size: 15px; }
+
+  .wine-head { grid-template-columns: 54px 1fr; gap: 4px 14px; }
+  .wine-num { font-size: 24px; }
+  .wine-name { font-size: 23px; }
+  .meta, .wine-body, .lookfor, .source-note, .scores { padding-left: 0; }
+  .meta { margin-top: 16px; }
+}
+
+@media (max-width: 420px) {
+  .title-display { font-size: 44px; }
+}
+
+/* =========================================================
+   BRAND NAV (home link on sub-pages)
+   ========================================================= */
+.site-top {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.site-top .home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.site-top .home-link .mini-mark {
+  display: inline-block;
+  width: 32px;
+  height: 27px;
+  background: var(--kai-mark) center/contain no-repeat;
+}
+.site-top .home-link .mini-word {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.site-top nav { display: flex; align-items: center; gap: 8px 22px; }
+.site-top nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  /* roomier tap target (~40px tall) without shifting the row baseline */
+  padding: 9px 2px;
+  margin: -9px 0;
+}
+.site-top nav a:hover { color: var(--gold); }
+.site-top nav a[aria-current="page"] {
+  color: var(--gold);
+  cursor: default;
+}
+
+/* =========================================================
+   HOME / LANDING
+   ========================================================= */
+.home {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 28px 0;
+  text-align: center;
+}
+.home-inner { padding-top: 54px; }
+
+.logo-mark {
+  width: 172px;
+  height: 142px;
+  margin: 0 auto 16px;
+  background: var(--kai-mark) center/contain no-repeat;
+  opacity: 0.7;
+  filter: drop-shadow(0 5px 13px rgba(0, 0, 0, 0.5));
+}
+
+.brand-eyebrow {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.30em;
+  font-size: 12px;
+  margin: 0;
+}
+
+.about-text {
+  margin: 6px auto 0;
+  max-width: 620px;
+}
+.about-text p {
+  font-size: 19.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+.about-text p.soft { color: var(--ink-soft); }
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 34px 0 8px;
+}
+
+/* next-dinner teaser */
+.next-card {
+  max-width: 620px;
+  margin: 40px auto 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 22px 26px;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  transition: border-color .25s ease, background .25s ease;
+}
+.next-card:hover { border-color: var(--gold); background: rgba(201,162,75,0.05); }
+.next-card .nc-kick {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+.next-card .nc-title {
+  font-family: var(--display);
+  font-size: 25px;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.next-card .nc-meta {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  margin: 0;
+  font-style: italic;
+}
+.next-card .nc-go {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 12px 0 0;
+}
+
+/* secondary path from the landing straight to the tasting notes */
+.nc-alt {
+  max-width: 620px;
+  margin: 14px auto 0;
+  text-align: center;
+}
+.nc-alt a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-style: italic;
+  font-size: 16px;
+  padding: 6px 8px;
+  transition: color .25s ease;
+}
+.nc-alt a:hover { color: var(--gold); }
+
+/* =========================================================
+   ARCHIVE / PAST DINNERS
+   ========================================================= */
+.themes { margin-top: 8px; }
+
+/* group divider inside the archive: "The next dinner" / "Past dinners" */
+.themes-group-head {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 13px;
+  margin: 40px 0 0;
+}
+.themes-group-head:first-child { margin-top: 8px; }
+
+.theme {
+  border-top: 1px solid var(--line);
+  padding: 34px 0 30px;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 6px 26px;
+}
+.theme:last-child { border-bottom: 1px solid var(--line); }
+.theme .t-index {
+  font-family: var(--display);
+  color: var(--crimson);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  padding-top: 4px;
+}
+.theme .t-index span {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+.theme .t-body { }
+.theme .t-title {
+  font-family: var(--display);
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+  line-height: 1.18;
+}
+.theme .t-sub {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
+.theme .t-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0 0 12px;
+}
+.theme .t-venue {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  margin: 0;
+}
+.theme .t-venue a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 162, 75, 0.45);
+  text-underline-offset: 3px;
+  padding: 2px 1px;
+}
+.theme .t-venue a:hover { text-decoration-color: var(--gold); }
+.archive-note {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  margin: 34px auto 0;
+  max-width: 560px;
+}
+
+@media (max-width: 620px) {
+  .logo-mark { width: 168px; height: 142px; }
+  .theme { grid-template-columns: 1fr; gap: 4px; }
+  .theme .t-index { padding-top: 0; font-size: 20px; }
+
+  /* stack the header so brand and nav don't crush together */
+  .site-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 20px 20px 0;
+  }
+  .site-top .home-link .mini-word { white-space: nowrap; }
+  .site-top nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+  }
+  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+}
+
+/* =========================================================
+   REGION MAP (Kings of the North)
+   ========================================================= */
+.map-fig {
+  max-width: 360px;
+  margin: 40px auto 6px;
+  text-align: center;
+}
+.map-fig svg { width: 100%; height: auto; display: block; }
+.map-fig .rl {
+  font-family: var(--serif);
+  fill: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.map-fig .wl {
+  font-family: var(--serif);
+  fill: var(--gold-soft);
+  font-size: 11px;
+  font-style: italic;
+}
+.map-cap {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px auto 0;
+  max-width: 340px;
+}
+
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
+
+
+</style>
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+    <nav>
+    <a href="upcoming.html">Upcoming</a>
+    <a href="archive.html">Past dinners</a>
+  </nav>
+</div>
+
+<!-- ============ ATMOSPHERIC HERO (the Langhe at dusk, nebbia in the valleys) ============ -->
+<header class="hero-scene" aria-hidden="true" style="margin-top:18px;">
+  <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" role="img">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#1b1210"/>
+        <stop offset="40%" stop-color="#3f2c1f"/>
+        <stop offset="68%" stop-color="#8a6038"/>
+        <stop offset="86%" stop-color="#c39247"/>
+        <stop offset="100%" stop-color="#d8ae66"/>
+      </linearGradient>
+      <radialGradient id="sun" cx="50%" cy="88%" r="55%">
+        <stop offset="0%"  stop-color="#f7dc9e" stop-opacity="0.95"/>
+        <stop offset="34%" stop-color="#ecb266" stop-opacity="0.5"/>
+        <stop offset="70%" stop-color="#c07840" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="#c07840" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="hazeFar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#9a6f45"/>
+        <stop offset="100%" stop-color="#6e4c30"/>
+      </linearGradient>
+      <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4a3223"/>
+        <stop offset="100%" stop-color="#2e1e16"/>
+      </linearGradient>
+      <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#20130e"/>
+        <stop offset="100%" stop-color="#0f0708"/>
+      </linearGradient>
+    </defs>
+
+    <rect x="0" y="0" width="1200" height="460" fill="url(#sky)"/>
+    <rect x="0" y="0" width="1200" height="460" fill="url(#sun)"/>
+
+    <!-- far rolling Italian hills, hazy in the golden light -->
+    <path d="M0 250 C 150 222 300 242 460 226 C 640 208 820 246 1000 228 C 1100 219 1160 236 1200 230 L1200 460 L0 460 Z" fill="url(#hazeFar)" opacity="0.5"/>
+    <path d="M0 286 C 180 258 340 286 520 273 C 720 258 900 293 1080 277 C 1140 271 1180 283 1200 280 L1200 460 L0 460 Z" fill="url(#hazeFar)" opacity="0.8"/>
+
+    <!-- the nebbia that gives Nebbiolo its name, lying in the valleys -->
+    <defs>
+      <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#e9d3ae" stop-opacity="0"/>
+        <stop offset="55%" stop-color="#e9d3ae" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#e9d3ae" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="M0 292 C 200 280 380 300 560 292 C 760 283 960 302 1200 292 L1200 330 C 960 340 760 322 560 332 C 380 340 200 322 0 330 Z" fill="url(#mist)"/>
+
+    <!-- the ridge where the villa and cypress stand -->
+    <path d="M0 322 C 160 302 320 322 500 314 C 700 305 880 328 1060 316 C 1130 311 1170 322 1200 319 L1200 460 L0 460 Z" fill="url(#hillMid)"/>
+
+    <!-- hilltop villa with a campanile -->
+    <g fill="#170d0a">
+      <rect x="726" y="288" width="48" height="28"/>
+      <path d="M721 288 L750 273 L779 288 Z"/>
+      <rect x="710" y="266" width="12" height="50"/>
+      <path d="M708 266 L716 257 L724 266 Z"/>
+    </g>
+
+    <!-- a stand of cypress trees, the signature of the Italian country -->
+    <g fill="#150b09">
+      <path d="M120 318 C 112 300 113 268 120 240 C 127 268 128 300 120 318 Z"/>
+      <path d="M158 320 C 151 305 152 280 158 256 C 164 280 165 305 158 320 Z"/>
+      <path d="M250 317 C 242 297 243 258 250 226 C 257 258 258 297 250 317 Z"/>
+      <path d="M292 319 C 285 303 286 274 292 250 C 298 274 299 303 292 319 Z"/>
+      <path d="M330 320 C 324 307 325 284 330 262 C 335 284 336 307 330 320 Z"/>
+      <path d="M632 316 C 625 300 626 268 632 240 C 638 268 639 300 632 316 Z"/>
+      <path d="M666 317 C 660 304 661 282 666 258 C 671 282 672 304 666 317 Z"/>
+    </g>
+
+    <!-- foreground vineyard hill with rows -->
+    <path d="M0 352 C 220 334 470 358 720 348 C 940 339 1090 358 1200 352 L1200 460 L0 460 Z" fill="url(#fg)"/>
+    <g stroke="#5a3a28" stroke-width="1.5" opacity="0.4">
+      <path d="M0 374 C 300 362 800 374 1200 366"/>
+      <path d="M0 394 C 300 382 800 394 1200 386"/>
+      <path d="M0 416 C 300 404 800 416 1200 408"/>
+      <path d="M0 438 C 300 426 800 438 1200 430"/>
+    </g>
+  </svg>
+</header>
+
+<hr class="rule-crimson">
+
+<!-- ============ MASTHEAD ============ -->
+<main>
+  <section class="wrap hero-body">
+    <div class="masthead">
+      <p class="eyebrow kick">Piedmont &nbsp;&middot;&nbsp; Barolo &nbsp;&middot;&nbsp; La Morra &amp; Monforte d&rsquo;Alba</p>
+
+      <h1 class="title-display">
+        Altitude, Terroir
+        <span class="title-connector">&amp;</span>
+        Vintage
+      </h1>
+
+      <hr class="gold-divider">
+
+      <p class="lede">A simple deep dive into Barolo.</p>
+      <p class="lede-sub">
+        Eight Barolos in four flights of two, read three ways: the heralded 2021 in its youth,<br>the high-altitude crus of La Morra, and a traditional cru with real bottle age.
+      </p>
+    </div>
+
+    <!-- ============ THE LINEUP ============ -->
+    <div class="lineup" aria-label="Eight Barolos in four flights of two, in pouring order">
+
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:36px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Flight one</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">The 2021 vintage &middot; La Morra against Monforte d&rsquo;Alba</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2021</div>
+        <div class="flight-main">
+          <p class="flight-name">Alberto Ballarin, Barolo Bussia</p>
+          <p class="flight-sub">A La Morra house in Monforte&rsquo;s Bussia &middot; fragrant red fruit, fine-grained tannin</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2021</div>
+        <div class="flight-main">
+          <p class="flight-name">Ca&rsquo; di Press, Barolo Perno</p>
+          <p class="flight-sub">The Pressenda family, at home in Perno, Monforte d&rsquo;Alba &middot; soaring and taut</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:16px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>Two stellar expressions of the lauded 2021, from cellars at opposite corners of the zone. Alberto Ballarin works from Bricco Rocca in La Morra and brings the La Morra touch, fragrant red fruit, floral lift and fine, architectural tannin, to its parcel in Bussia. Ca&rsquo; di Press is the Pressenda family&rsquo;s cellar in Perno, Monforte d&rsquo;Alba: look for soaring aromatics, intense depth, structural tension and a translucent finesse.</p>
+      </div>
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:36px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Flight two</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">Vintage at altitude &middot; one estate wine, two years</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2020</div>
+        <div class="flight-main">
+          <p class="flight-name">Giulia Negri, Barolo La Tartufaia</p>
+          <p class="flight-sub">A warm, expressive, approachable year</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2019</div>
+        <div class="flight-main">
+          <p class="flight-name">Giulia Negri, Barolo La Tartufaia</p>
+          <p class="flight-sub">A classic, cooler, structured season</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:16px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>Giulia Negri&rsquo;s estate Barolo, from her high vineyards in La Morra: Serradenari, up near 500 metres, with Brunate below. The same wine from two seasons, so the year is the only thing that changes. Set the warmth and generosity of 2020 against the cool, classic frame of 2019, and watch how vintage shapes Nebbiolo&rsquo;s freshness and the build of its tannin.</p>
+      </div>
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:36px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Flight three</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">The crus of Serradenari &middot; the top of Barolo</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2019</div>
+        <div class="flight-main">
+          <p class="flight-name">Giulia Negri, Barolo Serradenari</p>
+          <p class="flight-sub">The whole cru &middot; broad, layered and complex</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2019</div>
+        <div class="flight-main">
+          <p class="flight-name">Giulia Negri, Barolo Marassio</p>
+          <p class="flight-sub">Her highest parcel, just under 540 metres &middot; chalk and flowers</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:16px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>Serradenari is the highest ground in the whole Barolo DOCG, its slopes running from about 450 to 536 metres. Set the broad, complex Serradenari against Marassio, a single parcel at the top of the hill on limestone marl and fine clay, which gives a chalky minerality and a floral precision. Same grower, same year: only the parcel changes.</p>
+      </div>
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:36px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Flight four</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">A traditional benchmark &middot; bottle age</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2014</div>
+        <div class="flight-main">
+          <p class="flight-name">Aurelio Settimo, Barolo Rocche dell&rsquo;Annunziata</p>
+          <p class="flight-sub">A cooler year, now open and savoury</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2016</div>
+        <div class="flight-main">
+          <p class="flight-name">Aurelio Settimo, Barolo Rocche dell&rsquo;Annunziata</p>
+          <p class="flight-sub">A monumental year, deep and built for decades</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:16px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>We close with traditional, long-aged Barolo from one of La Morra&rsquo;s crown-jewel single vineyards, which the Settimo family farms around their cellar at Annunziata. The 2014, from a cooler season, has blossomed into delicate, savoury tertiary notes: dried rose, leather, truffle. The 2016, a legendary vintage, offers great depth and structure, with decades of life ahead of it.</p>
+      </div>
+
+    </div>
+
+    <p class="note-line">
+      Four flights of two, poured in the order shown. Please bring your own glasses: two sensory or Burgundy glasses each, so every pair can sit side by side. Seats are kept to no more than twelve.
+    </p>
+
+<figure class="map-fig" style="max-width:380px; margin-top:34px;">
+      <svg viewBox="0 0 320 452" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of the Barolo zone by commune, with La Morra and Monforte d&rsquo;Alba highlighted and the five vineyards of the evening pinned: Bussia and Perno in Monforte, Serradenari, Brunate and Annunziata in La Morra">
+        <text x="160" y="19" text-anchor="middle" style="font-family:var(--display); fill:#d8bd7e; font-size:10px; font-style:italic;">The Barolo hills, La Morra and Monforte d&rsquo;Alba</text>
+        <rect x="12" y="30" width="296" height="338" rx="3" fill="#160a0c" stroke="rgba(201,162,75,0.45)" stroke-width="0.8"/>
+        <clipPath id="barclip"><rect x="12" y="30" width="296" height="338"/></clipPath>
+        <g clip-path="url(#barclip)">
+          <g fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="0.6">
+            <path d="M79.5 256.3 83.3 251.3 84.7 249.2 86.2 249.0 88.4 249.2 99.0 251.2 101.7 252.0 103.9 253.1 113.4 258.3 133.7 274.1 135.4 278.0 140.2 270.2 155.6 242.5 159.5 233.7 159.5 233.4 163.0 220.4 161.5 203.6 143.2 202.3 119.3 211.2 105.3 216.5 91.1 222.2 90.7 225.6 90.4 229.0 89.1 228.9 87.6 228.5 84.3 226.6 83.4 227.2 82.7 228.2 81.6 230.5 82.0 234.1 81.8 236.3 81.5 241.4 81.2 242.8 80.8 244.2 80.6 244.9 80.5 245.9 80.1 251.3 79.5 256.3Z"/>
+            <path d="M161.5 203.6 163.0 220.4 167.1 224.2 184.3 232.1 184.9 231.4 190.3 226.8 190.9 226.5 201.3 221.9 212.2 217.1 213.3 216.2 213.3 216.0 213.5 215.4 213.9 208.1 213.8 207.2 210.8 193.7 199.6 164.1 198.7 159.3 196.0 154.4 194.5 150.8 187.0 146.6 186.0 146.4 184.9 145.9 183.6 144.9 183.1 144.5 183.2 145.4 183.2 145.8 183.2 147.3 182.8 148.0 182.6 149.4 182.6 150.9 187.5 157.8 187.5 158.8 187.5 159.2 187.4 159.8 186.9 160.8 183.0 168.5 181.8 169.9 181.1 170.5 179.8 171.3 177.0 173.1 176.1 173.5 174.7 174.1 172.9 175.1 170.5 176.6 169.0 178.7 166.8 184.3 166.6 184.6 166.3 185.5 163.7 192.9 163.3 194.1 161.5 203.6Z"/>
+            <path d="M194.5 150.8 196.0 154.4 198.7 159.3 199.6 164.1 210.8 193.7 213.8 207.2 213.9 208.1 213.5 215.4 213.3 216.0 213.3 216.2 212.2 217.1 212.3 221.0 212.3 223.2 212.4 226.3 212.4 228.1 212.5 231.1 213.2 234.8 213.5 236.5 218.2 260.8 218.9 264.4 219.3 266.0 228.4 298.8 228.8 299.3 237.0 310.2 257.1 297.4 258.9 290.5 259.3 288.9 259.4 287.5 259.4 286.4 259.1 276.2 258.0 244.9 254.3 223.8 251.6 208.5 251.5 201.2 256.5 200.9 257.6 198.8 255.9 191.5 228.7 171.9 204.3 153.0 197.4 146.9 194.5 150.8Z"/>
+            <path d="M31.3 297.9 31.4 308.3 32.7 315.3 35.5 328.3 41.1 337.5 42.1 343.3 41.7 344.4 41.6 345.4 41.7 346.7 41.8 347.3 42.0 347.9 42.4 348.6 42.7 349.2 43.0 350.1 43.2 350.5 43.3 351.6 66.2 366.5 71.6 354.0 74.9 347.9 81.4 342.9 83.3 341.6 92.2 335.8 107.1 327.7 106.8 327.1 107.3 325.7 109.7 319.7 110.2 318.6 110.9 317.7 114.3 314.8 114.7 314.5 118.2 312.8 127.1 309.9 129.1 310.6 132.8 311.8 133.7 311.9 134.6 311.6 139.3 308.5 142.6 304.1 143.9 300.7 143.3 298.1 135.4 278.0 133.7 274.1 113.4 258.3 103.9 253.1 101.7 252.0 99.0 251.2 88.4 249.2 86.2 249.0 84.7 249.2 83.3 251.3 79.5 256.3 78.9 259.7 79.0 261.2 74.8 262.1 71.6 263.5 70.9 264.3 70.6 264.6 67.2 268.3 51.4 280.3 46.0 284.3 45.5 284.7 44.0 286.0 39.0 289.0 32.1 291.1 31.4 297.5 31.3 297.9Z"/>
+            <path d="M198.0 132.3 223.5 141.9 239.9 134.4 241.5 131.7 251.1 127.7 248.2 125.3 247.9 124.8 248.0 123.9 248.7 122.6 248.3 120.3 248.1 119.7 248.1 119.3 248.9 119.2 249.7 120.4 250.9 120.5 251.4 120.6 253.2 120.2 254.1 120.0 256.3 118.9 259.7 116.9 260.0 115.6 260.0 114.6 259.8 113.9 259.5 113.2 258.9 111.9 256.9 109.8 255.5 109.1 252.3 108.9 250.9 108.4 249.9 106.8 249.0 104.6 249.6 98.0 246.6 95.6 243.0 91.3 241.0 90.2 240.2 89.5 239.8 88.9 239.2 88.7 236.9 89.4 233.8 90.0 233.1 89.7 232.2 89.9 231.1 90.7 230.3 90.6 227.2 91.2 224.9 90.7 222.8 89.5 218.6 84.4 217.4 83.2 215.6 81.0 214.8 82.3 213.8 85.3 213.3 89.1 213.1 89.6 212.6 90.3 210.1 93.7 209.7 94.0 206.5 96.0 206.0 96.6 200.8 107.4 200.6 107.7 199.9 109.2 200.3 115.7 200.8 118.8 200.7 124.1 198.3 131.4 198.0 132.3Z"/>
+            <path d="M69.3 41.8 76.3 56.0 78.3 56.4 78.2 59.1 79.3 61.4 76.2 61.5 76.6 64.4 77.2 67.5 76.1 69.4 72.4 73.5 71.3 77.2 72.2 78.0 73.4 81.2 73.2 83.5 72.4 86.7 74.2 92.5 75.0 98.4 76.3 101.7 77.1 101.4 77.3 104.4 77.8 105.9 81.6 109.7 82.2 109.2 82.7 107.8 83.1 107.8 83.3 108.1 83.4 110.9 85.4 114.2 86.9 115.2 87.2 116.1 87.4 117.2 87.4 117.8 89.9 119.6 91.3 121.2 93.6 122.9 97.9 123.2 99.6 122.4 101.6 122.1 102.8 121.3 106.5 121.8 107.6 122.0 109.8 122.0 110.4 120.9 110.0 117.9 110.3 115.1 110.7 114.2 112.4 113.4 112.7 112.4 114.9 110.2 115.8 109.3 121.7 104.7 123.7 103.2 134.0 95.7 137.9 96.1 142.6 95.0 146.1 95.9 149.6 94.9 150.2 94.9 149.8 94.5 145.9 90.3 151.3 87.7 154.6 82.4 154.6 81.4 154.4 80.7 150.7 71.7 149.9 70.3 143.5 67.0 130.5 63.8 122.0 57.7 119.8 57.4 119.5 49.9 118.9 49.1 115.6 40.3 114.5 37.3 106.2 41.1 81.6 42.8 73.5 40.5 69.3 41.8Z"/>
+            <path d="M197.4 146.9 204.3 153.0 228.7 171.9 255.9 191.5 257.6 198.8 268.5 197.8 297.7 195.1 300.2 195.5 303.5 195.8 315.0 184.7 320.0 176.3 327.7 163.2 327.8 161.8 327.9 160.9 328.1 159.8 331.7 144.5 332.0 143.6 332.2 142.7 332.7 141.7 334.1 139.3 334.9 138.7 337.0 139.2 344.0 142.5 345.2 143.0 347.6 142.3 347.4 144.0 348.2 145.6 350.6 148.4 350.1 153.0 353.2 155.6 355.9 155.5 356.8 156.3 358.8 156.6 359.5 156.1 360.4 156.5 360.4 157.0 364.7 160.6 368.8 161.8 370.3 163.6 373.5 166.4 378.0 170.2 379.8 171.2 387.4 177.1 388.8 178.6 392.2 183.6 392.8 184.5 393.6 184.8 394.5 184.6 394.7 184.0 395.5 183.3 396.7 182.5 397.1 181.9 397.7 181.4 398.0 181.0 398.3 180.8 398.8 180.4 398.5 180.0 396.2 176.0 394.7 173.5 394.0 173.1 393.7 172.3 393.6 171.3 393.6 170.7 393.3 169.9 393.2 168.2 392.4 167.4 391.7 166.5 390.8 165.5 389.5 164.4 388.4 163.7 385.0 160.2 383.7 159.7 381.7 158.3 379.9 157.8 371.1 150.8 369.4 148.9 365.1 148.2 360.6 148.9 358.6 147.7 356.8 147.9 354.3 148.0 353.7 147.7 353.5 147.6 353.7 147.4 353.8 147.1 353.5 147.0 352.8 146.7 351.5 148.2 351.4 148.3 350.7 147.3 349.4 145.6 348.3 144.6 348.0 144.2 348.0 143.7 348.3 142.1 348.0 141.9 344.2 139.3 346.8 137.5 348.4 135.7 350.2 132.2 353.2 130.0 355.7 129.0 357.0 128.9 358.9 129.5 359.7 128.2 361.2 127.3 362.4 127.1 363.5 126.1 365.6 127.2 367.6 126.7 369.0 126.3 369.6 125.3 370.2 123.9 369.8 123.1 368.8 123.0 367.7 122.9 366.0 122.5 363.0 122.4 361.0 121.7 352.2 111.4 351.1 110.9 348.6 107.5 347.5 106.7 344.8 105.9 342.7 105.7 341.5 104.0 339.8 103.0 335.2 105.0 333.9 105.5 332.3 105.5 330.1 105.4 328.6 105.6 328.5 105.6 327.5 105.9 326.4 102.0 325.3 98.9 321.3 86.3 318.1 77.2 317.5 74.9 317.2 74.0 315.7 75.2 314.4 75.9 314.0 76.7 313.8 76.8 313.5 76.9 313.5 77.0 306.8 79.2 303.9 81.8 303.4 83.0 302.8 83.1 302.3 83.2 301.9 83.1 299.4 82.7 298.8 82.7 298.0 83.1 297.4 83.6 296.2 84.1 295.3 84.7 294.5 85.5 293.5 86.0 292.9 86.6 291.7 87.5 290.8 88.3 290.3 89.1 289.7 89.4 289.0 90.1 288.3 91.3 287.3 92.1 287.2 93.3 287.1 94.8 282.2 95.0 280.5 94.7 280.6 95.5 278.5 95.5 276.0 95.6 274.8 95.4 273.8 95.0 273.0 95.2 273.1 95.7 273.9 97.9 276.8 103.7 278.1 104.1 278.6 104.6 279.6 106.7 277.2 107.4 266.2 113.2 259.7 116.9 256.3 118.9 254.1 120.0 253.2 120.2 251.4 120.6 250.9 120.5 249.7 120.4 248.9 119.2 248.1 119.3 248.1 119.7 248.3 120.3 248.7 122.6 248.0 123.9 247.9 124.8 248.2 125.3 251.1 127.7 241.5 131.7 239.9 134.4 223.5 141.9 198.0 132.3 197.4 146.9Z"/>
+            <path d="M-255.9 192.8 -254.8 195.2 -255.3 197.7 -255.1 199.9 -254.7 199.8 -254.9 200.7 -246.4 202.3 -238.8 203.2 -224.9 204.0 -222.7 196.9 -222.3 197.0 -218.6 185.4 -218.4 183.3 -218.7 182.8 -220.0 182.6 -219.7 179.8 -219.0 178.4 -216.8 178.1 -216.0 170.1 -216.1 155.4 -215.8 153.8 -213.7 151.6 -212.0 150.9 -210.7 150.7 -210.0 150.9 -209.7 150.9 -209.2 150.9 -208.7 150.8 -208.3 150.7 -208.1 150.6 -207.5 150.2 -207.2 150.0 -207.0 149.8 -206.6 149.7 -206.2 149.5 -205.6 149.3 -205.3 149.3 -205.1 149.2 -204.8 149.3 -203.9 149.5 -201.7 150.0 -201.3 150.0 -200.8 150.1 -200.4 150.1 -199.6 150.1 -195.6 149.8 -194.6 149.6 -193.8 149.5 -193.6 149.5 -193.3 149.5 -193.1 149.5 -192.9 149.6 -192.7 149.7 -192.8 149.4 -193.0 149.1 -192.9 148.7 -191.7 148.6 -190.9 148.0 -190.4 147.0 -190.0 140.6 -186.0 138.4 -176.3 138.9 -171.0 139.7 -167.2 140.0 -161.3 141.8 -153.7 143.9 -150.8 144.7 -149.2 146.7 -143.9 152.1 -133.3 159.7 -136.2 170.6 -133.7 178.9 -135.4 180.6 -138.0 187.8 -140.2 193.2 -141.8 195.2 -147.2 200.5 -148.9 202.8 -149.9 203.7 -151.4 204.7 -153.3 205.9 -158.1 208.3 -163.4 212.0 -167.8 217.0 -171.2 222.8 -174.6 229.7 -176.1 237.5 -175.2 243.0 -175.0 247.5 -176.3 252.9 -178.6 260.4 -176.0 263.5 -172.0 266.1 -162.1 272.1 -146.9 277.7 -145.7 276.7 -141.8 273.7 -136.7 269.7 -131.7 275.7 -130.6 276.9 -124.3 286.1 -123.8 287.0 -121.6 290.8 -121.0 292.0 -120.6 292.8 -111.5 317.6 -111.5 317.7 -103.0 309.1 -103.2 308.8 -83.4 288.2 -74.2 277.9 -66.7 273.4 -64.9 273.4 -65.9 271.9 -58.5 267.7 -56.5 265.6 -56.5 270.9 -55.4 270.3 -53.6 268.9 -53.3 269.2 -35.6 253.1 -37.2 249.9 -36.7 249.5 -37.0 247.5 -37.8 237.2 -38.8 225.1 -39.1 221.6 -39.5 217.7 -36.9 216.5 -35.3 215.9 -34.2 215.4 -33.6 215.3 -32.9 215.2 -32.0 215.1 -31.0 214.8 -30.2 214.5 -29.7 214.3 -29.7 214.4 -28.2 213.8 -27.3 213.5 -26.4 213.3 -26.1 213.2 -25.9 213.0 -24.9 212.7 -24.4 212.8 -24.0 212.5 -20.0 211.7 -19.1 211.7 -18.2 211.7 -17.3 211.8 -16.4 211.9 -15.8 212.2 -12.9 213.9 -7.5 214.3 -1.8 215.3 -1.8 217.7 -0.2 220.0 0.8 221.3 4.1 223.6 9.5 226.7 10.0 227.9 10.1 228.7 9.7 230.7 12.5 232.9 12.9 233.4 12.8 234.2 13.0 234.6 13.0 235.9 13.2 237.2 13.1 238.5 13.7 239.6 14.5 240.9 14.5 242.6 15.9 244.2 18.0 244.2 18.7 244.4 18.8 244.8 18.6 246.0 19.3 246.2 20.0 245.6 21.1 245.6 22.0 246.8 22.2 247.8 23.9 248.2 24.6 247.8 25.5 249.3 26.0 249.5 26.4 248.8 27.2 248.8 27.9 248.0 29.5 247.1 30.8 246.7 32.1 246.0 32.4 243.8 32.9 243.3 34.9 243.5 36.4 242.4 36.6 241.5 37.9 240.7 38.7 240.4 39.4 240.5 40.6 240.9 41.7 240.5 43.1 239.5 44.6 238.3 44.7 238.1 45.2 236.8 46.7 236.6 47.8 235.0 48.4 233.4 48.4 232.1 49.4 230.9 50.1 229.5 49.5 227.5 49.3 223.4 49.1 219.9 49.7 219.4 51.0 218.2 49.2 214.5 48.7 212.0 48.8 209.9 49.9 205.5 51.4 202.5 51.4 201.1 49.9 198.4 49.7 196.1 48.9 194.2 48.9 192.6 49.6 190.6 48.9 188.6 49.2 186.5 50.1 183.8 51.3 180.8 51.8 180.0 52.9 179.5 54.6 178.1 55.0 177.1 55.5 175.0 55.6 174.2 55.8 171.7 55.9 171.0 56.1 169.7 56.3 165.6 56.7 162.0 57.0 161.3 52.8 156.9 51.4 156.5 50.0 155.5 50.1 154.3 49.2 152.0 49.8 144.7 50.3 141.8 50.0 137.3 49.5 135.2 49.5 122.4 50.7 111.6 50.4 110.8 38.6 103.5 37.9 100.7 41.5 96.7 41.1 95.7 39.8 94.6 38.6 92.6 37.6 91.8 35.9 91.6 34.8 85.0 45.4 73.5 32.0 57.9 29.1 60.4 23.2 68.9 17.4 80.5 19.1 81.8 20.7 83.2 21.9 85.9 22.6 88.5 22.6 92.7 19.8 98.3 0.4 86.7 -0.4 85.2 -19.7 68.7 -24.3 62.6 -33.3 56.0 -36.8 55.7 -41.8 57.9 -49.2 59.3 -53.7 60.3 -65.5 60.8 -98.0 50.1 -125.4 41.9 -132.6 38.2 -135.4 38.5 -137.4 39.3 -145.0 41.5 -150.7 42.1 -151.9 42.5 -158.6 43.4 -161.2 43.3 -168.3 44.6 -173.6 45.0 -178.4 45.9 -187.3 50.4 -188.0 52.3 -194.8 56.0 -214.9 41.5 -216.6 26.5 -222.2 25.0 -237.6 18.6 -238.8 18.1 -242.0 17.5 -242.2 17.9 -242.4 18.3 -242.9 20.5 -242.9 24.7 -242.8 25.0 -242.8 25.2 -242.9 25.5 -243.0 26.1 -242.9 26.6 -242.7 27.3 -242.8 27.9 -243.2 28.4 -243.9 29.4 -243.5 29.8 -242.9 29.3 -242.8 29.5 -243.3 32.1 -242.7 33.2 -242.9 33.8 -242.5 34.0 -242.8 34.9 -242.3 35.7 -241.2 37.6 -238.5 40.2 -237.6 39.7 -237.2 40.2 -237.5 40.6 -237.5 40.9 -237.4 41.1 -237.0 40.9 -236.2 40.9 -236.3 42.0 -236.2 42.5 -236.8 42.8 -236.9 43.3 -236.7 43.6 -236.2 43.8 -236.4 44.9 -235.9 45.7 -236.7 46.5 -236.1 47.2 -237.3 48.1 -236.8 48.4 -236.6 48.7 -237.4 49.1 -237.1 51.5 -236.6 52.3 -236.7 53.9 -236.2 56.3 -235.8 58.4 -235.3 59.9 -235.3 61.1 -234.7 62.2 -235.1 63.5 -232.0 66.7 -231.9 68.1 -231.5 69.5 -231.2 73.2 -231.6 74.4 -231.6 75.3 -232.0 75.6 -232.0 76.1 -231.5 76.8 -232.3 77.3 -233.6 77.6 -233.6 78.5 -234.2 78.9 -234.9 80.4 -235.3 82.4 -236.0 83.0 -235.8 84.2 -236.7 84.5 -236.9 85.1 -236.2 85.4 -236.1 85.8 -237.6 86.7 -237.2 87.5 -237.3 88.6 -237.0 89.2 -228.5 93.0 -228.2 93.5 -227.2 94.5 -225.9 98.1 -225.3 98.7 -224.6 100.0 -224.4 100.7 -224.6 101.3 -222.8 102.7 -221.7 104.8 -220.8 105.3 -220.1 107.0 -220.0 108.2 -220.1 111.0 -220.6 115.0 -221.0 116.4 -221.0 117.7 -221.2 118.3 -222.8 120.2 -224.8 121.9 -226.0 123.4 -226.9 124.2 -228.1 125.5 -229.8 127.3 -230.2 128.6 -231.6 131.1 -235.1 142.5 -236.5 143.4 -239.2 146.4 -239.1 147.2 -237.9 148.4 -238.2 149.9 -238.6 153.6 -238.5 154.0 -238.5 154.2 -238.9 156.8 -239.0 157.5 -239.2 158.0 -241.1 160.2 -243.9 165.9 -244.3 166.3 -244.9 166.3 -246.0 165.9 -246.5 167.2 -247.3 170.9 -247.6 172.8 -248.1 174.5 -248.4 175.2 -249.0 175.6 -250.1 178.9 -251.5 182.8 -251.7 184.0 -253.7 185.8 -254.9 186.3 -255.8 187.3 -255.9 192.8Z"/>
+            <path d="M114.5 37.3 115.6 40.3 118.9 49.1 119.5 49.9 119.8 57.4 122.0 57.7 130.5 63.8 143.5 67.0 149.9 70.3 150.7 71.7 154.4 80.7 154.6 81.4 154.6 82.4 151.3 87.7 145.9 90.3 149.8 94.5 150.2 94.9 150.8 95.0 154.9 95.5 159.4 100.6 159.7 103.2 159.5 108.0 163.4 114.1 170.1 115.0 170.7 114.8 171.2 114.6 171.8 113.8 172.2 113.5 172.7 113.6 173.2 113.4 173.8 113.0 177.2 109.3 205.4 87.8 205.8 86.9 206.8 75.1 206.6 73.4 208.1 71.9 208.1 71.2 206.6 70.4 206.7 69.4 208.3 68.7 210.6 69.3 213.9 68.3 214.2 66.9 212.3 63.9 212.6 61.1 213.7 60.2 214.8 59.9 216.3 59.7 217.6 59.5 218.7 59.8 219.6 59.6 219.7 59.1 219.6 56.5 219.3 56.0 218.8 55.8 217.8 55.7 217.0 55.9 216.5 56.4 215.5 57.9 214.7 58.0 214.0 57.7 213.8 57.1 214.0 56.4 214.4 56.1 216.2 55.3 217.3 54.1 217.5 53.1 217.0 51.5 216.3 51.4 212.9 52.1 209.7 50.4 209.9 48.1 210.4 44.6 212.0 43.2 214.4 42.5 219.1 44.8 221.5 44.7 222.5 44.7 222.8 43.4 219.4 40.5 219.4 37.7 219.5 36.1 221.4 34.7 224.6 33.6 226.1 32.2 226.5 32.0 227.1 31.3 226.8 30.1 226.6 29.3 226.5 28.1 226.5 27.0 226.6 25.6 226.8 24.5 226.5 23.7 224.9 23.8 220.5 25.2 218.3 26.0 216.6 26.5 212.6 27.6 211.2 28.2 208.3 28.5 206.5 29.0 199.3 29.4 195.7 27.9 178.3 26.1 176.0 25.2 167.7 28.0 151.2 27.7 133.9 33.3 114.5 37.3Z"/>
+            <path d="M172.7 113.6 173.1 115.0 173.6 115.5 174.4 115.1 174.9 114.2 175.4 113.6 175.8 113.3 176.5 114.3 177.0 115.8 177.7 116.9 176.7 118.0 176.3 118.7 175.4 119.3 175.0 120.5 172.7 134.4 177.0 135.7 177.3 138.0 182.9 139.9 182.8 141.4 183.2 142.6 183.1 143.6 183.1 144.5 183.6 144.9 184.9 145.9 186.0 146.4 187.0 146.6 194.5 150.8 197.4 146.9 198.0 132.3 198.3 131.4 200.7 124.1 200.8 118.8 200.3 115.7 199.9 109.2 200.6 107.7 200.8 107.4 206.0 96.6 206.5 96.0 209.7 94.0 210.1 93.7 212.6 90.3 213.1 89.6 213.3 89.1 213.8 85.3 214.8 82.3 215.6 81.0 217.4 83.2 218.6 84.4 222.8 89.5 224.9 90.7 227.2 91.2 230.3 90.6 231.1 90.7 232.2 89.9 233.1 89.7 233.8 90.0 236.9 89.4 239.2 88.7 239.8 88.9 240.2 89.5 241.0 90.2 243.0 91.3 246.6 95.6 249.6 98.0 249.0 104.6 249.9 106.8 250.9 108.4 252.3 108.9 255.5 109.1 256.9 109.8 258.9 111.9 259.5 113.2 259.8 113.9 260.0 114.6 260.0 115.6 259.7 116.9 266.2 113.2 277.2 107.4 279.6 106.7 278.6 104.6 278.1 104.1 276.8 103.7 273.9 97.9 273.1 95.7 273.0 95.2 273.8 95.0 274.8 95.4 276.0 95.6 278.5 95.5 280.6 95.5 280.5 94.7 282.2 95.0 287.1 94.8 287.2 93.3 287.3 92.1 288.3 91.3 289.0 90.1 289.7 89.4 290.3 89.1 290.8 88.3 291.7 87.5 292.9 86.6 293.5 86.0 294.5 85.5 295.3 84.7 296.2 84.1 297.4 83.6 298.0 83.1 298.8 82.7 299.4 82.7 301.9 83.1 302.3 83.2 302.8 83.1 303.4 83.0 303.9 81.8 306.8 79.2 313.5 77.0 313.5 76.9 313.8 76.8 314.0 76.7 314.4 75.9 315.7 75.2 317.2 74.0 317.5 74.9 318.1 77.2 321.3 86.3 325.3 98.9 326.4 102.0 327.5 105.9 328.5 105.6 328.6 105.6 330.1 105.4 332.3 105.5 333.9 105.5 335.2 105.0 339.8 103.0 341.5 104.0 342.7 105.7 344.8 105.9 347.5 106.7 348.6 107.5 351.1 110.9 352.2 111.4 361.0 121.7 363.0 122.4 366.0 122.5 367.7 122.9 368.8 123.0 369.8 123.1 370.2 123.9 369.6 125.3 369.0 126.3 367.6 126.7 365.6 127.2 363.5 126.1 362.4 127.1 361.2 127.3 359.7 128.2 358.9 129.5 357.0 128.9 355.7 129.0 353.2 130.0 350.2 132.2 348.4 135.7 346.8 137.5 344.2 139.3 348.0 141.9 348.3 142.1 348.0 143.7 348.0 144.2 348.3 144.6 349.4 145.6 350.7 147.3 351.4 148.3 351.5 148.2 352.8 146.7 353.5 147.0 353.8 147.1 353.7 147.4 353.5 147.6 353.7 147.7 354.3 148.0 356.8 147.9 358.6 147.7 360.6 148.9 365.1 148.2 369.4 148.9 371.1 150.8 379.9 157.8 381.7 158.3 383.7 159.7 385.0 160.2 388.4 163.7 389.5 164.4 390.8 165.5 391.7 166.5 392.4 167.4 393.2 168.2 394.3 169.4 396.3 169.4 397.0 169.5 397.8 169.5 398.6 169.7 399.4 169.9 400.1 170.3 400.7 170.6 401.4 170.9 401.6 171.6 401.8 172.3 402.4 173.2 402.9 173.5 404.0 173.9 404.9 174.3 405.6 174.3 406.7 173.7 407.4 173.3 409.1 172.7 410.6 172.1 411.8 171.4 413.4 170.4 414.5 169.6 415.5 169.0 416.0 168.5 416.3 168.3 417.7 166.7 418.4 165.9 419.3 164.8 420.3 164.0 421.1 163.3 422.1 162.5 422.5 161.3 423.0 159.9 423.8 158.3 424.4 157.2 425.3 155.8 425.8 155.0 425.7 154.8 425.4 154.0 425.3 153.2 425.0 152.6 424.6 152.4 423.9 152.1 423.3 151.1 422.6 150.5 422.0 150.1 421.7 149.2 421.0 148.7 419.9 148.5 419.1 148.2 418.5 147.5 417.8 146.7 417.0 146.4 416.5 145.7 416.2 144.7 416.1 143.7 415.3 143.3 414.7 143.2 414.3 141.9 414.8 140.4 415.3 138.8 416.0 138.1 417.4 137.3 418.9 136.6 419.6 136.2 420.2 135.6 421.0 135.0 421.8 134.7 422.6 134.3 423.3 133.6 425.1 133.1 425.4 132.9 426.3 132.5 427.2 132.2 427.7 131.9 427.6 131.7 427.4 130.8 427.0 129.5 426.8 128.8 426.5 128.0 426.6 126.9 426.6 125.8 426.4 125.0 426.3 124.3 426.5 123.5 426.5 122.8 427.0 122.4 427.4 121.9 428.1 120.9 428.4 120.6 428.8 120.3 429.7 119.9 430.6 119.7 431.5 119.4 432.9 119.1 433.4 118.5 432.9 118.0 432.5 117.7 431.8 117.2 431.2 116.1 430.7 115.2 429.6 114.7 428.5 114.6 427.2 113.9 426.1 112.3 425.6 111.5 424.7 110.8 424.0 110.5 423.4 110.4 423.0 109.9 422.8 109.1 420.1 106.9 418.9 105.1 418.3 102.7 418.7 102.4 418.3 101.6 418.0 100.7 417.1 100.4 410.0 96.0 410.3 94.6 414.6 94.2 416.0 93.1 414.9 88.8 411.1 87.5 402.0 75.4 400.9 69.6 398.3 66.7 398.5 66.0 400.3 65.2 400.7 64.8 400.3 64.0 399.7 62.8 400.5 62.0 401.9 60.5 402.1 58.7 401.8 57.8 398.8 57.8 398.0 57.1 393.6 54.7 390.9 56.1 386.8 56.1 384.7 56.0 380.0 58.2 379.3 57.4 381.0 54.8 381.8 54.3 383.7 50.7 384.9 49.1 386.1 48.7 386.9 48.1 385.1 45.9 383.6 42.7 381.6 42.0 380.9 40.7 381.6 38.4 382.4 33.4 382.2 33.2 375.8 32.5 372.5 33.6 369.5 31.4 368.2 27.7 367.4 27.3 361.5 27.3 360.7 27.1 360.3 27.2 359.9 26.6 359.3 26.2 359.4 25.3 359.5 24.8 359.8 23.6 359.6 22.8 359.2 21.1 358.7 19.8 358.7 19.1 358.3 18.5 358.8 16.2 359.2 15.0 359.4 13.5 359.0 12.8 358.9 12.0 359.2 10.9 359.0 9.8 359.4 8.5 360.0 7.4 360.1 6.7 360.1 6.4 359.9 6.0 359.8 5.2 360.5 4.4 361.7 3.7 361.8 2.7 361.4 1.9 361.1 0.9 361.1 0.7 361.0 -0.1 361.0 -0.5 360.8 -1.6 360.2 -2.4 360.4 -3.6 361.4 -3.9 361.8 -4.2 362.1 -5.0 362.5 -5.2 363.4 -5.9 362.9 -6.7 361.5 -7.1 361.9 -7.9 362.6 -8.7 362.7 -9.3 362.1 -10.0 361.2 -10.4 360.3 -11.0 359.6 -11.7 359.1 -12.7 359.3 -13.0 359.7 -13.8 360.4 -15.0 360.6 -15.5 360.3 -16.1 359.2 -16.5 358.1 -17.2 357.8 -17.8 357.8 -18.6 357.8 -19.2 357.1 -19.8 356.4 -20.0 356.2 -20.6 355.9 -21.7 355.6 -22.2 355.0 -22.5 353.8 -24.1 352.9 -25.4 351.5 -25.9 351.6 -27.3 353.4 -30.8 371.1 -69.0 371.7 -71.3 370.2 -73.1 369.1 -74.3 367.8 -75.9 367.4 -76.4 367.1 -77.1 367.3 -78.6 366.5 -78.9 365.9 -79.4 365.3 -79.8 364.5 -80.4 362.4 -80.9 364.0 -83.4 362.9 -85.1 360.4 -88.3 359.3 -89.6 358.6 -90.6 358.2 -91.4 357.7 -92.3 356.5 -92.6 355.4 -92.7 354.6 -92.9 353.3 -93.4 353.4 -92.8 352.9 -92.1 352.4 -91.4 352.0 -90.3 351.6 -89.2 351.0 -88.0 350.1 -86.7 349.0 -81.8 350.1 -77.2 351.6 -75.7 350.8 -74.5 347.8 -70.5 345.9 -65.8 343.8 -61.5 342.4 -62.1 341.3 -60.5 339.8 -59.7 338.5 -57.9 336.1 -57.5 326.3 -52.2 326.1 -53.3 325.8 -54.0 325.1 -54.7 323.6 -57.4 323.8 -57.5 322.3 -60.4 320.9 -61.4 319.6 -59.8 319.9 -57.5 319.6 -57.1 318.2 -55.9 318.2 -55.8 317.2 -55.3 315.5 -58.0 315.2 -59.3 314.9 -60.3 313.4 -60.2 312.4 -59.8 303.8 -54.4 294.2 -58.1 294.6 -56.3 295.6 -53.6 294.3 -53.4 293.6 -55.3 292.6 -56.5 291.7 -57.3 289.5 -57.2 289.0 -56.6 288.7 -55.9 288.2 -55.2 287.6 -55.7 287.0 -55.2 286.5 -54.7 285.8 -54.0 285.3 -53.1 284.3 -53.5 283.8 -54.0 283.2 -54.6 282.6 -55.1 282.2 -55.5 281.2 -59.2 280.9 -59.9 280.4 -60.5 279.9 -61.1 279.5 -61.5 278.6 -62.6 277.8 -64.0 277.3 -64.6 277.1 -64.8 276.2 -65.6 275.6 -66.4 275.1 -67.2 274.9 -67.2 273.2 -67.7 272.0 -67.8 271.3 -68.2 270.8 -68.3 269.7 -68.4 269.2 -68.5 268.5 -68.4 267.8 -67.9 267.3 -67.8 266.7 -67.6 266.2 -67.5 265.7 -67.1 265.4 -66.5 265.2 -65.8 265.2 -65.1 264.8 -64.7 264.7 -64.4 264.5 -63.9 264.0 -62.2 263.6 -60.8 263.0 -60.4 262.9 -61.0 262.7 -61.4 261.8 -61.1 261.7 -61.3 260.7 -61.7 260.5 -61.5 260.1 -61.2 258.8 -60.7 259.0 -64.4 257.8 -67.1 258.5 -68.0 259.1 -68.7 259.3 -69.2 258.8 -69.6 257.9 -70.1 255.3 -71.3 254.0 -72.2 253.1 -73.6 252.1 -73.6 249.9 -74.9 248.0 -74.1 247.0 -74.7 244.6 -73.6 244.5 -73.6 244.3 -73.7 244.3 -73.9 243.8 -73.8 243.6 -73.7 242.9 -73.4 242.6 -73.3 242.2 -72.9 241.6 -72.5 238.6 -71.6 237.0 -71.6 235.6 -72.5 234.6 -70.2 234.2 -67.8 233.3 -66.4 228.0 -64.3 226.9 -63.3 226.0 -60.5 226.3 -57.1 225.0 -56.0 223.2 -56.2 220.8 -58.8 209.3 -63.0 206.2 -61.9 207.9 -59.9 205.9 -57.9 204.0 -57.8 203.2 -56.6 200.1 -57.2 195.2 -57.3 194.5 -57.3 194.3 -56.7 194.3 -55.9 192.5 -55.5 191.3 -55.9 190.7 -56.1 189.2 -56.4 188.0 -56.2 185.9 -54.9 184.7 -54.9 183.1 -54.1 181.7 -53.0 181.1 -52.2 180.1 -51.6 178.9 -51.5 177.7 -51.6 177.0 -51.9 177.5 -49.4 177.8 -45.5 177.1 -41.6 180.2 -38.3 182.4 -37.9 183.2 -37.0 183.3 -36.1 182.0 -34.6 181.7 -33.9 182.2 -33.0 184.4 -31.2 186.1 -30.4 186.5 -29.7 186.9 -27.8 187.4 -23.2 185.6 -22.6 189.5 -17.0 191.4 -13.6 190.5 -13.2 188.8 -10.8 189.8 -9.1 192.8 -4.9 194.0 -3.2 193.6 -3.0 197.1 0.2 204.2 6.2 205.9 6.9 206.7 7.6 207.3 8.7 208.0 14.9 208.2 16.5 206.9 19.8 206.7 21.4 211.3 27.2 211.4 27.8 211.2 28.2 212.6 27.6 216.6 26.5 218.3 26.0 220.5 25.2 224.9 23.8 226.5 23.7 226.8 24.5 226.6 25.6 226.5 27.0 226.5 28.1 226.6 29.3 226.8 30.1 227.1 31.3 226.5 32.0 226.1 32.2 224.6 33.6 221.4 34.7 219.5 36.1 219.4 37.7 219.4 40.5 222.8 43.4 222.5 44.7 221.5 44.7 219.1 44.8 214.4 42.5 212.0 43.2 210.4 44.6 209.9 48.1 209.7 50.4 212.9 52.1 216.3 51.4 217.0 51.5 217.5 53.1 217.3 54.1 216.2 55.3 214.4 56.1 214.0 56.4 213.8 57.1 214.0 57.7 214.7 58.0 215.5 57.9 216.5 56.4 217.0 55.9 217.8 55.7 218.8 55.8 219.3 56.0 219.6 56.5 219.7 59.1 219.6 59.6 218.7 59.8 217.6 59.5 216.3 59.7 214.8 59.9 213.7 60.2 212.6 61.1 212.3 63.9 214.2 66.9 213.9 68.3 210.6 69.3 208.3 68.7 206.7 69.4 206.6 70.4 208.1 71.2 208.1 71.9 206.6 73.4 206.8 75.1 205.8 86.9 205.4 87.8 177.2 109.3 173.8 113.0 173.2 113.4 172.7 113.6Z"/>
+          </g>
+          <g fill="rgba(201,162,75,0.24)" stroke="rgba(201,162,75,0.85)" stroke-width="0.8">
+            <path d="M106.8 327.1 107.1 327.7 125.4 376.1 126.3 375.2 137.5 369.1 137.9 368.9 140.1 368.7 141.6 368.7 159.0 379.5 181.9 390.2 182.7 390.5 184.3 390.7 184.5 390.4 186.0 387.0 186.8 385.0 187.5 382.7 188.1 381.2 188.9 380.3 189.7 379.8 190.5 379.7 191.9 380.0 198.1 382.4 222.8 393.5 223.5 393.9 224.1 394.9 224.3 395.7 224.9 398.1 241.4 376.8 241.6 376.4 246.6 363.2 246.8 362.8 251.5 340.4 251.5 339.7 250.7 337.0 245.5 323.1 241.1 314.9 240.4 313.7 237.0 310.2 228.8 299.3 228.4 298.8 219.3 266.0 218.9 264.4 218.2 260.8 213.5 236.5 213.2 234.8 212.5 231.1 212.4 228.1 212.4 226.3 212.3 223.2 212.3 221.0 212.2 217.1 201.3 221.9 190.9 226.5 190.3 226.8 184.9 231.4 184.3 232.1 167.1 224.2 163.0 220.4 159.5 233.4 159.5 233.7 155.6 242.5 140.2 270.2 135.4 278.0 143.3 298.1 143.9 300.7 142.6 304.1 139.3 308.5 134.6 311.6 133.7 311.9 132.8 311.8 129.1 310.6 127.1 309.9 118.2 312.8 114.7 314.5 114.3 314.8 110.9 317.7 110.2 318.6 109.7 319.7 107.3 325.7 106.8 327.1Z"/>
+            <path d="M32.0 57.9 45.4 73.5 34.8 85.0 35.9 91.6 37.6 91.8 38.6 92.6 39.8 94.6 41.1 95.7 41.5 96.7 37.9 100.7 38.6 103.5 50.4 110.8 50.7 111.6 49.5 122.4 49.5 135.2 50.0 137.3 50.3 141.8 49.8 144.7 49.2 152.0 50.1 154.3 50.0 155.5 51.4 156.5 52.8 156.9 57.0 161.3 56.7 162.0 56.3 165.6 56.1 169.7 55.9 171.0 55.8 171.7 55.6 174.2 55.5 175.0 55.0 177.1 54.6 178.1 52.9 179.5 51.8 180.0 51.3 180.8 50.1 183.8 49.2 186.5 48.9 188.6 49.6 190.6 48.9 192.6 48.9 194.2 49.7 196.1 49.9 198.4 51.4 201.1 51.4 202.5 49.9 205.5 48.8 209.9 48.7 212.0 49.2 214.5 51.0 218.2 51.5 218.2 51.9 217.7 53.3 216.7 55.1 215.3 57.1 215.0 59.2 215.0 60.3 214.9 62.2 214.7 64.0 214.8 66.2 215.6 69.9 215.9 71.8 216.5 75.7 219.1 79.4 221.7 80.2 222.6 80.8 223.8 83.1 225.2 84.3 226.6 87.6 228.5 89.1 228.9 90.4 229.0 90.7 225.6 91.1 222.2 105.3 216.5 119.3 211.2 143.2 202.3 161.5 203.6 163.3 194.1 163.7 192.9 166.3 185.5 166.6 184.6 166.8 184.3 169.0 178.7 170.5 176.6 172.9 175.1 174.7 174.1 176.1 173.5 177.0 173.1 179.8 171.3 181.1 170.5 181.8 169.9 183.0 168.5 186.9 160.8 187.4 159.8 187.5 159.2 187.5 158.8 187.5 157.8 182.6 150.9 182.6 149.4 182.8 148.0 183.2 147.3 183.2 145.8 183.2 145.4 183.1 144.5 183.1 143.6 183.2 142.6 182.8 141.4 182.9 139.9 177.3 138.0 177.0 135.7 172.7 134.4 175.0 120.5 175.4 119.3 176.3 118.7 176.7 118.0 177.7 116.9 177.0 115.8 176.5 114.3 175.8 113.3 175.4 113.6 174.9 114.2 174.4 115.1 173.6 115.5 173.1 115.0 172.7 113.6 172.2 113.5 171.8 113.8 171.2 114.6 170.7 114.8 170.1 115.0 163.4 114.1 159.5 108.0 159.7 103.2 159.4 100.6 154.9 95.5 150.8 95.0 150.2 94.9 149.6 94.9 146.1 95.9 142.6 95.0 137.9 96.1 134.0 95.7 123.7 103.2 121.7 104.7 115.8 109.3 114.9 110.2 112.7 112.4 112.4 113.4 110.7 114.2 110.3 115.1 110.0 117.9 110.4 120.9 109.8 122.0 107.6 122.0 106.5 121.8 102.8 121.3 101.6 122.1 99.6 122.4 97.9 123.2 93.6 122.9 91.3 121.2 89.9 119.6 87.4 117.8 87.4 117.2 87.2 116.1 86.9 115.2 85.4 114.2 83.4 110.9 83.3 108.1 83.1 107.8 82.7 107.8 82.2 109.2 81.6 109.7 77.8 105.9 77.3 104.4 77.1 101.4 76.3 101.7 75.0 98.4 74.2 92.5 72.4 86.7 73.2 83.5 73.4 81.2 72.2 78.0 71.3 77.2 72.4 73.5 76.1 69.4 77.2 67.5 76.6 64.4 76.2 61.5 79.3 61.4 78.2 59.1 78.3 56.4 76.3 56.0 69.3 41.8 66.6 44.4 63.3 47.3 59.5 53.3 58.5 53.7 55.8 53.9 52.0 52.9 45.3 49.5 43.3 49.8 40.3 51.4 32.0 57.9Z"/>
+          </g>
+        </g>
+        <!-- villages at true position -->
+        <circle cx="105.9" cy="172.9" r="1.5" fill="#ece3d6"/><text x="101.9" y="175.9" text-anchor="end" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">La Morra</text>
+        <circle cx="126.1" cy="249.5" r="1.5" fill="#ece3d6"/><text x="122.1" y="252.5" text-anchor="end" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Barolo</text>
+        <circle cx="179.0" cy="328.3" r="1.5" fill="#ece3d6"/><text x="183.0" y="331.3" text-anchor="start" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Monforte d&rsquo;Alba</text>
+        <circle cx="194.4" cy="213.8" r="1.5" fill="#ece3d6"/><text x="198.4" y="216.8" text-anchor="start" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Castiglione Falletto</text>
+        <circle cx="240.0" cy="249.9" r="1.5" fill="#ece3d6"/><text x="240.0" y="259.9" text-anchor="middle" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Serralunga d&rsquo;Alba</text>
+        <circle cx="95.1" cy="313.6" r="1.5" fill="#ece3d6"/><text x="91.1" y="316.6" text-anchor="end" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Novello</text>
+        <circle cx="102.3" cy="96.2" r="1.5" fill="#ece3d6"/><text x="106.3" y="99.2" text-anchor="start" style="font-family:var(--serif); fill:#ece3d6; font-size:7px;">Verduno</text>
+        <g style="font-family:var(--display); font-size:8.5px; font-weight:600; letter-spacing:0.14em; fill:#ecd9a0;">
+          <text x="70" y="130" text-anchor="middle">LA MORRA</text>
+          <text x="196" y="300" text-anchor="middle">MONFORTE</text>
+          <text x="196" y="310" text-anchor="middle">D&rsquo;ALBA</text>
+        </g>
+        <!-- five vineyard pins at true lat/long -->
+        <g fill="#c9a24b" stroke="#7d5f20" stroke-width="0.7">
+          <circle cx="150.7" cy="256.1" r="5"/>
+          <circle cx="191.0" cy="244.0" r="5"/>
+          <circle cx="91.2" cy="208.2" r="5"/>
+          <circle cx="130.3" cy="201.5" r="5"/>
+          <circle cx="148.2" cy="178.3" r="5"/>
+        </g>
+        <g style="font-family:var(--serif); fill:#201013; font-size:7.5px; font-weight:700;" text-anchor="middle">
+          <text x="150.7" y="258.7">1</text>
+          <text x="191.0" y="246.6">2</text>
+          <text x="91.2" y="210.8">3</text>
+          <text x="130.3" y="204.1">4</text>
+          <text x="148.2" y="180.9">5</text>
+        </g>
+        <text x="83.2" y="207.7" text-anchor="end" style="font-family:var(--serif); fill:#d8bd7e; font-size:6.5px; font-style:italic;">536 m, the</text>
+        <text x="83.2" y="215.2" text-anchor="end" style="font-family:var(--serif); fill:#d8bd7e; font-size:6.5px; font-style:italic;">top of Barolo</text>
+        <g stroke="rgba(236,227,214,0.55)" stroke-width="0.7"><line x1="244.1" y1="356.3" x2="294.0" y2="356.3"/><line x1="244.1" y1="353.8" x2="244.1" y2="358.8"/><line x1="294.0" y1="353.8" x2="294.0" y2="358.8"/></g>
+        <text x="269.1" y="352.3" text-anchor="middle" style="font-family:var(--serif); fill:#b3a08a; font-size:6.5px;">2 km</text>
+        <!-- Italy locator: the same real region outlines as the Kings map, scaled -->
+        <g transform="translate(10.6 364.7) scale(0.17)">
+          <path d="M21.0 141.8L20.3 140.2L22.3 137.6L20.1 135.8L21.0 133.8L21.2 135.0L23.2 135.3L24.4 133.8L27.2 133.7L30.0 131.4L32.0 131.1L36.3 132.6L38.7 131.0L40.6 131.1L41.6 129.4L40.7 127.9L41.5 126.6L39.6 124.3L40.0 118.1L42.8 117.3L44.0 115.5L43.9 113.8L46.9 112.3L47.3 110.9L45.2 108.2L51.1 104.1L50.5 103.2L50.9 102.5L54.5 101.2L55.1 104.6L54.0 106.9L54.4 108.6L56.7 109.7L58.7 113.0L61.4 113.8L61.7 116.1L57.7 120.5L58.3 122.8L57.3 124.9L59.8 126.9L59.5 128.2L60.5 128.2L60.7 129.6L59.9 129.6L61.1 130.9L61.3 133.6L63.2 134.8L64.6 137.9L61.5 138.5L62.5 139.4L60.8 141.4L59.1 139.4L57.2 139.0L55.8 141.4L57.3 143.1L56.6 143.2L57.1 144.4L56.5 144.6L58.0 144.5L57.0 145.5L58.7 147.1L59.9 150.8L61.3 150.1L62.8 151.2L65.8 149.4L66.5 151.8L67.7 151.9L68.7 154.6L70.1 155.2L70.5 157.7L72.8 157.8L73.1 159.3L74.1 159.9L73.9 165.2L72.1 166.0L70.5 164.3L69.9 164.6L69.0 162.9L66.9 162.5L65.7 163.8L66.6 166.5L64.2 166.4L63.2 168.9L61.4 165.8L59.0 165.6L57.8 168.3L53.7 168.1L52.3 169.8L49.6 167.6L48.2 169.6L48.8 170.9L48.4 171.8L46.9 172.5L45.7 175.4L44.7 175.4L45.4 176.3L44.7 177.0L45.5 179.7L44.8 180.7L42.6 181.0L43.3 182.2L37.1 180.9L36.1 181.5L36.3 182.8L37.0 182.8L36.0 183.6L34.6 181.3L34.8 179.6L28.4 181.8L24.7 180.9L22.3 178.8L17.8 177.6L17.4 176.1L14.7 173.3L14.8 171.3L16.2 171.0L14.4 169.2L13.8 167.4L16.7 164.4L16.6 162.5L19.5 162.0L17.6 158.6L18.2 157.5L15.8 156.1L14.2 156.6L11.2 154.6L11.0 151.0L9.1 150.6L8.0 147.9L11.6 145.9L13.7 147.1L14.8 146.7L14.8 145.6L16.2 145.6L17.6 143.9L19.5 144.1L21.0 141.8Z" fill="rgba(201,162,75,0.9)" stroke="#7d5f20" stroke-width="2.6"/>
+          <path d="M36.3 119.8L39.6 120.0L39.6 124.3L41.5 126.6L40.7 127.9L41.6 129.4L40.6 131.1L38.7 131.0L36.3 132.6L32.0 131.1L30.0 131.4L27.2 133.7L24.4 133.8L23.2 135.3L21.2 135.0L21.1 133.7L20.2 135.4L18.8 135.2L18.9 134.5L17.3 133.2L17.5 129.5L13.7 127.8L12.6 125.6L12.9 122.9L17.3 121.7L18.4 119.8L20.1 122.0L21.5 121.3L22.4 122.0L25.1 119.8L27.4 120.7L32.1 117.6L34.5 118.0L36.3 119.8Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M31.6 189.3L32.0 187.6L34.1 186.6L34.5 184.7L36.9 182.8L35.9 182.2L36.1 181.3L43.2 182.2L42.7 180.8L44.9 180.7L45.5 178.9L44.7 177.0L45.2 176.7L45.4 176.3L44.7 175.4L45.7 175.4L46.9 172.5L48.4 171.8L48.8 170.9L48.1 169.8L48.9 168.0L49.6 167.6L52.3 169.8L53.7 168.1L57.8 168.3L59.0 165.6L61.5 165.8L63.2 168.9L64.2 166.4L66.6 166.5L65.7 163.8L66.9 162.5L69.0 162.9L69.9 164.6L70.5 164.3L72.2 166.0L74.9 164.5L75.0 165.2L76.3 164.9L77.5 165.8L79.0 165.1L81.2 166.5L81.4 169.2L80.6 169.2L79.9 171.4L82.9 170.7L85.4 171.6L85.9 173.2L90.5 176.4L90.8 179.5L91.9 178.5L92.5 179.0L91.5 180.0L93.5 180.0L93.9 182.4L94.8 181.6L96.0 182.5L93.6 184.5L90.0 181.9L89.4 182.3L90.4 183.6L89.9 184.0L74.7 173.8L74.2 175.5L72.6 174.8L72.6 173.7L71.2 173.0L66.6 171.5L66.6 172.1L64.5 171.2L62.1 171.1L54.6 175.8L54.0 179.0L50.0 180.9L48.9 184.2L47.3 186.0L47.5 187.3L44.9 189.5L34.7 193.4L31.1 193.1L30.2 190.4L31.6 189.3Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M57.9 125.7L57.2 124.4L58.3 122.8L57.7 120.5L61.7 116.5L61.1 114.2L62.1 113.0L64.9 114.5L63.2 117.5L66.0 118.6L67.2 121.6L66.4 123.0L69.5 123.2L70.9 120.5L68.4 118.1L69.4 117.4L68.9 115.9L70.7 114.9L70.5 113.0L75.0 109.1L76.3 105.9L75.8 103.1L75.0 102.2L75.9 100.1L77.9 99.7L79.1 101.1L80.4 99.7L80.5 104.2L82.7 106.8L86.7 107.2L87.5 105.1L88.5 105.7L93.0 104.1L94.1 105.1L94.1 107.4L95.6 108.1L95.4 109.3L97.4 109.5L98.7 108.3L96.9 105.8L98.5 103.2L95.3 101.9L95.3 98.7L96.8 96.2L100.4 95.4L100.5 97.3L101.8 98.3L104.9 98.2L106.4 100.1L108.4 100.4L110.1 101.8L110.3 103.3L109.7 104.1L107.5 105.0L109.0 106.8L108.5 107.4L109.2 108.7L108.1 110.7L108.7 111.4L108.2 113.2L105.8 117.5L107.2 119.8L106.7 121.1L107.1 123.0L108.1 123.4L107.8 124.4L110.6 123.9L112.0 122.6L115.7 122.9L110.3 130.8L110.8 136.0L110.2 136.2L112.6 137.5L111.8 139.7L113.1 141.6L114.2 140.6L115.9 142.6L118.2 143.4L119.7 145.0L119.6 146.2L121.0 146.3L120.5 147.2L121.6 148.0L123.5 147.1L125.0 147.6L124.3 149.4L126.6 149.5L126.8 150.8L130.4 152.6L130.7 152.8L130.7 153.1L123.7 153.7L121.6 152.7L117.0 154.4L113.3 153.2L112.8 151.7L112.0 152.7L111.8 151.9L110.3 154.0L107.5 154.4L105.4 153.4L104.6 152.0L103.4 152.6L99.6 150.3L95.5 150.0L93.9 146.8L92.1 148.0L92.2 146.8L91.2 147.1L91.6 148.7L90.1 148.1L89.7 149.6L88.0 147.6L86.9 149.4L84.9 148.5L84.7 146.9L83.7 148.0L82.7 146.9L82.3 148.7L81.4 147.9L79.2 148.6L76.9 153.3L75.9 153.8L75.8 155.0L77.4 156.0L77.9 157.5L75.9 159.4L77.2 160.5L76.5 161.5L77.0 162.1L75.3 162.4L74.7 161.1L74.9 162.1L73.8 162.2L74.1 159.9L73.1 159.3L72.8 157.8L70.5 157.7L70.1 155.2L68.7 154.6L67.7 151.9L66.5 151.8L65.8 149.4L62.8 151.2L61.3 150.1L59.9 150.8L58.7 147.1L57.0 145.5L58.0 144.5L56.5 144.6L57.1 144.4L56.6 143.2L57.3 143.1L55.8 141.4L57.2 139.0L59.1 139.4L60.8 141.4L62.5 139.4L61.5 138.5L64.6 137.9L63.2 134.8L61.3 133.6L61.1 130.9L59.9 129.6L60.7 129.6L60.5 128.2L59.5 128.2L59.8 126.9L57.9 125.7Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M145.7 98.2L141.0 99.7L140.6 100.7L142.2 101.0L142.5 102.0L141.5 102.3L141.1 104.6L139.6 104.9L141.0 106.1L141.3 107.9L142.4 107.6L143.5 108.6L143.0 109.4L144.4 110.3L144.1 111.3L143.5 111.1L142.5 113.0L137.3 113.9L137.8 115.5L136.8 115.9L137.1 118.3L134.8 118.2L134.5 116.9L132.8 116.7L129.3 117.7L129.6 118.9L128.7 120.2L127.5 119.4L126.4 119.9L125.9 122.0L124.6 123.5L125.0 124.6L124.2 124.4L124.3 126.1L123.2 127.7L120.1 126.9L117.8 128.1L117.9 127.5L115.8 126.8L116.9 123.6L115.3 122.7L111.0 122.9L110.7 123.9L108.4 124.5L107.7 123.8L108.1 123.4L107.1 123.0L107.2 119.8L105.8 117.4L108.2 113.2L108.7 111.4L108.1 110.7L109.2 108.6L108.6 105.9L107.4 105.3L110.3 103.3L109.6 101.1L105.9 99.6L106.8 96.0L104.3 94.7L104.5 92.0L105.5 91.3L105.1 90.1L106.3 87.8L108.4 88.4L111.3 87.1L113.7 88.9L112.9 90.1L120.3 90.9L121.9 88.9L122.2 85.9L124.0 84.9L124.0 84.0L127.9 83.1L130.2 84.0L132.0 82.5L133.5 83.4L135.7 82.4L138.9 83.9L144.8 81.1L151.1 80.0L151.5 80.5L150.6 81.9L148.4 82.6L149.6 85.0L149.0 85.8L150.9 87.2L152.4 86.9L153.2 88.3L152.6 90.3L154.5 90.6L155.1 92.6L157.5 93.8L155.0 95.1L155.2 95.8L152.0 95.6L150.3 96.8L150.3 95.9L147.1 94.0L145.7 98.2Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M110.5 133.1L110.4 130.5L115.7 122.9L116.9 123.6L115.8 126.8L117.9 127.5L118.2 128.3L120.1 126.9L123.0 127.8L124.3 126.1L124.2 124.4L125.0 124.6L124.6 123.5L125.9 122.0L126.4 119.9L127.5 119.4L128.7 120.2L129.6 118.9L129.3 117.7L132.8 116.7L134.5 116.9L134.8 118.2L137.1 118.3L136.8 115.9L137.8 115.5L137.3 113.9L142.6 113.0L144.4 110.3L143.0 109.4L143.5 108.6L142.4 107.6L141.1 107.7L141.0 106.1L139.6 104.9L141.1 104.6L141.5 102.3L142.5 102.0L142.2 101.0L140.5 100.5L141.5 99.4L145.3 98.9L146.5 97.1L147.1 94.0L150.3 95.9L150.3 96.8L152.0 95.6L155.2 95.8L155.0 95.1L157.5 93.8L164.1 95.4L161.2 98.5L162.3 101.1L158.9 101.2L157.0 103.7L157.2 104.5L154.4 106.2L153.6 107.8L154.4 109.2L156.8 110.0L158.0 112.0L157.7 113.5L155.5 115.7L156.2 118.9L158.3 119.8L159.6 123.1L160.5 123.5L160.8 122.7L162.4 124.3L165.3 122.1L166.0 123.3L167.4 122.3L169.1 123.4L169.9 122.4L170.7 123.5L170.3 124.4L171.1 126.6L171.6 126.2L172.5 128.9L173.5 129.4L168.7 130.4L154.6 137.8L153.0 143.0L153.9 148.4L159.5 152.6L155.5 158.5L152.9 156.2L152.5 153.4L149.0 153.9L146.6 152.2L140.3 152.2L135.6 155.3L133.4 153.6L130.7 153.8L130.6 152.7L126.8 150.8L126.6 149.5L124.3 149.4L125.0 147.6L123.5 147.1L121.6 148.0L120.5 147.2L121.0 146.3L119.6 146.2L119.7 145.0L118.2 143.4L115.9 142.6L114.2 140.6L112.8 141.4L111.7 139.3L112.5 138.8L112.5 137.2L110.7 137.1L110.2 136.2L110.8 136.0L110.5 133.1Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M184.1 104.0L182.1 104.8L182.3 105.8L180.5 106.9L181.7 109.1L181.4 109.9L183.3 109.4L187.9 111.3L183.7 115.0L183.1 116.9L184.7 118.3L187.3 117.7L185.6 122.5L186.3 123.8L191.3 126.0L194.4 129.7L192.6 131.4L189.4 131.0L191.5 130.4L190.2 129.9L190.2 128.1L188.2 126.2L184.5 123.8L184.9 124.6L184.1 125.9L185.0 126.6L182.0 128.2L177.2 126.8L174.8 127.4L173.5 129.4L172.5 128.9L171.6 126.2L171.1 126.6L170.3 124.4L170.7 123.5L169.9 122.4L169.1 123.4L167.4 122.3L166.0 123.3L165.3 122.1L162.5 124.3L160.8 122.7L160.5 123.5L159.6 123.1L158.3 119.8L156.2 118.9L155.5 115.7L157.7 113.5L158.0 112.0L156.8 110.0L153.6 108.1L154.4 106.2L157.2 104.5L157.0 103.7L158.9 101.2L162.3 101.1L161.4 100.0L161.4 97.9L164.8 94.9L167.0 96.4L173.3 96.6L176.8 98.2L180.4 97.3L189.1 99.2L188.5 102.1L186.2 102.1L184.1 104.0Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M77.2 160.5L75.9 159.4L77.9 157.5L77.4 156.0L75.8 155.0L75.9 153.8L76.9 153.3L79.2 148.6L81.4 147.9L82.3 148.7L82.7 146.9L83.7 148.0L84.7 146.9L84.9 148.5L86.9 149.4L88.0 147.6L89.7 149.6L90.1 148.1L91.6 148.7L91.2 147.1L92.2 146.8L92.1 148.0L93.9 146.8L95.5 150.0L96.6 150.6L99.6 150.3L103.3 152.6L104.7 152.0L105.4 153.4L108.7 154.6L112.8 151.7L113.3 153.2L117.0 154.4L119.7 153.0L123.7 153.7L128.0 152.8L130.7 153.1L130.8 153.9L133.4 153.6L135.6 155.3L140.4 152.2L146.6 152.2L149.0 153.9L152.4 153.4L152.9 156.2L155.5 158.5L155.4 158.7L154.9 158.8L153.6 158.7L155.2 158.6L152.6 156.9L151.9 157.8L152.6 157.7L151.5 161.3L154.5 176.4L158.5 182.1L164.5 186.8L164.1 190.2L161.3 191.8L160.4 189.6L159.2 190.4L158.0 189.8L158.3 186.0L155.7 187.2L155.8 189.0L157.2 189.5L155.6 190.1L155.3 192.0L152.7 192.7L152.6 193.8L150.3 194.9L149.6 193.9L147.3 194.6L145.0 193.9L143.1 192.1L141.3 192.3L137.9 189.9L138.1 188.4L136.3 186.0L138.9 181.5L134.7 181.9L135.5 180.3L133.0 180.3L130.5 177.5L127.0 180.4L124.8 180.5L126.4 181.7L126.0 182.4L121.0 182.6L119.8 181.9L119.9 181.0L117.5 183.6L113.5 180.4L110.7 180.2L109.4 181.8L107.6 180.3L106.6 178.1L102.1 176.0L100.7 176.5L97.9 173.6L96.7 173.8L94.4 172.3L93.5 169.8L89.6 169.7L88.1 172.3L85.9 173.2L85.4 171.6L84.0 170.7L79.9 171.4L80.6 169.2L81.4 169.2L81.2 166.5L79.0 165.1L78.4 165.9L73.8 164.6L73.8 162.2L74.9 162.1L74.7 161.1L75.3 162.4L77.0 162.1L76.5 161.5L77.2 160.5Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M158.1 202.2L153.9 202.0L153.3 201.3L154.7 200.2L154.8 199.0L152.0 199.8L150.2 198.3L151.6 196.6L152.8 196.5L153.2 195.0L153.4 196.8L153.9 196.8L153.8 195.7L154.8 195.7L152.6 193.8L152.6 192.8L155.3 192.0L155.6 190.1L157.3 189.3L159.2 190.4L160.4 189.6L161.3 191.8L162.6 191.7L164.1 190.2L164.6 186.8L168.5 188.4L178.2 196.7L182.5 199.1L183.9 198.4L186.9 201.1L186.8 202.8L191.7 214.2L194.3 223.6L189.0 225.2L187.9 226.6L184.6 226.3L183.5 229.0L180.9 230.7L178.2 228.9L175.7 229.1L177.6 226.6L176.9 224.5L175.1 225.7L172.2 222.8L170.9 223.1L170.3 224.5L170.3 222.5L168.2 221.2L168.3 216.8L166.6 215.2L167.4 212.8L165.5 210.3L165.6 208.5L164.4 206.6L165.3 205.8L165.1 204.3L161.2 205.7L158.1 202.2Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M91.6 180.1L92.5 179.0L91.4 178.6L90.8 179.5L90.5 176.4L86.2 173.2L88.1 172.3L89.7 169.7L93.5 169.8L94.4 172.3L96.7 173.8L97.9 173.6L100.7 176.5L102.1 176.0L106.6 178.1L107.6 180.3L109.4 181.7L110.6 180.2L113.4 180.4L117.3 182.8L117.3 183.5L119.9 181.0L119.8 181.9L121.0 182.6L126.1 182.4L126.4 181.7L124.8 180.5L127.0 180.4L130.5 177.5L133.0 180.3L135.5 180.3L134.7 181.9L139.0 181.6L136.3 186.0L138.1 188.4L138.5 190.4L147.1 194.6L149.4 193.9L150.3 194.9L152.6 193.8L154.8 195.7L153.8 195.7L153.9 196.8L153.4 196.8L153.2 195.0L152.8 196.5L150.1 198.0L150.8 199.1L149.3 201.9L147.7 202.5L149.0 203.9L146.0 205.7L148.5 207.7L148.7 209.9L149.9 210.3L150.3 209.2L151.1 209.9L147.7 211.9L146.4 211.4L145.9 213.6L143.4 214.9L143.4 217.4L144.9 218.3L143.6 223.1L144.3 224.4L140.6 226.1L140.4 227.0L139.6 226.1L139.0 226.8L140.7 228.7L139.7 230.1L140.5 231.9L136.2 234.9L134.6 234.8L134.1 236.6L135.5 237.5L135.6 239.3L132.3 239.2L131.3 241.3L126.0 239.9L123.7 241.9L122.0 239.6L124.2 239.0L124.4 235.8L122.9 235.1L122.0 232.8L120.1 231.8L118.5 229.0L112.9 226.8L114.0 225.8L114.0 223.1L110.7 221.6L106.9 222.3L106.6 220.4L107.4 220.0L107.9 217.1L107.7 211.8L101.7 201.2L102.0 201.2L102.4 200.0L101.7 200.8L100.3 190.1L97.9 186.6L94.7 184.2L95.9 182.3L94.7 181.6L94.1 182.5L93.5 180.0L91.6 180.1ZM101.0 228.7L97.8 229.2L96.9 227.4L99.0 226.5L100.4 227.3L101.0 225.8L103.2 226.9L104.7 224.4L105.5 225.2L105.3 227.7L104.1 228.2L105.3 229.9L104.0 229.8L103.0 228.1L102.4 229.0L102.1 228.2L101.0 228.7Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M175.0 231.9L167.8 233.4L168.2 235.0L163.5 237.1L164.3 238.2L162.5 239.1L161.2 238.2L160.8 240.4L158.8 241.8L158.4 240.4L156.9 240.7L157.2 239.6L155.9 239.7L156.1 237.4L154.3 238.0L152.7 237.3L153.2 237.2L152.4 236.8L152.4 235.1L151.4 234.7L151.6 232.7L150.6 231.6L149.5 231.1L146.1 232.2L143.8 230.9L143.5 230.1L144.8 228.1L143.5 227.5L142.6 225.4L144.3 224.4L143.6 223.1L144.9 218.3L143.7 218.1L143.1 215.6L145.9 213.6L146.2 211.6L147.7 211.9L151.1 209.9L150.3 209.2L149.9 210.3L148.7 209.9L148.5 207.7L147.2 207.4L147.3 206.2L146.1 206.2L149.0 203.9L147.8 202.1L149.3 201.9L150.8 199.1L153.0 199.9L154.4 198.8L154.7 200.2L153.3 201.3L153.9 202.0L157.7 201.9L161.2 205.7L165.1 204.3L165.3 205.8L164.4 206.6L165.6 208.5L165.5 210.3L167.4 212.8L166.6 215.2L168.3 216.8L168.2 221.2L170.3 222.5L170.3 224.5L170.9 223.1L172.3 222.8L174.8 225.6L176.9 224.5L177.2 225.2L177.2 228.0L175.9 228.2L175.0 231.9Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M140.5 226.6L141.4 225.6L142.9 225.8L143.5 227.5L144.8 228.1L143.5 230.2L146.1 232.2L149.5 231.1L150.6 231.6L151.6 232.7L151.4 234.7L152.4 235.1L152.4 236.8L153.2 237.2L152.7 237.3L154.3 238.0L156.1 237.4L155.9 239.7L157.2 239.6L156.9 240.7L158.4 240.4L158.8 241.8L160.8 240.4L161.2 238.2L162.5 239.1L164.3 238.2L163.5 237.1L168.2 235.0L168.1 233.2L174.6 232.1L175.7 229.1L179.0 229.5L180.0 230.5L179.8 231.4L181.3 232.2L181.0 234.0L178.4 234.8L175.8 234.1L174.9 235.8L175.5 237.8L173.9 239.1L175.9 240.9L174.8 242.0L180.6 248.1L177.3 249.9L173.1 248.2L173.1 249.3L171.7 250.1L171.6 252.6L172.3 253.7L173.6 253.4L180.2 256.9L180.6 260.5L181.6 260.0L185.5 262.7L187.5 260.8L189.5 261.2L190.5 262.9L194.4 264.0L196.1 266.1L197.2 270.6L195.8 271.6L195.9 272.7L192.9 274.3L193.5 274.9L193.6 278.4L190.4 280.9L186.7 279.7L185.6 280.3L185.6 281.6L178.3 278.4L172.4 280.9L170.3 276.9L168.4 275.1L164.9 274.5L162.8 273.0L161.1 273.3L156.6 266.7L151.0 263.0L150.5 260.1L148.9 257.2L143.2 252.9L141.1 253.3L136.7 245.1L131.3 241.3L132.3 239.2L135.6 239.3L135.5 237.5L134.1 236.6L134.6 234.8L136.2 234.9L138.6 233.5L138.9 232.4L140.4 232.2L139.7 230.1L140.7 228.7L138.8 227.3L139.4 226.2L140.5 226.6Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M198.7 272.8L199.5 271.2L200.7 272.2L200.9 271.5L202.6 271.5L211.9 276.1L213.5 274.6L215.6 274.6L216.5 273.1L218.5 274.0L222.2 271.9L224.6 273.8L224.5 275.2L223.5 275.8L223.9 277.2L229.2 280.2L228.3 280.5L228.7 281.8L227.4 283.5L229.2 285.2L231.4 285.7L232.2 284.9L236.0 286.8L236.5 289.4L235.5 291.7L233.8 293.1L231.1 292.6L231.7 294.2L230.6 294.2L231.7 295.1L231.8 298.0L234.9 300.1L233.5 302.0L235.8 303.4L235.8 306.1L239.9 309.7L240.6 312.0L242.6 313.5L242.4 315.2L240.7 316.0L240.1 318.8L238.7 320.2L239.3 321.0L235.4 320.4L232.8 323.2L230.1 321.8L228.9 322.1L229.0 320.3L225.4 317.0L222.9 317.0L221.8 315.4L219.7 314.5L220.6 313.3L220.6 311.4L221.9 310.7L222.0 309.5L219.3 303.5L216.7 300.1L215.6 299.6L214.1 301.1L212.4 300.6L210.0 302.1L208.9 301.3L207.2 301.9L204.8 303.3L205.1 301.4L208.7 299.0L207.9 297.0L203.4 293.9L201.3 295.6L199.2 294.3L198.3 294.8L198.7 296.2L197.5 295.7L197.7 293.7L196.9 291.0L190.4 280.9L193.6 278.4L193.0 274.2L195.8 272.7L197.5 275.1L199.3 275.3L198.7 272.8Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M195.0 265.0L193.7 263.4L190.5 262.9L189.5 261.2L187.5 260.8L185.5 262.7L181.6 260.0L180.6 260.5L180.2 256.9L173.6 253.4L172.3 253.7L171.4 251.7L173.1 248.2L177.3 249.9L180.6 248.1L174.8 242.0L175.9 240.9L173.9 239.1L175.5 237.8L174.9 235.8L175.8 234.1L180.7 234.4L181.4 232.3L179.8 231.4L180.1 230.4L182.1 230.3L182.3 229.2L183.5 229.0L184.6 226.3L187.9 226.6L189.0 225.2L194.1 223.6L196.3 229.8L199.3 235.0L203.1 239.2L207.2 242.1L209.5 245.7L214.7 248.2L214.8 250.7L216.4 251.9L215.9 252.8L216.5 253.1L209.0 262.5L208.1 262.4L207.8 259.7L206.1 258.4L205.2 259.0L203.7 257.3L200.2 260.2L201.4 262.9L199.5 263.0L199.2 264.3L198.2 263.3L196.9 265.2L195.0 265.0Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M207.2 273.7L202.6 271.5L200.9 271.5L200.7 272.2L199.6 271.2L198.5 273.2L199.4 275.2L197.5 275.1L195.8 271.7L197.2 270.6L196.6 270.1L197.1 269.5L196.4 268.9L196.7 267.7L195.0 265.0L196.9 265.2L198.2 263.3L199.2 264.3L199.5 263.0L201.4 262.9L200.2 260.2L203.7 257.3L205.2 259.0L206.1 258.4L207.8 259.7L208.1 262.4L209.0 262.5L216.4 253.2L216.4 251.9L222.1 254.1L225.5 256.7L224.5 262.3L225.1 263.9L226.1 264.2L222.7 267.2L221.1 266.5L220.3 267.3L220.4 270.5L222.2 271.9L218.5 274.0L216.5 273.1L215.6 274.6L213.5 274.6L211.9 276.1L210.9 275.1L209.4 275.5L207.2 273.7Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M224.5 275.2L224.5 273.7L220.5 270.6L220.3 267.3L221.1 266.5L222.7 267.2L226.1 264.2L225.1 263.9L224.5 262.3L225.5 256.8L232.4 257.7L249.8 256.3L252.3 258.3L252.6 261.3L251.2 263.1L246.0 266.7L246.3 267.3L245.1 267.4L245.1 270.2L246.5 272.7L262.5 281.5L275.5 286.4L280.9 290.0L285.4 294.4L294.6 299.2L297.1 299.3L298.1 300.1L296.8 300.9L299.1 300.9L299.7 303.5L300.8 304.8L304.7 307.5L309.6 312.9L312.0 319.2L309.1 323.6L308.1 329.9L303.9 328.4L299.0 323.9L298.5 322.9L299.1 321.8L298.0 321.0L299.0 319.1L296.8 316.5L296.3 314.2L295.1 313.1L286.1 312.7L278.4 308.8L279.5 307.1L276.0 305.0L272.9 306.0L269.6 309.1L268.1 307.2L266.0 306.4L266.2 299.3L265.4 298.8L266.1 298.4L264.5 297.2L264.3 297.6L262.3 296.7L262.1 297.6L261.7 296.9L261.4 298.0L260.4 296.7L257.8 298.6L253.8 294.1L252.8 291.4L251.7 291.0L250.7 292.1L247.0 290.0L248.6 287.4L246.4 284.8L244.3 283.8L242.2 285.6L237.0 285.2L235.9 286.7L232.2 284.9L231.4 285.7L229.2 285.2L227.3 283.2L228.7 281.8L228.3 280.5L229.2 280.2L223.9 277.2L223.5 275.8L224.5 275.2Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M233.9 301.1L234.9 300.1L231.8 298.0L231.7 295.1L230.6 294.2L231.7 294.2L231.1 292.6L233.8 293.1L235.5 291.7L236.5 289.4L235.8 286.2L236.3 285.5L241.7 285.7L244.3 283.8L246.4 284.8L248.6 287.4L247.0 290.0L250.7 292.1L251.7 291.0L252.8 291.4L253.8 294.1L257.8 298.6L260.4 296.7L261.3 298.0L261.3 297.0L262.2 297.6L262.5 296.7L266.1 298.4L265.4 298.8L266.2 299.3L266.0 306.4L268.1 307.2L269.7 309.2L264.1 318.8L258.3 317.9L257.8 322.3L256.3 325.0L256.6 326.3L254.4 325.1L253.1 325.4L253.1 326.4L251.6 325.6L248.8 326.5L247.8 324.3L248.4 323.1L245.0 323.5L243.7 322.7L241.3 325.5L239.3 321.8L238.5 321.4L239.3 321.0L238.7 320.2L240.1 318.8L240.2 316.7L242.3 315.3L242.6 313.5L240.6 312.0L239.9 309.7L235.8 306.1L235.8 303.4L233.5 302.0L233.9 301.1Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M246.9 341.1L244.4 338.2L242.9 333.8L241.7 328.5L242.2 328.0L242.3 327.6L241.3 325.5L241.8 324.2L243.7 322.7L245.0 323.5L248.1 323.0L247.8 324.3L248.8 326.5L251.6 325.6L253.1 326.4L253.1 325.4L254.4 325.1L256.5 326.3L256.3 325.0L257.8 322.3L258.3 317.9L261.1 318.8L263.6 318.4L264.0 318.8L262.9 321.5L263.6 324.3L260.1 329.8L260.2 331.4L261.1 332.3L260.8 334.2L263.4 335.8L267.3 335.9L269.7 338.7L277.2 343.4L275.9 346.6L275.9 348.5L276.9 350.1L275.9 353.5L276.9 355.5L278.4 356.2L275.5 360.8L271.9 359.3L267.8 360.5L263.3 363.3L261.3 367.0L262.4 374.2L262.0 377.0L259.5 379.8L255.7 381.6L251.8 386.8L251.2 390.4L249.2 394.0L241.6 394.3L239.4 393.0L238.3 391.2L238.8 390.1L238.1 387.9L238.8 386.8L238.2 383.8L242.3 381.8L245.2 376.2L245.8 372.7L243.2 370.2L243.4 369.3L247.2 366.6L251.1 366.8L252.4 365.5L253.2 362.7L253.1 359.7L251.6 358.9L250.1 356.1L248.9 347.0L246.9 341.1Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M168.5 390.6L172.9 388.4L172.3 386.7L173.6 384.9L175.8 385.6L178.9 383.7L180.2 385.2L180.7 387.7L184.6 387.6L185.3 390.1L189.9 392.5L197.0 390.0L203.8 391.2L209.8 390.0L212.7 388.9L215.6 385.7L216.6 386.2L219.8 384.8L224.5 387.3L227.4 385.1L228.2 383.1L227.8 382.2L228.5 382.8L228.2 384.0L229.5 384.4L235.9 381.1L238.7 382.2L236.9 383.0L234.6 388.9L227.5 399.8L226.5 406.0L224.2 409.2L224.6 414.9L227.3 415.7L228.6 417.4L227.7 417.5L228.0 418.9L227.5 417.3L226.8 417.6L226.7 419.0L227.3 420.5L228.0 420.3L228.3 420.7L227.6 420.8L228.1 421.8L229.6 422.1L229.1 424.4L230.6 425.5L229.1 425.5L225.9 428.6L224.5 432.7L225.6 436.6L224.1 437.8L222.5 435.9L220.9 436.2L218.9 434.9L216.4 435.9L209.1 433.0L206.2 427.2L203.1 423.7L198.5 421.9L193.4 422.2L192.0 420.8L187.8 419.1L185.1 415.9L181.9 415.3L177.8 412.3L175.2 408.8L171.4 408.7L168.8 405.9L162.6 406.5L160.8 403.7L158.6 403.1L157.4 401.5L156.2 398.2L157.1 397.7L157.8 395.8L157.1 394.6L158.6 391.1L157.9 390.9L159.9 389.1L161.8 388.7L162.2 387.6L163.5 387.7L164.2 386.7L163.9 385.0L165.0 385.3L166.5 389.2L168.5 390.6ZM144.2 431.2L146.5 432.5L146.5 434.3L144.9 434.5L143.5 432.5L144.2 431.2Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+          <path d="M52.5 305.8L51.7 305.7L50.6 302.5L48.3 303.3L48.7 302.2L48.1 301.7L47.3 303.6L46.9 302.8L46.8 301.5L48.3 299.5L46.5 297.8L48.7 293.0L47.6 290.8L48.3 289.5L50.8 293.7L55.8 294.7L58.2 294.0L61.0 291.5L63.3 291.2L69.0 284.3L72.7 283.1L72.9 280.7L72.3 280.1L72.9 280.5L74.7 279.7L74.7 280.1L75.8 280.7L75.7 281.9L76.0 281.0L76.1 281.9L77.1 282.2L77.9 281.5L78.1 282.3L79.5 282.5L79.0 283.2L80.0 283.9L79.9 285.0L80.6 283.7L82.0 283.2L82.5 284.6L83.2 284.6L81.6 288.3L83.0 287.3L82.9 288.4L83.8 287.8L85.6 288.8L84.3 288.5L83.6 289.0L83.4 291.0L81.5 291.5L85.1 291.3L84.5 292.4L85.7 293.6L87.3 293.9L86.2 294.2L85.8 296.0L87.8 299.6L87.9 302.3L89.0 304.2L89.8 304.7L88.2 309.5L86.1 311.3L84.6 314.2L85.4 318.0L87.5 320.2L86.2 323.4L87.0 325.3L86.1 326.3L86.5 327.9L85.2 334.8L85.2 341.3L83.9 345.1L84.1 346.2L84.9 346.9L83.5 348.1L83.5 351.1L82.1 353.9L81.5 352.6L79.8 353.0L76.9 350.1L74.1 349.3L72.8 350.9L71.5 349.8L69.7 351.2L68.9 352.9L69.1 354.2L69.3 354.3L69.6 354.1L69.9 354.1L70.0 354.2L69.3 354.4L69.8 355.2L69.4 357.1L69.0 357.6L68.7 357.6L66.2 360.4L65.8 360.7L65.1 361.2L65.0 361.4L61.5 359.3L60.1 360.1L59.9 361.6L59.5 361.8L59.6 360.8L58.6 360.8L58.9 358.9L57.6 357.2L57.8 356.0L56.7 355.1L55.1 355.2L54.4 358.2L53.4 358.5L52.1 353.8L54.0 353.4L55.0 355.2L55.6 354.2L52.5 349.7L54.3 347.2L52.6 344.3L53.7 342.5L52.9 341.5L55.1 336.6L54.5 331.1L56.0 332.7L57.1 327.6L57.7 327.5L55.7 326.0L54.2 327.7L53.3 326.2L53.7 322.3L52.7 321.6L55.7 319.9L54.8 316.8L55.5 313.4L54.8 311.9L52.9 311.2L53.4 308.8L52.5 305.8Z" fill="rgba(236,227,214,0.05)" stroke="rgba(201,162,75,0.32)" stroke-width="2.6"/>
+        </g>
+        <text x="37.8" y="444.3" text-anchor="middle" style="font-family:var(--serif); fill:#b3a08a; font-size:6px; font-style:italic;">Piedmont</text>
+        <line x1="78" y1="378.28969045274727" x2="308" y2="378.28969045274727" stroke="rgba(201,162,75,0.25)" stroke-width="0.6"/>
+        <g style="font-family:var(--serif); font-size:7.5px;">
+          <text x="80" y="392.3" style="fill:#f0e2c4;">1&#160;&#160;Bussia, Monforte <tspan style="fill:#b3a08a; font-style:italic;">Ballarin &middot; flight one</tspan></text>
+          <text x="80" y="404.8" style="fill:#f0e2c4;">2&#160;&#160;Perno, Monforte <tspan style="fill:#b3a08a; font-style:italic;">Ca&rsquo; di Press &middot; flight one</tspan></text>
+          <text x="80" y="417.3" style="fill:#f0e2c4;">3&#160;&#160;Serradenari, La Morra <tspan style="fill:#b3a08a; font-style:italic;">Giulia Negri &middot; flights two and three</tspan></text>
+          <text x="80" y="429.8" style="fill:#f0e2c4;">4&#160;&#160;Brunate, La Morra <tspan style="fill:#b3a08a; font-style:italic;">part of La Tartufaia &middot; flight two</tspan></text>
+          <text x="80" y="442.3" style="fill:#f0e2c4;">5&#160;&#160;Annunziata, La Morra <tspan style="fill:#b3a08a; font-style:italic;">Rocche dell&rsquo;Annunziata &middot; flight four</tspan></text>
+        </g>
+      </svg>
+      <figcaption class="map-cap">The night stays in two communes: <b>La Morra</b> in the west, where Serradenari climbs to the highest ground in Barolo, and <b>Monforte d&rsquo;Alba</b> in the south, home to Bussia and Perno.</figcaption>
+    </figure>
+
+    <p style="text-align:center; margin:18px 0 8px;">
+      <a href="index.html" style="color:var(--ink-soft); text-decoration:none; letter-spacing:0.08em; font-size:14px;">&larr; Back to Wine with Kai</a>
+    </p>
+  </section>
+
+  <!-- ============ EVENT BAR ============ -->
+  <div class="event-bar">
+    <p class="when">Wednesday 4 November 2026 &nbsp;&middot;&nbsp; 7:00 pm</p>
+    <p class="where">So Good Seafood &middot; Takashimaya, Singapore</p>
+    <p class="where" style="margin-top:6px; font-style:italic; font-size:16px;">Bring your own glasses: two sensory or Burgundy glasses</p>
+  </div>
+
+  <p class="page-foot">A curated wine dinner among friends &middot; Wine with Kai</p>
+</main>
+
+</body>
+</html>
