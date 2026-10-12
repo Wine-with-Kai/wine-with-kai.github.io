@@ -10,10 +10,17 @@ serves is standalone.
 
 Conventions enforced here:
   - no em-dashes anywhere in the output
+
+The "Next dinner" link in every page's nav is written as {{NEXT_DINNER}}
+in src/ and filled in here, so a new dinner means changing one line:
+NEXT_DINNER below. That page's own nav link is marked as the current page.
 """
 import re
 import pathlib
 import sys
+
+# the line-up page of the next dinner, linked as "Next dinner" in every nav
+NEXT_DINNER = "barolo-altitude.html"
 
 REPO = pathlib.Path(__file__).resolve().parent
 SRC = REPO / "src"
@@ -40,6 +47,14 @@ for src_page in sorted(SRC.glob("*.html")):
     out = LINK_RE.sub(lambda m: INLINE, html, count=1)
     out = CSS_RE.sub(lambda m: inline_asset("style", m), out)
     out = JS_RE.sub(lambda m: inline_asset("script", m), out)
+
+    # the nav's "Next dinner" link, marked current on that dinner's own page
+    nav_link = '<a href="{{NEXT_DINNER}}">'
+    if src_page.name == NEXT_DINNER:
+        out = out.replace(nav_link, f'<a href="{NEXT_DINNER}" aria-current="page">')
+    out = out.replace("{{NEXT_DINNER}}", NEXT_DINNER)
+    if not (REPO / "src" / NEXT_DINNER).exists():
+        sys.exit(f"ERROR: NEXT_DINNER {NEXT_DINNER} is not a page in src/")
 
     # convention checks: no em/en dashes, literal characters or HTML entities
     for bad in ("—", "–", "&mdash;", "&ndash;"):

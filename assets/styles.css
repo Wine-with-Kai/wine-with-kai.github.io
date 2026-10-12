@@ -764,9 +764,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
