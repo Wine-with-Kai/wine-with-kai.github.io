@@ -1,0 +1,431 @@
+// Wine with Kai · shared helpers for the reservation, BYOB and admin pages.
+// Needs supabase-js (UMD build) and wwk-config.js loaded first.
+(function () {
+  const cfg = window.WWK_CONFIG || {};
+  const ready = !!(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase);
+  const client = ready
+    ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+        // implicit flow: the emailed link works even if opened in another browser
+        auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true },
+      })
+    : null;
+
+  const TZ = "Asia/Singapore";
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function money(cents, currency) {
+    if (cents == null) return "";
+    const sym = (currency || "sgd").toLowerCase() === "sgd" ? "S$" : (currency || "").toUpperCase() + " ";
+    const neg = cents < 0;
+    const abs = Math.abs(cents);
+    const whole = abs % 100 === 0;
+    const n = (abs / 100).toLocaleString("en-SG", {
+      minimumFractionDigits: whole ? 0 : 2,
+      maximumFractionDigits: 2,
+    });
+    return (neg ? "-" : "") + sym + n;
+  }
+
+  function parts(iso, opts) {
+    const out = {};
+    new Intl.DateTimeFormat("en-GB", Object.assign({ timeZone: TZ }, opts))
+      .formatToParts(new Date(iso)).forEach((p) => { out[p.type] = p.value; });
+    return out;
+  }
+
+  // "Thursday 8 October 2026 · 7:00 pm"
+  function when(iso) {
+    const d = parts(iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    return `${d.weekday} ${d.day} ${d.month} ${d.year} · ${time(iso)}`;
+  }
+  // "8 October 2026"
+  function day(iso) {
+    const d = parts(iso, { day: "numeric", month: "long", year: "numeric" });
+    return `${d.day} ${d.month} ${d.year}`;
+  }
+  function time(iso) {
+    const t = parts(iso, { hour: "numeric", minute: "2-digit", hour12: true });
+    return `${t.hour}:${t.minute} ${(t.dayPeriod || "").toLowerCase()}`;
+  }
+
+  function param(name) {
+    return new URLSearchParams(location.search).get(name);
+  }
+
+  // the last moment a cancellation still gets the deposit back
+  function refundCutoff(ev) {
+    return new Date(new Date(ev.starts_at).getTime() - ev.refund_days * 86400000);
+  }
+
+  const ERRORS = {
+    not_signed_in: "Please sign in first.",
+    no_profile: "Please add your name first.",
+    event_not_found: "This evening could not be found.",
+    event_not_open: "Reservations for this evening are not open.",
+    deposit_not_set: "The deposit has not been set yet, so seats cannot be reserved just yet.",
+    event_started: "This evening has already begun.",
+    not_invited: "This evening is by invitation. Sign in with the email address your invitation was sent to.",
+    not_a_guest: "The tally is shared with seated guests only.",
+    checkout_failed: "The payment page could not be opened. Please try again in a moment.",
+    refund_failed: "The refund could not be issued automatically. Kai has been told; nothing has been cancelled yet.",
+    no_reservation: "There is no reservation to cancel.",
+    too_many_lookups: "You have used today's bottle look-ups. Please type the details and Kai will check the price.",
+    assist_refused: "The assistant could not help with this one.",
+    assist_failed: "The assistant could not finish this time.",
+    assist_busy: "The assistant is busy just now. Please try again in a minute.",
+    nothing_to_look_up: "Add the producer or the wine first.",
+    wrong_seat_code: "That code doesn't match. Check the code in Kai's invitation.",
+    too_many_code_tries: "Too many wrong codes. Please try again in an hour, or ask Kai.",
+    bad_photo: "That photo could not be used. Please try another.",
+  };
+  function errorText(e) {
+    const code = (e && (e.code || e.message)) || String(e);
+    for (const k in ERRORS) if (code.indexOf(k) !== -1) return ERRORS[k];
+    return "Something went wrong: " + code;
+  }
+
+  // call an edge function; surfaces the { error } code it returns
+  async function callFn(name, body) {
+    const { data, error } = await client.functions.invoke(name, { body });
+    if (error) {
+      let code = error.message;
+      try { code = (await error.context.json()).error || code; } catch (_) {}
+      throw { code };
+    }
+    return data;
+  }
+
+  async function rpc(fn, args) {
+    const { data, error } = await client.rpc(fn, args);
+    if (error) throw error;
+    return data;
+  }
+
+  async function user() {
+    if (!client) return null;
+    const { data } = await client.auth.getSession();
+    return data.session ? data.session.user : null;
+  }
+
+  async function profile(u) {
+    const { data } = await client.from("profiles").select("*").eq("id", u.id).maybeSingle();
+    return data;
+  }
+
+  const LAST_EMAIL = "wwk-email";
+  const remembered = () => { try { return localStorage.getItem(LAST_EMAIL) || ""; } catch (_) { return ""; } };
+  const remember = (v) => { try { localStorage.setItem(LAST_EMAIL, v); } catch (_) {} };
+
+  // Two steps on the same page: email, then the code from the email.
+  // The email also carries a link, which signs in just as well.
+  function signInForm(el, lead, onSignedIn) {
+    const google = !!cfg.googleSignIn;
+    el.innerHTML = `
+      <p class="kicker">Sign in</p>
+      <p>${lead || (google ? "One tap with Google, or we can email you a 6-digit code." : "Enter your email and we will send you a 6-digit code. No password needed.")}</p>
+      ${google ? `
+      <div class="actions" style="margin:4px 0 14px;">
+        <button class="btn small solid google" type="button" data-google>
+          <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+          Continue with Google</button>
+      </div>
+      <p class="hint-or">or with your email</p>` : ""}
+      <form class="form" data-signin>
+        <label>Email <input type="email" name="email" required autocomplete="email" value="${esc(remembered())}"></label>
+        <div class="actions"><button class="btn small solid" type="submit">Email me a code</button></div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>
+      <form class="form" data-code hidden>
+        <label>The code from your email
+          <input name="code" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}"
+            maxlength="10" placeholder="123456" style="letter-spacing:0.3em; font-size:22px; max-width:220px;"></label>
+        <div class="actions">
+          <button class="btn small solid" type="submit">Sign in</button>
+          <button class="linkish" type="button" data-again>Use another email</button>
+        </div>
+        <p class="msg" data-msg2 aria-live="polite"></p>
+      </form>`;
+    const form = el.querySelector("[data-signin]");
+    const codeForm = el.querySelector("[data-code]");
+    const gBtn = el.querySelector("[data-google]");
+    if (gBtn) gBtn.addEventListener("click", async () => {
+      gBtn.disabled = true;
+      // Google sends the guest back to this same page, signed in
+      const { error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: location.href.split("#")[0] },
+      });
+      if (error) {
+        gBtn.disabled = false;
+        const msg = form.querySelector("[data-msg]");
+        msg.className = "msg err"; msg.textContent = error.message;
+      }
+    });
+    let email = "";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector("button");
+      const msg = form.querySelector("[data-msg]");
+      btn.disabled = true;
+      email = form.email.value.trim().toLowerCase();
+      remember(email);
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: location.href.split("#")[0] },
+      });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
+      form.hidden = true;
+      codeForm.hidden = false;
+      codeForm.querySelector("[data-msg2]").className = "msg ok";
+      codeForm.querySelector("[data-msg2]").textContent = `We have emailed a code to ${email}. It can take a minute; check spam if it does not arrive.`;
+      codeForm.code.focus();
+    });
+    codeForm.querySelector("[data-again]").addEventListener("click", () => {
+      codeForm.hidden = true; form.hidden = false; form.email.focus();
+    });
+    codeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = codeForm.querySelector("button[type=submit]");
+      const msg = codeForm.querySelector("[data-msg2]");
+      btn.disabled = true;
+      const { error } = await client.auth.verifyOtp({ email, token: codeForm.code.value.trim(), type: "email" });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = "That code did not work. Check it, or ask for a new one."; return; }
+      if (onSignedIn) onSignedIn();
+    });
+  }
+
+  function profileForm(el, u, onSaved) {
+    el.innerHTML = `
+      <p class="kicker">Welcome</p>
+      <p>Signed in as <strong>${esc(u.email)}</strong>. What name should Kai put at the table?</p>
+      <form class="form" data-profile>
+        <div class="row">
+          <label>Full name <input name="full_name" required autocomplete="name"></label>
+          <label>Mobile <span class="hint">optional</span>
+            <input name="phone" type="tel" autocomplete="tel"></label>
+        </div>
+        <div class="actions"><button class="btn small" type="submit">Continue</button></div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>`;
+    const form = el.querySelector("[data-profile]");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const { error } = await client.from("profiles").insert({
+        id: u.id, email: u.email,
+        full_name: form.full_name.value.trim(),
+        phone: form.phone.value.trim() || null,
+      });
+      if (error) {
+        const msg = form.querySelector("[data-msg]");
+        msg.className = "msg err"; msg.textContent = error.message; return;
+      }
+      onSaved();
+    });
+  }
+
+  // Resolves to { user, profile } once the visitor is signed in and has a
+  // profile; until then renders the sign-in or profile form into `el`.
+  async function guest(el, onReady, lead) {
+    const u = await user();
+    if (!u) { signInForm(el, lead, onReady); return null; }
+    let p = await profile(u);
+    if (!p) {
+      // invited by name: no need to ask again
+      const { data: inv } = await client.from("invitations").select("name")
+        .eq("email", (u.email || "").toLowerCase()).not("name", "is", null).limit(1);
+      const meta = u.user_metadata || {};
+      const name = (inv && inv[0] && inv[0].name) || meta.full_name || meta.name;
+      if (name) {
+        const { data } = await client.from("profiles")
+          .insert({ id: u.id, email: u.email, full_name: name }).select().single();
+        p = data;
+      }
+    }
+    if (!p) { profileForm(el, u, onReady); return null; }
+    return { user: u, profile: p };
+  }
+
+  function whoBar(el, g) {
+    el.innerHTML = `Signed in as ${esc(g.profile.full_name)} &middot;
+      <button class="linkish" type="button" data-signout>Sign out</button>`;
+    el.querySelector("[data-signout]").addEventListener("click", async () => {
+      await client.auth.signOut();
+      location.reload();
+    });
+  }
+
+  function notConfigured(el) {
+    el.innerHTML = `<p class="muted" style="text-align:center;">Reservations open here soon.
+      Until then, please let Kai know directly.</p>`;
+  }
+
+  // shrink a photo to a JPEG of at most 1600 px: quicker to upload, and a
+  // format the label reader accepts (iPhone HEIC included, where the browser can decode it)
+  async function shrinkImage(file) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(bmp.width * k);
+      c.height = Math.round(bmp.height * k);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+      return blob || file;
+    } catch (_) {
+      return file;
+    }
+  }
+
+  // ---------- the label camera ----------
+  // Opens the rear camera inside the page with a label-shaped frame, and
+  // resolves with the photo cropped to that frame (a Blob), or the file the
+  // guest picked from their photos, or null if they closed it. Where the
+  // camera is not available (permission refused, an in-app browser, a
+  // desktop without a camera) it falls back to the phone's photo picker.
+  function pickFile(capture) {
+    return new Promise((resolve) => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "image/*";
+      if (capture) inp.setAttribute("capture", "environment");
+      inp.addEventListener("change", () => resolve(inp.files[0] || null), { once: true });
+      inp.click();
+    });
+  }
+
+  function cameraUnavailable() {
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam cam-off";
+      cam.setAttribute("role", "dialog");
+      cam.innerHTML = `
+        <div class="cam-sheet">
+          <p>The camera is not available here, perhaps because access was not allowed, or the link
+            opened inside another app.</p>
+          <button type="button" class="btn small solid" data-pick>Take or choose a photo</button>
+          <button type="button" class="linkish" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      const done = (r) => { cam.remove(); resolve(r); };
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-pick]").addEventListener("click", () => {
+        const pick = pickFile(true);
+        cam.remove();
+        pick.then(resolve);
+      });
+    });
+  }
+
+  async function captureLabel() {
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return pickFile(true);
+
+    let stream;
+    try {
+      stream = await md.getUserMedia({
+        audio: false,
+        // ask for the sharpest picture the rear camera offers; the crop is
+        // only the label, so it needs the pixels for small print
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 4096 }, height: { ideal: 3072 } },
+      });
+    } catch (_) {
+      // Safari only opens the photo picker straight from a tap, so offer a button
+      return cameraUnavailable();
+    }
+
+    return new Promise((resolve) => {
+      const cam = document.createElement("div");
+      cam.className = "cam";
+      cam.setAttribute("role", "dialog");
+      cam.setAttribute("aria-label", "Photograph the label");
+      cam.innerHTML = `
+        <video playsinline autoplay muted></video>
+        <div class="cam-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p class="cam-hint">Fit the front label inside the frame</p>
+        <div class="cam-bar">
+          <button type="button" class="cam-side" data-photos>Choose from photos</button>
+          <button type="button" class="cam-shutter" data-shoot aria-label="Take the photo"></button>
+          <button type="button" class="cam-side" data-cancel>Cancel</button>
+        </div>`;
+      document.body.appendChild(cam);
+      document.documentElement.classList.add("cam-open");
+      const video = cam.querySelector("video");
+      video.srcObject = stream;
+
+      const done = (result) => {
+        stream.getTracks().forEach((t) => t.stop());
+        document.removeEventListener("keydown", onKey);
+        document.documentElement.classList.remove("cam-open");
+        cam.remove();
+        resolve(result);
+      };
+      const onKey = (e) => { if (e.key === "Escape") done(null); };
+      document.addEventListener("keydown", onKey);
+
+      cam.querySelector("[data-cancel]").addEventListener("click", () => done(null));
+      cam.querySelector("[data-photos]").addEventListener("click", async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const file = await pickFile(false);
+        done(file);
+      });
+      cam.querySelector("[data-shoot]").addEventListener("click", () => {
+        const vw = video.videoWidth, vh = video.videoHeight;
+        if (!vw || !vh) return;
+        // the video fills the screen with object-fit: cover; map the frame
+        // on screen back to the camera's own pixels, with a little margin
+        const box = cam.getBoundingClientRect();
+        const fr = cam.querySelector(".cam-frame").getBoundingClientRect();
+        const k = Math.max(box.width / vw, box.height / vh);
+        const offX = (box.width - vw * k) / 2, offY = (box.height - vh * k) / 2;
+        const pad = 0.06;
+        let sx = (fr.left - box.left - offX) / k, sy = (fr.top - box.top - offY) / k;
+        let sw = fr.width / k, sh = fr.height / k;
+        sx -= sw * pad; sy -= sh * pad; sw *= 1 + 2 * pad; sh *= 1 + 2 * pad;
+        sx = Math.max(0, sx); sy = Math.max(0, sy);
+        sw = Math.min(vw - sx, sw); sh = Math.min(vh - sy, sh);
+        const scale = Math.min(1, 1600 / Math.max(sw, sh));
+        const c = document.createElement("canvas");
+        c.width = Math.round(sw * scale);
+        c.height = Math.round(sh * scale);
+        c.getContext("2d").drawImage(video, sx, sy, sw, sh, 0, 0, c.width, c.height);
+        cam.classList.add("cam-flash");
+        c.toBlob((blob) => done(blob), "image/jpeg", 0.9);
+      });
+    });
+  }
+
+  async function event(slug) {
+    const { data, error } = await client.from("events").select("*").eq("slug", slug || "").maybeSingle();
+    if (error) throw error;
+    return data;
+  }
+
+  // Kai's invitation, ready to send: WhatsApp opens with it and Kai picks the chat
+  function inviteMessage(ev, name, code) {
+    const link = new URL(`reserve.html?event=${encodeURIComponent(ev.slug)}`, location.href).href;
+    const [day, at] = when(ev.starts_at).split(" \u00b7 ");
+    return [
+      `${name ? `Hi ${name}! ` : ""}You're invited to ${ev.title}${ev.format === "byob" ? ", a bring-your-own-bottle dinner" : ""}.`,
+      "",
+      `${day}, ${at}`,
+      ...(ev.venue ? [ev.venue] : []),
+      "",
+      `Reserve your seat${ev.format === "byob" ? " and add your bottle" : ""}: ${link}`,
+      ...(code ? [`Your code: ${code}`] : []),
+    ].join("\n");
+  }
+  const whatsappLink = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+  window.WWK = {
+    client, ready, esc, money, when, day, time, param, refundCutoff,
+    errorText, callFn, rpc, user, profile, guest, whoBar, notConfigured, event, shrinkImage, captureLabel,
+    inviteMessage, whatsappLink,
+  };
+})();

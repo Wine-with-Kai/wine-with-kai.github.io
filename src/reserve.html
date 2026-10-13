@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserve a Seat · Wine with Kai</title>
+<meta name="description" content="Reserve a seat at a Wine with Kai dinner. A deposit holds your place, refunded in full if you cancel at least fourteen days ahead.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+
+<div class="site-top">
+  <a class="home-link" href="index.html">
+    <span class="mini-mark" role="img" aria-label="Kai"></span>
+    <span class="mini-word">Wine with Kai</span>
+  </a>
+  <nav>
+    <a href="{{NEXT_DINNER}}">Next dinner</a>
+    <a href="upcoming.html">Upcoming</a>
+    <a href="reserve.html" aria-current="page">Reserve</a>
+    <a href="archive.html">Past dinners</a>
+  </nav>
+</div>
+
+<hr class="rule-crimson" style="margin-top:18px;">
+
+<main>
+  <header class="page-head wrap">
+    <p class="eyebrow" id="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Reserve a seat</p>
+    <h1 class="page-title">
+      <span id="title">Reserve a Seat</span>
+      <span class="it" id="subtitle">a place at the table</span>
+    </h1>
+  </header>
+
+  <section class="section wrap" id="page">
+    <p class="muted" style="text-align:center;" id="loading">Loading&hellip;</p>
+  </section>
+
+  <div class="event-bar" id="bar" hidden>
+    <p class="when" id="bar-when"></p>
+    <p class="where" id="bar-where"></p>
+  </div>
+
+  <p class="page-foot">A curated wine dinner among friends &middot; Wine with Kai</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="../assets/wwk-config.js"></script>
+<script src="../assets/wwk.js"></script>
+<script>
+(function () {
+  const W = window.WWK;
+  const $ = (id) => document.getElementById(id);
+  const page = $("page");
+  const slug = W.param("event");
+
+  if (!W.ready) { W.notConfigured(page); return; }
+
+  // ---------- no evening chosen: list what is open ----------
+  async function listOpen() {
+    const { data } = await W.client.from("events").select("*")
+      .eq("status", "open").gte("starts_at", new Date().toISOString()).order("starts_at");
+    if (!data || !data.length) {
+      page.innerHTML = `<p class="muted" style="text-align:center;">No evenings are open for reservation just now.
+        See what is <a href="upcoming.html" style="color:var(--gold);">taking shape</a>.</p>`;
+      return;
+    }
+    page.innerHTML = `<div class="themes">${data.map((ev) => `
+      <article class="theme">
+        <div class="t-index">${W.esc(W.day(ev.starts_at))}<span>${W.esc(ev.venue || "")}</span></div>
+        <div class="t-body">
+          <p class="t-title">${W.esc(ev.title)}</p>
+          ${ev.subtitle ? `<p class="t-sub">${W.esc(ev.subtitle)}</p>` : ""}
+          ${ev.description ? `<p class="t-desc">${W.esc(ev.description)}</p>` : ""}
+          <div class="t-meta">
+            <span class="tag">${ev.format === "byob" ? "Bring your own bottle" : "Curated line-up"}</span>
+            ${ev.invite_only ? `<span class="tag">By invitation</span>` : ""}
+          </div>
+          <p style="margin:6px 0 0;"><a href="reserve.html?event=${encodeURIComponent(ev.slug)}"
+            style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">Reserve a seat &rarr;</a></p>
+        </div>
+      </article>`).join("")}</div>`;
+  }
+
+  // ---------- one evening ----------
+  let ev, counts, me = null, seated = false, isAdmin = false, editing = null;
+
+  const priceRange = () => {
+    const lo = ev.price_min_cents, hi = ev.price_max_cents, c = ev.currency;
+    if (lo != null && hi != null) return `${W.money(lo, c)} to ${W.money(hi, c)}`;
+    if (lo != null) return `From ${W.money(lo, c)}`;
+    if (hi != null) return `Up to ${W.money(hi, c)}`;
+    return null;
+  };
+  const locked = () => (ev.bottle_lock_at && Date.now() >= new Date(ev.bottle_lock_at).getTime())
+    || Date.now() >= new Date(ev.starts_at).getTime() || ev.status !== "open";
+  const labelUrl = (path) => path ? W.client.storage.from("labels").getPublicUrl(path).data.publicUrl : null;
+
+  async function load() {
+    ev = await W.event(slug);
+    if (!ev) {
+      page.innerHTML = `<p class="muted" style="text-align:center;">This evening could not be found.
+        <a href="reserve.html" style="color:var(--gold);">See the evenings open for reservation</a>.</p>`;
+      return;
+    }
+    document.title = `${ev.title} · Wine with Kai`;
+    $("eyebrow").innerHTML = ev.format === "byob" ? "Bring your own bottle" : "Wine with Kai &nbsp;&middot;&nbsp; Reserve a seat";
+    $("title").textContent = ev.title;
+    $("subtitle").textContent = ev.subtitle || "";
+    $("subtitle").hidden = !ev.subtitle;
+
+    // an evening with a seat code opens only once the code is entered
+    if (!(await unlocked())) { showGate(); return; }
+    if (ev.format === "byob") { await renderStory(); return; }
+
+    $("bar").hidden = false;
+    $("bar-when").textContent = W.when(ev.starts_at);
+    $("bar-where").textContent = ev.venue || "";
+
+    counts = (await W.rpc("event_counts", { p_slug: slug }))[0] || { seats_taken: 0, waitlisted: 0 };
+    const left = Math.max(0, ev.seats - counts.seats_taken);
+    const cutoff = W.refundCutoff(ev);
+
+    const range = ev.format === "byob" ? priceRange() : null;
+    page.innerHTML = `
+      ${range || (ev.format === "byob" && ev.price_note) ? `
+        <div class="banner" role="note">
+          <p class="kicker" style="margin-bottom:2px;">Suggested bottle price for the evening</p>
+          ${range ? `<p class="b-amt">${W.esc(range)}</p>` : ""}
+          ${ev.price_note ? `<p>${W.esc(ev.price_note)}</p>` : ""}
+        </div>` : ""}
+      <dl class="facts">
+        <div><dt>Date</dt><dd>${W.esc(W.when(ev.starts_at).split(" \u00b7 ")[0])}</dd></div>
+        <div><dt>Time</dt><dd>${W.esc(W.time(ev.starts_at))}</dd></div>
+        <div><dt>Location</dt><dd>${W.esc(ev.venue || "To be announced")}</dd></div>
+        ${left ? "" : `<div><dt>Seats</dt><dd>Full &middot; ${counts.waitlisted} waiting</dd></div>`}
+        ${ev.deposit_cents ? `<div><dt>Deposit</dt><dd>${W.money(ev.deposit_cents, ev.currency)}</dd></div>` : ""}
+      </dl>
+      ${ev.description ? `<p style="margin-top:26px;">${W.esc(ev.description)}</p>` : ""}
+      ${ev.format === "byob" ? `
+        <div class="banner">
+          <p class="kicker" style="margin-bottom:4px;">Bring your own bottle</p>
+          <p><a href="#line-up" data-jump style="color:var(--gold);">Click here to see the line-up and tally &rarr;</a></p>
+        </div>` : ""}
+      <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
+      ${ev.format === "byob" ? `
+        <div class="panel" id="mine" hidden></div>
+        <h2 id="line-up" style="scroll-margin-top:16px;">The line-up</h2>
+        <p class="muted">Bring a bottle you would like to share, or none at all. Every bottle shared${ev.shared_costs_cents
+          ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
+        is added up and split evenly across the table: if your bottle comes to more than your share, Kai settles the
+        difference with you.</p>
+        <div id="lineup"><p class="muted">Loading&hellip;</p></div>
+        <div id="tally"></div>` : ""}
+      ${ev.deposit_cents ? `
+        <p class="foot-note">The deposit holds your seat. It is refunded in full if you cancel on or before
+        <strong>${W.esc(W.day(cutoff.toISOString()))}</strong>, ${ev.refund_days} days before the evening; after that it is kept.
+        ${ev.format === "byob" ? "On the night, it counts towards your share of the tally." : "It counts towards the evening's cost."}</p>` : ""}
+      <p class="foot-note" id="who"></p>`;
+
+    const jump = page.querySelector("[data-jump]");
+    if (jump) jump.addEventListener("click", (e) => {
+      e.preventDefault();
+      $("line-up").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    await renderGuest();
+  }
+
+  // ---------- the evening as a story of full-screen panels ----------
+  // Scroll smoothly to an element. The panels snap one at a time, which would
+  // catch a long jump part-way, so snapping is paused until the glide ends.
+  let glideTimer;
+  function glide(el) {
+    if (!el) return;
+    const root = document.documentElement;
+    const story = root.classList.contains("story-mode");
+    const offset = story && !el.classList.contains("sp") ? 64 : 0;
+    const top = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!story) { window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" }); return; }
+    root.classList.add("snap-free");
+    clearTimeout(glideTimer);
+    const release = () => {
+      window.removeEventListener("scrollend", release);
+      clearTimeout(glideTimer);
+      glideTimer = setTimeout(() => root.classList.remove("snap-free"), 80);
+    };
+    window.addEventListener("scrollend", release);
+    glideTimer = setTimeout(release, 1600);
+    window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+  }
+
+  const PANELS = [
+    ["sp-evening", "Your evening"],
+    ["sp-bottle", "The bottle"],
+    ["sp-add", "Add your bottle"],
+    ["sp-lineup", "The line-up"],
+    ["sp-tally", "The tally"],
+  ];
+  const nextHint = (i) => i < PANELS.length - 1
+    ? `<a class="sp-next" href="#${PANELS[i + 1][0]}" data-to="${PANELS[i + 1][0]}">Next: ${PANELS[i + 1][1]}<span class="chev" aria-hidden="true"></span></a>` : "";
+
+  async function renderStory() {
+    document.querySelector(".page-head").hidden = true;
+    $("bar").hidden = true;
+    document.documentElement.classList.add("story-mode");
+    counts = (await W.rpc("event_counts", { p_slug: slug }))[0] || { seats_taken: 0, waitlisted: 0 };
+    const range = priceRange();
+    const parts = (ev.venue || "Venue to be announced").split(",");
+    const place = parts[0].trim(), addr = parts.slice(1).join(",").trim();
+    const maps = ev.venue ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.venue)}` : null;
+    const day = W.when(ev.starts_at).split(" · ")[0];
+
+    page.classList.add("story");
+    page.innerHTML = `
+      <section class="sp" id="sp-evening">
+        <div class="sp-in">
+          <p class="eyebrow">Bring your own bottle</p>
+          <p class="sp-lead" id="sp-lead">You&rsquo;re reserving a seat at</p>
+          <h1 class="sp-title">${W.esc(ev.title)}</h1>
+          <div class="sp-when">
+            <p>${W.esc(day)}</p>
+            <p>${W.esc(W.time(ev.starts_at))}</p>
+            <p>${maps ? `<a href="${maps}" target="_blank" rel="noopener">` : ""}${W.esc(place)}${addr ? `<span class="addr">${W.esc(addr)}</span>` : ""}${maps ? `<span class="addr maps">Directions &rarr;</span></a>` : ""}</p>
+          </div>
+          ${ev.description ? `<p class="sp-desc sp-theme">${W.esc(ev.description.trim())}</p>` : ""}
+          <div class="panel" id="guest"><p class="muted">Loading&hellip;</p></div>
+          <p class="foot-note" id="who"></p>
+        </div>
+        ${nextHint(0)}
+      </section>
+
+      <section class="sp" id="sp-bottle">
+        <div class="sp-in">
+          <p class="eyebrow">The bottle</p>
+          <p class="sp-lead">Suggested price for the evening</p>
+          ${range ? `<p class="sp-big">${W.esc(range)}</p>` : ""}
+          <p class="sp-desc">Bring a bottle you would like to share, or none at all. You choose the price you share it for.</p>
+          <p class="sp-desc">Every bottle shared${ev.shared_costs_cents
+            ? `, with the evening&rsquo;s shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""},` : ""}
+            is added up and split evenly across the table. If your bottle comes to more than your share after dinner, Kai
+            settles the difference with you.</p>
+          ${ev.bottle_lock_at ? `<p class="sp-deadline">${locked()
+            ? "The line-up is closed."
+            : `Add your bottle by<br>${W.esc(W.when(ev.bottle_lock_at).replace(" \u00b7 ", ", "))}`}</p>` : ""}
+        </div>
+        ${nextHint(1)}
+      </section>
+
+      <section class="sp" id="sp-add">
+        <div class="sp-in">
+          <p class="eyebrow">Add your bottle</p>
+          <h2 class="sp-h2" id="mine-h">What are you bringing?</h2>
+          <div class="panel" id="mine"></div>
+        </div>
+        ${nextHint(2)}
+      </section>
+
+      <section class="sp" id="sp-lineup">
+        <div class="sp-in">
+          <p class="eyebrow">The line-up</p>
+          <h2 class="sp-h2" id="line-up">What the table is pouring</h2>
+          <div id="lineup"><p class="muted">Loading&hellip;</p></div>
+        </div>
+        ${nextHint(3)}
+      </section>
+
+      <section class="sp" id="sp-tally">
+        <div class="sp-in">
+          <p class="eyebrow">The tally</p>
+          <h2 class="sp-h2">How the evening splits</h2>
+          <div id="tally"></div>
+          <p class="sp-sub" style="margin-top:28px;">See you on ${W.esc(day)}.</p>
+          <p class="sp-end"><a href="#sp-evening" data-to="sp-evening">Back to the top &uarr;</a>
+            <a href="index.html">Wine with Kai home &rarr;</a></p>
+        </div>
+      </section>`;
+
+    setupStory();
+    await renderGuest();
+    if (!resumed) { resumed = true; await resume(); }
+  }
+
+  // a returning guest lands where they left off: with a seat but no bottle,
+  // on "Add your bottle"; with a bottle already in, on the line-up
+  let resumed = false;
+  async function resume() {
+    if (location.hash || !seated || !me) return;
+    const { data } = await W.client.from("bottles").select("id")
+      .eq("event_id", ev.id).eq("user_id", me.id).limit(1);
+    const to = data && data.length ? "sp-lineup" : locked() ? null : "sp-add";
+    if (to && $(to)) $(to).scrollIntoView({ block: "start" });
+  }
+
+  // a short note at the foot of the screen
+  function toast(text) {
+    document.querySelectorAll(".sp-toast").forEach((t) => t.remove());
+    const t = document.createElement("p");
+    t.className = "sp-toast";
+    t.setAttribute("role", "status");
+    t.textContent = text;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("gone"), 2600);
+    setTimeout(() => t.remove(), 3400);
+  }
+
+  // which panel is on screen: light its dot
+  let storyWired = false;
+  function markStory() {
+    const dots = document.querySelector(".sp-dots");
+    if (!dots) return;
+    const mid = window.innerHeight * 0.45;
+    let current = PANELS[0][0];
+    PANELS.forEach(([id]) => { const sec = $(id); if (sec && sec.getBoundingClientRect().top <= mid) current = id; });
+    dots.querySelectorAll("button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.to === current)));
+    const bar = document.querySelector(".sp-bar");
+    if (bar) bar.classList.toggle("past-first", current !== PANELS[0][0]);
+  }
+
+  // progress dots, "Next" links and the gentle fade-in
+  function setupStory() {
+    document.querySelectorAll(".sp-dots").forEach((d) => d.remove());
+    const dots = document.createElement("nav");
+    dots.className = "sp-dots";
+    dots.setAttribute("aria-label", "Sections");
+    dots.innerHTML = PANELS.map(([id, label]) =>
+      `<button type="button" data-to="${id}" aria-label="${label}" title="${label}"></button>`).join("");
+    document.body.appendChild(dots);
+
+    // a slim bar on every panel: home on the left, back to the top on the right
+    document.querySelectorAll(".sp-bar").forEach((b) => b.remove());
+    const bar = document.createElement("nav");
+    bar.className = "sp-bar";
+    bar.setAttribute("aria-label", "Page");
+    bar.innerHTML = `<a class="sp-home" href="index.html"><span aria-hidden="true">&lsaquo;</span> Wine with Kai</a>
+      <span class="sp-bar-title">${W.esc(ev.title)}</span>
+      <a class="sp-top" href="#sp-evening" data-to="sp-evening">Top</a>`;
+    document.body.appendChild(bar);
+
+    if (!storyWired) {
+      storyWired = true;
+      document.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-to]");
+        if (!t || !$(t.dataset.to)) return;
+        e.preventDefault();
+        glide($(t.dataset.to));
+      });
+      window.addEventListener("scroll", markStory, { passive: true });
+    }
+    markStory();
+
+    const sections = PANELS.map(([id]) => $(id));
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+        if (en.isIntersecting) { en.target.classList.add("seen"); io.unobserve(en.target); }
+      }), { threshold: 0.15 });
+      sections.forEach((sec) => io.observe(sec));
+    } else {
+      sections.forEach((sec) => sec.classList.add("seen"));
+    }
+  }
+
+  // "Add to calendar": opens Google Calendar with the evening filled in
+  function calendarLink() {
+    const start = new Date(ev.starts_at), end = new Date(start.getTime() + 3 * 3600000);
+    const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const page = `${location.origin}${location.pathname}?event=${encodeURIComponent(slug)}`;
+    const q = new URLSearchParams({
+      action: "TEMPLATE",
+      text: `${ev.title} · Wine with Kai`,
+      dates: `${stamp(start)}/${stamp(end)}`,
+      location: ev.venue || "",
+      details: `The evening page, with the line-up and the tally: ${page}`,
+    });
+    return `https://calendar.google.com/calendar/render?${q}`;
+  }
+
+  // ---------- the seat code ----------
+  const CODE_KEY = `wwk-code-${slug}`;
+  let seatCode = "";
+  const storedCode = () => { try { return localStorage.getItem(CODE_KEY) || ""; } catch (_) { return ""; } };
+  const storeCode = (c) => { try { c ? localStorage.setItem(CODE_KEY, c) : localStorage.removeItem(CODE_KEY); } catch (_) {} };
+
+  // true when the evening has no code, the phone remembers the right one,
+  // or the visitor is Kai or already holds a seat
+  async function unlocked() {
+    if (!(await W.rpc("event_needs_code", { p_slug: slug }))) return true;
+    const u = await W.user();
+    if (u) {
+      const { data: adm } = await W.client.from("admins").select("email").limit(1);
+      const { data: res } = await W.client.from("reservations").select("id")
+        .eq("event_id", ev.id).eq("user_id", u.id).neq("status", "cancelled").limit(1);
+      if ((adm && adm.length) || (res && res.length)) return true;
+    }
+    const c = storedCode();
+    if (c && (await W.rpc("unlock_event", { p_slug: slug, p_code: c })) === "ok") { seatCode = c; return true; }
+    storeCode("");
+    return false;
+  }
+
+  function showGate(note) {
+    $("bar").hidden = true;
+    document.querySelector(".page-head").hidden = false;
+    document.documentElement.classList.remove("story-mode");
+    document.querySelectorAll(".sp-dots, .sp-bar").forEach((d) => d.remove());
+    page.classList.remove("story");
+    page.innerHTML = `
+      <div class="panel gate">
+        <p class="kicker">Private evening</p>
+        <p>Enter the 4-digit code from Kai&rsquo;s invitation.</p>
+        <form id="gate-form" autocomplete="off">
+          <input name="code" class="code-input" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+            autocomplete="one-time-code" aria-label="4-digit code" placeholder="&bull;&bull;&bull;&bull;" required>
+          <button class="btn small solid" type="submit">Open</button>
+        </form>
+        <p class="msg ${note ? "err" : ""}" data-msg aria-live="polite">${note ? W.esc(note) : ""}</p>
+      </div>`;
+    const f = $("gate-form");
+    const input = f.code;
+    const msg = page.querySelector("[data-msg]");
+    const tryCode = async () => {
+      const c = input.value.replace(/\D/g, "").slice(0, 4);
+      if (c.length !== 4) return;
+      f.querySelector("button").disabled = true;
+      const v = await W.rpc("unlock_event", { p_slug: slug, p_code: c }).catch(() => "wrong");
+      f.querySelector("button").disabled = false;
+      if (v === "ok") { storeCode(c); seatCode = c; load(); return; }
+      msg.className = "msg err";
+      msg.textContent = W.errorText(v === "locked" ? "too_many_code_tries" : "wrong_seat_code");
+      input.select();
+    };
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "").slice(0, 4);
+      if (input.value.length === 4) tryCode();
+    });
+    f.addEventListener("submit", (e) => { e.preventDefault(); tryCode(); });
+    input.focus();
+  }
+
+  // the guest panel, then (for BYOB evenings) the bottle sections beneath it
+  async function renderGuest() {
+    seated = false;
+    await renderGuestPanel();
+    if (ev.format === "byob") await refresh();
+  }
+
+  async function renderGuestPanel() {
+    const box = $("guest");
+    const g = await W.guest(box, renderGuest,
+      ev.invite_only
+        ? `This evening is by invitation: sign in with the email address Kai invited${(window.WWK_CONFIG || {}).googleSignIn ? " (with Google, if that is your Google account)" : ", and we will email you a 6-digit code"}.`
+        : null);
+    if (!g) return;
+    W.whoBar($("who"), g);
+    me = g.user;
+    const { data: adm } = await W.client.from("admins").select("email").limit(1);
+    isAdmin = !!(adm && adm.length);
+
+    const { data: mine } = await W.client.from("reservations").select("*")
+      .eq("event_id", ev.id).eq("user_id", g.user.id).neq("status", "cancelled").maybeSingle();
+    // a lapsed hold (checkout abandoned) reads as plain interest
+    const lapsed = mine && mine.status === "pending" && !W.param("paid")
+      && new Date(mine.hold_expires_at) < new Date();
+    const status = !mine ? "none" : lapsed ? "interested" : mine.status;
+    seated = status === "reserved";
+    if ($("sp-lead")) $("sp-lead").innerHTML = seated ? "You have a seat at" : "You&rsquo;re reserving a seat at";
+
+    if (ev.invite_only && status === "none") {
+      const { data: inv } = await W.client.from("invitations").select("email").eq("event_id", ev.id);
+      if (!inv || !inv.length) {
+        box.innerHTML = `<p class="kicker">By invitation</p>
+          <p>This evening is by invitation, and we could not find one for <strong>${W.esc(g.user.email)}</strong>.
+          If Kai invited you at another address, sign out and sign in with that one.</p>`;
+        return;
+      }
+    }
+
+    const left = Math.max(0, ev.seats - counts.seats_taken);
+    const deposit = ev.deposit_cents ? W.money(ev.deposit_cents, ev.currency) : null;
+    const reserveLabel = deposit ? `Reserve my seat &middot; ${deposit} deposit` : "Reserve my seat";
+    const cutoff = W.refundCutoff(ev);
+    const inTime = Date.now() <= cutoff.getTime();
+    const html = [];
+
+    if (status === "reserved") {
+      html.push(`<p class="kicker">Your seat</p>
+        <p><strong>${ev.format === "byob" ? "You&rsquo;re in." : "Your seat is reserved."}</strong> ${mine.deposit_paid_cents
+          ? `Deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} received${mine.paid_at ? ` on ${W.esc(W.day(mine.paid_at))}` : ""}.`
+          : ""} We look forward to seeing you.</p>`);
+      if (ev.format === "byob") {
+        html.push(`<div class="actions"><a class="btn small" href="${W.esc(calendarLink())}" target="_blank" rel="noopener">Add to Google Calendar</a></div>`);
+      }
+      if (isAdmin && ev.format === "byob") {
+        const { data: codeRow } = await W.client.from("event_codes").select("code").eq("event_id", ev.id).maybeSingle();
+        html.push(`<p class="foot-note" style="margin-top:18px;">Host: <a class="wa-link" href="${W.esc(W.whatsappLink(W.inviteMessage(ev, "", codeRow ? codeRow.code : "")))}"
+          target="_blank" rel="noopener">invite a guest on WhatsApp</a>, or add their name on the <a href="admin.html">host page</a>.</p>`);
+      }
+      html.push(`<p class="foot-note" style="margin-top:22px;">${!mine.deposit_paid_cents
+          ? "Plans changed?"
+          : inTime
+            ? `Plans changed? Cancel on or before ${W.esc(W.day(cutoff.toISOString()))} and your deposit is refunded in full.`
+            : `The refund window closed on ${W.esc(W.day(cutoff.toISOString()))}. If you cancel now, the deposit is kept.`}
+        <button class="linkish danger" type="button" data-act="cancel">Cancel my reservation</button></p>`);
+    } else if (status === "pending" && W.param("paid")) {
+      html.push(`<p class="kicker">Almost there</p><p>Payment received. Confirming your seat&hellip;</p>`);
+      pollUntilReserved();
+    } else if (status === "pending") {
+      html.push(`<p class="kicker">Your seat is held</p>
+        <p>We are holding a seat for you until <strong>${W.esc(W.time(mine.hold_expires_at))}</strong> while you pay the deposit.</p>
+        <div class="actions">
+          <button class="btn small solid" type="button" data-act="reserve">Continue to payment</button>
+          <button class="linkish" type="button" data-act="cancel">Release the seat</button>
+        </div>`);
+    } else if (status === "waitlisted") {
+      const pos = await W.rpc("my_waitlist_position", { p_slug: slug });
+      const yours = left > 0 && pos && pos <= left;
+      html.push(`<p class="kicker">Waitlist</p>`);
+      html.push(yours
+        ? `<p><strong>A seat has opened for you.</strong> Reserve it now to claim it.</p>
+           <div class="actions"><button class="btn small solid" type="button" data-act="reserve">${reserveLabel}</button>
+           <button class="linkish" type="button" data-act="withdraw">Leave the waitlist</button></div>`
+        : `<p>You are <strong>number ${pos || "?"}</strong> on the waitlist. If a seat opens, it is offered in order:
+           come back here, or Kai will be in touch.</p>
+           <div class="actions"><button class="linkish" type="button" data-act="withdraw">Leave the waitlist</button></div>`);
+    } else if (ev.status !== "open") {
+      html.push(`<p>Reservations for this evening are ${ev.status === "draft" ? "not open yet" : "closed"}.</p>`);
+    } else if (ev.deposit_cents == null) {
+      html.push(`<p class="kicker">Seats open soon</p>`);
+      html.push(status === "interested"
+        ? `<p>You are on the interest list. Seats open as soon as the deposit is set, and Kai will let you know.</p>
+           <div class="actions"><button class="linkish" type="button" data-act="withdraw">Withdraw my interest</button></div>`
+        : `<p>The deposit for this evening is still being settled. Register your interest and Kai will let you know when seats open.</p>
+           <div class="actions"><button class="btn small" type="button" data-act="interest">I&rsquo;m interested</button></div>`);
+    } else {
+      const queueFirst = counts.waitlisted >= left;
+      html.push(`<p class="kicker">${left && !queueFirst ? "Seats are open" : "The table is full"}</p>`);
+      html.push(left && !queueFirst
+        ? `<p>${left === 1 ? "One seat is" : `${left} seats are`} left.${deposit ? ` A deposit of ${deposit} secures yours; you will pay it on Stripe&rsquo;s secure page, by PayNow or card.` : ""}</p>
+           <div class="actions"><button class="btn small solid" type="button" data-act="reserve">${reserveLabel}</button>
+           ${status === "interested" || !deposit ? "" : `<button class="linkish" type="button" data-act="interest">Just register interest</button>`}</div>`
+        : `<p>Every seat is taken. Join the waitlist and, if a seat opens, it is offered in order.</p>
+           <div class="actions"><button class="btn small" type="button" data-act="reserve">Join the waitlist</button></div>`);
+      if (status === "interested") html.push(`<p class="foot-note">You are on the interest list for this evening.</p>`);
+    }
+    html.push(`<p class="msg" data-msg aria-live="polite"></p>`);
+    box.innerHTML = html.join("");
+
+    box.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => act(b, b.dataset.act, mine)));
+  }
+
+  async function act(btn, what, mine) {
+    const msg = $("guest").querySelector("[data-msg]");
+    const fail = (e) => { btn.disabled = false; msg.className = "msg err"; msg.textContent = W.errorText(e); };
+    btn.disabled = true;
+    try {
+      if (what === "reserve") {
+        const r = await W.callFn("create-deposit-checkout", { slug, code: seatCode });
+        if (r.url) { location.href = r.url; return; }
+      } else if (what === "interest") {
+        const st = await W.rpc("register_interest", { p_slug: slug, p_code: seatCode });
+        if (st === "wrong_seat_code" || st === "too_many_code_tries") throw { code: st };
+      } else if (what === "withdraw") {
+        await W.rpc("withdraw", { p_slug: slug });
+      } else if (what === "cancel") {
+        const paid = mine && mine.status === "reserved" && mine.deposit_paid_cents > 0;
+        const inTime = Date.now() <= W.refundCutoff(ev).getTime();
+        const warn = !paid ? "Release your seat?"
+          : inTime ? `Cancel your reservation? Your deposit of ${W.money(mine.deposit_paid_cents, ev.currency)} will be refunded in full.`
+          : "Cancel your reservation? The refund window has passed, so the deposit will be kept.";
+        if (!confirm(warn)) { btn.disabled = false; return; }
+        const r = await W.callFn("cancel-reservation", { slug });
+        if (r.refund_status === "refunded") {
+          alert(`Cancelled. ${W.money(r.refunded_cents, ev.currency)} is on its way back to you; PayNow and card refunds usually arrive within 5 to 10 working days.`);
+        }
+      }
+      await load();
+      if (what === "reserve" && seated && $("sp-bottle")) glide($("sp-bottle"));
+    } catch (e) {
+      if (e && e.code === "wrong_seat_code") { storeCode(""); seatCode = ""; showGate(W.errorText(e)); return; }
+      fail(e);
+    }
+  }
+
+  async function renderLineup() {
+    const rows = await W.rpc("event_lineup", { p_slug: slug });
+    $("lineup").innerHTML = rows.length
+      ? rows.map((b) => `
+        <div class="bottle">
+          <div class="yr">${b.vintage || "NV"}</div>
+          <div>
+            <p class="nm">${W.esc(b.producer)} &middot; ${W.esc(b.wine)}</p>
+            <p class="sub">${b.region ? W.esc(b.region) + " &middot; " : ""}brought by ${W.esc(b.guest)}</p>
+            ${b.background ? `<p class="bgtext">${W.esc(b.background)}</p>` : ""}
+            ${b.tasting_note ? `<p class="taste"><span class="taste-k">In the glass</span>${W.esc(b.tasting_note)}</p>` : ""}
+            ${b.photo_path ? `<img class="label" src="${W.esc(labelUrl(b.photo_path))}" alt="Label of ${W.esc(b.producer)} ${W.esc(b.wine)}" loading="lazy" onerror="this.hidden=true">` : ""}
+          </div>
+          <div class="side">${b.mine ? `<span class="pill ${b.status}">${b.status === "proposed" ? (isAdmin ? "in" : "awaiting Kai") : W.esc(b.status)}</span>` : ""}</div>
+        </div>`).join("")
+      : `<p class="muted">No bottles yet. The line-up builds here, oldest to youngest, as guests add their wines.</p>`;
+  }
+
+  async function renderMine() {
+    const box = $("mine");
+    const heading = (t) => { if ($("mine-h")) $("mine-h").textContent = t; };
+    if (!seated || !me) {
+      box.hidden = false;
+      heading("Reserve your seat first");
+      box.classList.add("center");
+      box.innerHTML = `<p>Then photograph your bottle&rsquo;s label here and we fill in the details for you.</p>
+        <div class="actions"><button class="btn small" type="button" data-to="sp-evening">Reserve my seat &uarr;</button></div>`;
+      return;
+    }
+    box.hidden = false;
+    box.classList.remove("center");
+    const g = { user: me };
+
+    const { data: bottles } = await W.client.from("bottles").select("*")
+      .eq("event_id", ev.id).eq("user_id", g.user.id).order("created_at");
+    const closed = locked();
+    const b = editing && bottles.find((x) => x.id === editing);
+    const story = !!$("mine-h");
+    heading(b ? "Edit your bottle" : bottles.length > 1 ? "Your bottles" : bottles.length ? "Your bottle" : "What are you bringing?");
+
+    box.innerHTML = `
+      ${story ? "" : `<p class="kicker">Your bottles</p>`}
+      ${bottles.length ? bottles.map((x) => `
+        <div class="bottle">
+          <div class="yr">${x.vintage || "NV"}</div>
+          <div>
+            <p class="nm">${W.esc(x.producer)} &middot; ${W.esc(x.wine)}</p>
+            <p class="sub">${x.region ? W.esc(x.region) + " &middot; " : ""}${W.money(x.price_cents, ev.currency)}
+              ${x.admin_note ? ` &middot; Kai: ${W.esc(x.admin_note)}` : ""}</p>
+          </div>
+          <div class="side">
+            <span class="pill ${x.status}">${x.status === "proposed" ? (isAdmin ? "in" : "awaiting Kai") : W.esc(x.status)}</span><br>
+            ${closed ? "" : `<button class="linkish" type="button" data-edit="${x.id}">Edit</button> &middot;
+            <button class="linkish danger" type="button" data-del="${x.id}">Remove</button>`}
+          </div>
+        </div>`).join("") : story ? "" : `<p class="muted">You have not added a bottle. That is fine: bringing one is optional.</p>`}
+      ${closed
+        ? `<p class="foot-note">The line-up is closed${ev.bottle_lock_at ? ` (it closed on ${W.esc(W.day(ev.bottle_lock_at))})` : ""}. For any change, please tell Kai.</p>`
+        : `
+      ${bottles.length && !b ? `<div class="actions" id="add-another-row"><button class="btn small" type="button" id="add-another">+ Add another bottle</button></div>` : ""}
+      <div id="add-wrap" ${bottles.length && !b ? "hidden" : ""}>
+      ${story && (b || !bottles.length) ? "" : `<h2 style="font-size:22px; margin-top:26px;">${b ? "Edit your bottle" : bottles.length ? "Add another bottle" : "Add your bottle"}</h2>`}
+      <div class="assist">
+        <button type="button" class="btn small solid snap" id="photo-btn">${b && b.photo_path ? "Photograph the label again" : "Photograph the label"}</button>
+        <p class="hint-line">We read the label and fill in the details; you check them, add anything missing and set your price.
+          ${b ? "" : `No photo to hand? <button class="linkish" type="button" id="type-it">Type it in instead</button>`}</p>
+        <div class="assist-row">
+          <img id="photo-preview" class="label" alt="Your label photo" ${b && b.photo_path ? `src="${W.esc(labelUrl(b.photo_path))}"` : "hidden"}>
+          <ol class="steps" id="steps" aria-live="polite" hidden></ol>
+        </div>
+      </div>
+      <form class="form check" id="bottle-form" ${b ? "" : "hidden"}>
+        ${b ? "" : `<p class="kicker" style="margin:0;">Check and add</p>`}
+        <p class="msg" id="check-note" hidden></p>
+        <div class="row">
+          <label>Producer <input name="producer" required placeholder="Domaine Armand Rousseau" value="${W.esc(b ? b.producer : "")}"></label>
+          <label>Wine <input name="wine" required placeholder="Gevrey-Chambertin 1er Cru Clos Saint-Jacques" value="${W.esc(b ? b.wine : "")}"></label>
+        </div>
+        <div class="row">
+          <label>Vintage <span class="hint">leave blank if there is none</span>
+            <input name="vintage" type="number" min="1800" max="2100" inputmode="numeric" value="${b && b.vintage ? b.vintage : ""}"></label>
+          <label>Region <input name="region" placeholder="Gevrey-Chambertin, Burgundy" value="${W.esc(b ? b.region || "" : "")}"></label>
+        </div>
+        <label class="price-ask">I&rsquo;d like to share my bottle for (${ev.currency.toUpperCase()}) <span class="hint" id="price-hint">${priceRange() ? `suggested ${W.esc(priceRange())}` : "the amount that goes into the tally"}</span>
+          <input name="price" type="number" min="0" step="0.01" required inputmode="decimal" value="${b ? (b.price_cents / 100).toFixed(2) : ""}"></label>
+        <label>Note for Kai <span class="hint">optional: where it is from, how it has been kept</span>
+          <input name="note" value="${W.esc(b ? b.note || "" : "")}"></label>
+        <p class="hint-line">${b ? "If you change the wine or the vintage, we rewrite its notes for the line-up."
+          : "When you add it, we write a short background and tasting note for the line-up, from the details above."}</p>
+        <div class="actions">
+          <button class="btn small solid" type="submit">${b ? "Save changes" : "Add to the evening"}</button>
+          ${b ? `<button class="linkish" type="button" id="cancel-edit">Cancel</button>` : ""}
+        </div>
+        <p class="msg" data-msg aria-live="polite"></p>
+      </form>
+      </div>`}`;
+
+    box.querySelectorAll("[data-edit]").forEach((el) => el.addEventListener("click", () => {
+      editing = el.dataset.edit; renderMine();
+    }));
+    box.querySelectorAll("[data-del]").forEach((el) => el.addEventListener("click", async () => {
+      const x = bottles.find((y) => y.id === el.dataset.del);
+      if (!confirm(`Remove ${x.producer} ${x.wine} from the line-up?`)) return;
+      await W.client.from("bottles").delete().eq("id", x.id);
+      if (x.photo_path) await W.client.storage.from("labels").remove([x.photo_path]);
+      if (editing === x.id) editing = null;
+      refresh();
+    }));
+    const cancelEdit = $("cancel-edit");
+    if (cancelEdit) cancelEdit.addEventListener("click", () => { editing = null; renderMine(); });
+    const form = $("bottle-form");
+    if (!form) return;
+
+    // what the assistant has produced for this form so far
+    const assist = { photo_path: null, busy: false };
+
+    form.addEventListener("submit", (e) => { e.preventDefault(); save(form, g, b, assist); });
+    $("photo-btn").addEventListener("click", async () => {
+      const file = await W.captureLabel();
+      if (file) fromPhoto(file, form, g, assist);
+    });
+    const another = $("add-another");
+    if (another) another.addEventListener("click", () => {
+      $("add-another-row").hidden = true;
+      $("add-wrap").hidden = false;
+      glide($("add-wrap"));
+    });
+    const typeIt = $("type-it");
+    if (typeIt) typeIt.addEventListener("click", () => { openCheck(form); form.producer.focus(); });
+  }
+
+  // ---------- the bottle assistant ----------
+
+  const STEPS = [["label", "Reading the label"]];
+
+  function steps(state, note) {
+    const el = $("steps");
+    el.hidden = false;
+    el.innerHTML = STEPS.filter(([k]) => state[k]).map(([k, label]) => `
+      <li class="${state[k]}"><span class="mark" aria-hidden="true">${state[k] === "done" ? "&#10003;" : state[k] === "fail" ? "&times;" : ""}</span>
+        ${label}${state[k] === "busy" ? "&hellip;" : ""}</li>`).join("")
+      + (note ? `<li class="note">${W.esc(note)}</li>` : "");
+  }
+
+  // the "check and add" step: the filled-in form, ready for the price
+  function openCheck(form, note) {
+    form.hidden = false;
+    const n = $("check-note");
+    n.hidden = !note;
+    n.className = "msg";
+    n.textContent = note || "";
+  }
+
+  // the photo fills in the form; the note for the line-up waits for the checked details
+  async function fromPhoto(file, form, g, assist) {
+    if (assist.busy) return;
+    assist.busy = true;
+    const state = { label: "busy" };
+    steps(state);
+    const preview = $("photo-preview");
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    try {
+      const img = await W.shrinkImage(file);
+      if (img.size > 5 * 1024 * 1024) throw new Error("That photo is too large; please try a smaller one.");
+      const path = `${g.user.id}/${ev.id}/${Date.now()}.jpg`;
+      const up = await W.client.storage.from("labels").upload(path, img, { contentType: img.type || "image/jpeg" });
+      if (up.error) throw up.error;
+      if (assist.photo_path) W.client.storage.from("labels").remove([assist.photo_path]);
+      assist.photo_path = path;
+
+      const r = await W.callFn("bottle-assist", { slug, step: "label", photo_path: path });
+      if (!r.is_wine_label) {
+        state.label = "fail";
+        steps(state, "That does not look like a wine label. Try another photo, or type the details in.");
+        openCheck(form);
+        return;
+      }
+      if (r.producer) form.producer.value = r.producer;
+      if (r.wine) form.wine.value = r.wine;
+      const year = /^\d{4}$/.test(r.vintage);
+      form.vintage.value = year ? r.vintage : "";
+      if (r.region) form.region.value = r.region;
+      state.label = "done";
+      steps(state);
+      // point out what needs a look, then go to the first thing to fill in
+      const notes = [];
+      if (!year) notes.push(r.vintage === "NV" ? "Read as non-vintage." : "We could not read a vintage: add it if there is one.");
+      if (r.unsure) notes.push(`Please check: ${r.unsure}`);
+      openCheck(form, notes.join(" "));
+      glide(form);
+      const first = !form.producer.value ? form.producer : !form.wine.value ? form.wine
+        : !year && r.vintage !== "NV" ? form.vintage : form.price;
+      setTimeout(() => first.focus({ preventScroll: true }), 350);
+    } catch (e) {
+      state.label = "fail";
+      steps(state, (e.message && !e.code ? e.message : W.errorText(e)) + " You can type the details in instead.");
+      openCheck(form);
+    } finally {
+      assist.busy = false;
+    }
+  }
+
+  // a sheet over the page while the note is written: what is happening, and a bar that moves
+  function progressSheet(title, line) {
+    const el = document.createElement("div");
+    el.className = "busy-sheet";
+    el.innerHTML = `<div class="busy-card" role="status" aria-live="polite">
+        <p class="kicker">${title}</p>
+        <p class="busy-line">${line}</p>
+        <div class="busy-bar" aria-hidden="true"><span></span></div>
+        <p class="busy-hint">This takes a few seconds.</p>
+      </div>`;
+    document.body.appendChild(el);
+    const bar = el.querySelector(".busy-bar span");
+    const t0 = performance.now();
+    // eases towards 90% while waiting; the last stretch is filled when the work is done
+    const tick = setInterval(() => {
+      bar.style.width = `${4 + 86 * (1 - Math.exp(-(performance.now() - t0) / 6000))}%`;
+    }, 150);
+    return {
+      line(text) { el.querySelector(".busy-line").textContent = text; },
+      async close(ok) {
+        clearInterval(tick);
+        if (ok) { bar.style.width = "100%"; await new Promise((r) => setTimeout(r, 400)); }
+        el.classList.add("gone");
+        setTimeout(() => el.remove(), 300);
+      },
+    };
+  }
+
+  // the note for the line-up, written from the details as the guest left them
+  async function writeNote(row) {
+    try {
+      const r = await W.callFn("bottle-assist", {
+        slug, step: "describe", producer: row.producer, wine: row.wine,
+        vintage: row.vintage ? String(row.vintage) : "", region: row.region || "",
+      });
+      return r.background || r.tasting_note ? r.lookup_id : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function save(form, g, b, assist) {
+    const msg = form.querySelector("[data-msg]");
+    const btn = form.querySelector("button[type=submit]");
+    if (assist.busy) return;
+    const price_cents = Math.round(parseFloat(form.price.value) * 100);
+    const lo = ev.price_min_cents, hi = ev.price_max_cents;
+    if ((lo != null && price_cents < lo) || (hi != null && price_cents > hi)) {
+      if (!confirm(`${W.money(price_cents, ev.currency)} is outside the evening's suggested range of ${priceRange()}. Add it anyway?`)) return;
+    }
+    btn.disabled = true;
+    let sheet = null;
+    try {
+      const row = {
+        event_id: ev.id,
+        user_id: g.user.id,
+        producer: form.producer.value.trim(),
+        wine: form.wine.value.trim(),
+        vintage: form.vintage.value ? parseInt(form.vintage.value, 10) : null,
+        region: form.region.value.trim() || null,
+        price_cents,
+        note: form.note.value.trim() || null,
+      };
+      if (assist.photo_path) row.photo_path = assist.photo_path;
+      // a new bottle, a changed wine or one without a note gets a fresh note; the
+      // background is copied server-side from the lookup (null leaves it out)
+      const same = b && b.background && b.producer === row.producer && b.wine === row.wine
+        && (b.vintage || null) === row.vintage && (b.region || null) === row.region;
+      let noNote = false;
+      if (!same) {
+        sheet = progressSheet(b ? "Saving your bottle" : "Adding your bottle", "Writing the background and tasting note from your details\u2026");
+        row.lookup_id = await writeNote(row);
+        noNote = !row.lookup_id;
+        sheet.line(b ? "Saving your changes\u2026" : "Adding it to the evening\u2026");
+      }
+      const res = b
+        ? await W.client.from("bottles").update(row).eq("id", b.id)
+        : await W.client.from("bottles").insert(row);
+      if (res.error) throw res.error;
+      if (b && assist.photo_path && b.photo_path) await W.client.storage.from("labels").remove([b.photo_path]);
+      if (sheet) { await sheet.close(true); sheet = null; }
+      editing = null;
+      await refresh();
+      if ($("sp-lineup")) {
+        toast(noNote ? (b ? "Saved, without a note this time." : "Added, without a note this time.")
+          : b ? "Saved." : "Added. Thank you.");
+        if (!b) setTimeout(() => glide($("sp-lineup")), 700);
+      }
+    } catch (e) {
+      if (sheet) sheet.close(false);
+      btn.disabled = false;
+      msg.className = "msg err";
+      msg.textContent = e.message || W.errorText(e);
+    }
+  }
+
+  async function renderTally() {
+    const box = $("tally");
+    if (!seated && !isAdmin) {
+      box.innerHTML = `<p class="muted">The tally is shared with the guests at the table. It appears here once your seat is reserved.</p>`;
+      return;
+    }
+    let rows;
+    try { rows = await W.rpc("event_tally", { p_slug: slug }); }
+    catch (e) { box.innerHTML = ""; return; }
+    if (!rows.length) { box.innerHTML = `<p class="muted">No one is seated yet.</p>`; return; }
+
+    const c = ev.currency;
+    const bottlesTotal = rows.reduce((a, r) => a + r.bottles_cents, 0);
+    const total = bottlesTotal + ev.shared_costs_cents;
+    const balance = (v) => v > 0
+      ? `<span class="owes">pays ${W.money(v, c)}</span>`
+      : v < 0 ? `<span class="gets">receives ${W.money(-v, c)}</span>` : "square";
+
+    box.innerHTML = `
+      <p class="muted">Shared with the guests at the table. It updates as bottles are added, and is final once the line-up closes.</p>
+      <div class="table-wrap"><table class="ledger">
+        <thead><tr><th>Guest</th><th class="num opt">Bottles</th><th class="num">Brought</th>
+          <th class="num opt">Deposit</th><th class="num">Share</th><th class="num">On the night</th></tr></thead>
+        <tbody>${rows.map((r) => `
+          <tr class="${r.mine ? "me" : ""}"><td>${W.esc(r.guest)}${r.mine ? " (you)" : ""}${r.settled ? ` <span class="pill">settled</span>` : ""}</td>
+            <td class="num opt">${r.bottles}</td><td class="num">${W.money(r.bottles_cents, c)}</td>
+            <td class="num opt">${W.money(r.deposit_cents, c)}</td><td class="num">${W.money(r.share_cents, c)}</td>
+            <td class="num">${balance(r.balance_cents)}</td></tr>`).join("")}
+        </tbody>
+      </table></div>
+      <p class="muted" style="font-size:16.5px;">${ev.shared_costs_cents
+          ? `Bottles shared ${W.money(bottlesTotal, c)} &middot; shared costs${ev.shared_costs_note ? ` (${W.esc(ev.shared_costs_note)})` : ""} ${W.money(ev.shared_costs_cents, c)} &middot; <strong>total ${W.money(total, c)}</strong>`
+          : `Bottles shared <strong>${W.money(total, c)}</strong>`}, split ${rows.length} way${rows.length === 1 ? "" : "s"}: ${W.money(Math.round(total / rows.length), c)} each.
+        ${ev.deposit_cents ? `<span class="only-narrow">Your deposit is already taken off your figure.</span>` : ""}</p>
+      <p class="foot-note">On the night = your share, less the bottles you brought${ev.deposit_cents ? " and your deposit" : ""}.
+        Shares are rounded to the cent. All settling is with Kai, after dinner.</p>`;
+  }
+
+  async function refresh() {
+    await Promise.all([renderLineup(), renderMine(), renderTally()]);
+  }
+
+  // the webhook usually lands within seconds of Stripe's redirect
+  let polls = 0;
+  function pollUntilReserved() {
+    if (polls++ > 15) {
+      const msg = $("guest").querySelector("[data-msg]");
+      if (msg) msg.textContent = "Still confirming. Your payment is safe; refresh this page in a minute.";
+      return;
+    }
+    setTimeout(async () => {
+      const u = await W.user();
+      const { data } = await W.client.from("reservations").select("status")
+        .eq("event_id", ev.id).eq("user_id", u.id).neq("status", "cancelled").maybeSingle();
+      if (data && data.status === "reserved") {
+        history.replaceState(null, "", `reserve.html?event=${encodeURIComponent(slug)}`);
+        load();
+      } else {
+        pollUntilReserved();
+      }
+    }, 2000);
+  }
+
+  (slug ? load() : listOpen()).catch((e) => {
+    page.innerHTML = `<p class="msg err" style="text-align:center;">${W.esc(W.errorText(e))}</p>`;
+  });
+})();
+</script>
+</body>
+</html>

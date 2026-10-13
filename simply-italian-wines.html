@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Wines · Simply Italian</title>
-<meta name="description" content="Tasting notes for Simply Italian: two Barolos, two Brunellos and three Amarones, Piedmont, Tuscany and the Veneto side by side.">
+<title>The Wines · Barolo: The 2016 Vintage</title>
+<meta name="description" content="Tasting notes for Barolo: The 2016 Vintage: eight Barolos from one year, in four flights across La Morra, Castiglione Falletto, Monforte d'Alba and Serralunga d'Alba.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -244,6 +244,36 @@ img { max-width: 100%; display: block; }
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   align-self: center;
+}
+
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
 }
 
 /* ---------- CTA ---------- */
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -775,17 +842,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
   max-width: 340px;
 }
 
-/* On phones the densest inset labels render around 6-7px and are illegible;
-   the figure caption already names every region, so drop the smallest tier.
-   Larger orienting labels (inset title, highlighted place) are kept. */
-@media (max-width: 620px) {
-  .map-fig svg text[style*="font-size:5px"],
-  .map-fig svg text[style*="font-size:5.5px"],
-  .map-fig svg text[style*="font-size:6px"],
-  .map-fig svg text[style*="font-size:6.5px"] {
-    display: none;
-  }
-}
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
 
 
 </style>
@@ -798,6 +856,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-word">Wine with Kai</span>
   </a>
     <nav>
+    <a href="barolo-altitude.html">Next dinner</a>
     <a href="simply-italian-wines.html" aria-current="page">Tasting notes</a>
     <a href="upcoming.html">Upcoming</a>
     <a href="archive.html">Past dinners</a>
@@ -808,7 +867,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
 <main>
   <header class="page-head wrap">
-    <p class="eyebrow">Piedmont &nbsp;&middot;&nbsp; Tuscany &nbsp;&middot;&nbsp; the Veneto</p>
+    <p class="eyebrow">Piedmont &nbsp;&middot;&nbsp; 2016 &nbsp;&middot;&nbsp; Four flights</p>
     <h1 class="page-title">
       The Wines
       <span class="it">notes for the table</span>
@@ -818,277 +877,332 @@ strong, .b { font-weight: 600; color: var(--ink); }
   <!-- ============ INTRO ============ -->
   <section class="section wrap">
     <hr class="tick">
-    <h2>Why these seven</h2>
+    <h2>Why these eight</h2>
     <p>
-      Three of Italy&rsquo;s greatest reds, read grape by grape. From Piedmont, two Barolos built on
-      Nebbiolo: the traditional, perfumed Roagna and a rounder, warmer wine from 2015. From Tuscany, two
-      Brunellos of Sangiovese: the modern, old-vine Siro Pacenti against the classical Canalicchio di
-      Sopra. And from the Veneto, three Amarones of dried-grape Corvina: a Cesari single-vineyard in two
-      vintages, plus a second house for contrast.
+      One grape, one wine and one year. All eight are Barolos from 2016, a classic, structured vintage, so the
+      year holds still and what changes is the ground and the hand. They come in four flights of two, one for
+      each commune, west to east, and each pair asks its own question. In <strong>La Morra</strong>, altitude
+      against grand cru: Giulia Negri&rsquo;s Serradenari, Barolo&rsquo;s highest vineyard, then Boroli&rsquo;s
+      Cerequio. In <strong>Castiglione Falletto</strong>, one vineyard against a blend: Boroli&rsquo;s Brunella,
+      Barolo&rsquo;s only monopole, then Paolo Scavino&rsquo;s Barolo, drawn from crus across the zone. In
+      <strong>Monforte d&rsquo;Alba</strong>, clay against sand: Poderi Colla&rsquo;s Dardi Le Rose in Bussia,
+      then Elio Grasso&rsquo;s Gavarini Chiniera. And in <strong>Serralunga d&rsquo;Alba</strong>, village wine
+      against Riserva: a Luigi Pira, then a Riserva from Fontanafredda, the historic estate once owned by King
+      Vittorio Emanuele II. The two Boroli crus, poured back to back across the first two flights, show one
+      cellar reading two terroirs.
+    </p>
+
+    <hr class="tick" style="margin-top:34px;">
+    <h2>The 2016 vintage</h2>
+    <p>
+      Every wine tonight is from 2016, and it is a year worth holding still. A slow, even season ended in a long,
+      dry autumn, and the Nebbiolo was picked late, in October, fully ripe but with its freshness intact. The
+      result is classically built Barolo: lifted aromatics, bright acidity and firm, fine tannin, counted among
+      the great vintages of recent decades.
     </p>
 
     <hr class="tick" style="margin-top:34px;">
     <h2>What to look for</h2>
     <p>
-      Each grape makes a wholly different kind of red. <strong>Nebbiolo</strong> is all perfume and
-      structure: pale in colour, high in acid and fine tannin, built on rose, tar and sour cherry.
-      <strong>Sangiovese</strong> is savoury and red-fruited, with bright acidity, tobacco and dusty
-      grip. <strong>Amarone</strong> is the outlier: made from grapes left to raisin over winter, it is
-      dark, dense and high in alcohol, with candied fruit and a bittersweet richness.
+      <strong>Nebbiolo</strong> is all perfume and structure: pale garnet in colour, high in acid and fine
+      tannin, built on rose, tar, dried herbs and sour red cherry. What changes across the night is not the
+      grape but the <strong>commune</strong>. La Morra tends to the fragrant and more open; Castiglione
+      Falletto sits in the middle, balanced and harmonious; Monforte adds depth and grip; and Serralunga,
+      on its pale, iron-rich marls, gives the firmest, most austere and longest-lived Barolo of all.
     </p>
     <p>
-      Watch three things as you cross the country. <strong>The colour</strong>, from Barolo&rsquo;s pale
-      garnet through Brunello&rsquo;s ruby to Amarone&rsquo;s opaque black-red. <strong>The weight</strong>,
-      from Nebbiolo&rsquo;s lift and grip to Amarone&rsquo;s velvet and warmth. <strong>And the house
-      style</strong>: two producers each show a gentler wine and a grander one, so you can read the cellar
-      as much as the grape.
+      Watch three things as you move east. <strong>The perfume</strong>, from La Morra&rsquo;s roses to
+      Serralunga&rsquo;s tar and iron. <strong>The tannin</strong>, softer in the west and sterner in the
+      east. <strong>And within each flight</strong>, the one difference that pair is built on, from altitude
+      and soil to blending and the extra years of a Riserva. At ten years old, every wine here is just
+      beginning to open: give them air.
     </p>
     <p class="muted">
       Each note is drawn from the producer&rsquo;s own description and critics&rsquo; published tasting
-      notes. The community scores are the crowd&rsquo;s verdict, not ours: <em>Vivino</em> on a five-point
-      scale, <em>CellarTracker</em> out of a hundred. Signposts, not a script; trust your own glass first.
+      notes. Signposts, not a script; trust your own glass first.
     </p>
   </section>
 
   <!-- ============ THE WINES ============ -->
   <section class="wines wrap">
 
+    <div class="flight-intro" style="margin:46px 0 4px;">
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; padding-bottom:9px; border-bottom:1px solid var(--line); margin-bottom:16px;">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">I &middot; La Morra</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">altitude against grand cru</span>
+      </div>
+      <span class="lf-label" style="color:var(--gold); text-transform:uppercase; letter-spacing:0.16em; font-size:12.5px; display:block; margin-bottom:8px;">Tasting focus</span>
+      <p style="color:var(--ink-soft); margin:0 0 14px;">La Morra is the most perfumed corner of Barolo, and these two show its range. Giulia Negri&rsquo;s Serradenari sits at the very top of the zone, around 500 metres, where cool nights give lift, freshness and high-toned fruit. Boroli&rsquo;s Cerequio lies lower, on the slope towards the village of Barolo, one of the Langhe&rsquo;s most celebrated crus: deeper, rounder and firmer. Same commune, same year: watch how height changes the weight of the wine.</p>
+    </div>
+
     <!-- 1 -->
-    <article class="wine" id="roagna-pira">
+    <article class="wine" id="negri-serradenari">
       <div class="wine-head">
         <div class="wine-num">1</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Roagna, Barolo &lsquo;Pira&rsquo; <span class="wine-vintage">2018</span></h3>
-          <p class="wine-producer">Castiglione Falletto, Piedmont &middot; Nebbiolo</p>
-        </div>
-      </div>
-      <div class="meta">
-        <span class="tag">Barolo</span>
-        <span class="tag">Nebbiolo</span>
-        <span class="tag">Traditional &middot; Perfumed</span>
-      </div>
-      <div class="wine-body">
-        <p>
-          Roagna is one of the Langhe&rsquo;s great traditionalists, and Pira is their old-vine parcel in
-          Castiglione Falletto. Pale garnet and ethereal, it leads with rose, dried herbs, tar and sour
-          red cherry over a savoury, almost balsamic undertow. The palate is all lift and fine-grained
-          grip: high acid, chalky tannin and a long, saline finish. A fragrant, classically framed Barolo
-          from a fresh, perfumed vintage. Give it air, or the cellar.
-        </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">Vivino <b>4.4</b><span class="star">&#9733;</span></span>
-      </div>
-      <div class="lookfor">
-        <span class="lf-label">Look for</span>
-        <p>Perfume over power: rose and tar, high acid, and Nebbiolo&rsquo;s insistent fine tannin. The purist&rsquo;s Barolo.</p>
-      </div>
-    </article>
-
-    <!-- 2 -->
-    <article class="wine" id="ballarin-tre-ciabot">
-      <div class="wine-head">
-        <div class="wine-num">2</div>
-        <div class="wine-titles">
-          <h3 class="wine-name">Ballarin, Barolo &lsquo;Tre Ciabot&rsquo; <span class="wine-vintage">2015</span></h3>
+          <h3 class="wine-name">Giulia Negri, Barolo &lsquo;Serradenari&rsquo; <span class="wine-vintage">2016</span></h3>
           <p class="wine-producer">La Morra, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
         <span class="tag">Barolo</span>
-        <span class="tag">Nebbiolo</span>
-        <span class="tag">Warm vintage &middot; Rounder</span>
+        <span class="tag">La Morra</span>
+        <span class="tag">MGA &middot; High-altitude</span>
+        <span class="tag">Flight I</span>
       </div>
       <div class="wine-body">
         <p>
-          Nebbiolo in a riper register, from the warm, generous 2015 vintage. Deeper garnet than the
-          Roagna, with red and black cherry, dried rose, liquorice and a dusting of sweet spice. The
-          palate is rounder and more giving than a classic year would allow: ripe fruit, softer tannins
-          and a warm, gently structured finish. The more immediate, approachable face of Barolo, and a
-          telling contrast in producer and vintage.
+          Giulia Negri farms Serradenari, the highest MGA cru in Barolo at around 500 metres, and works
+          organically for a fresh, lifted style. 2016 is a great, classical vintage across the zone. Pale and
+          perfumed, with wild rose, red berries, blood orange and fine herbs over a cool, mineral core. Bright
+          acidity and elegant, chalky tannins carry a long, precise finish. Altitude and a top vintage in one
+          glass: Nebbiolo at its most aromatic and detailed.
         </p>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>The warmth of 2015: riper fruit and rounder tannins, Nebbiolo at its most welcoming.</p>
+        <p>Altitude and freshness: high-toned perfume and fine-grained tannin from Barolo&rsquo;s highest cru in a great year.</p>
       </div>
     </article>
 
-    <!-- 3 -->
-    <article class="wine" id="siro-pacenti">
+    <!-- 2 -->
+    <article class="wine" id="boroli-cerequio">
       <div class="wine-head">
-        <div class="wine-num">3</div>
+        <div class="wine-num">2</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Siro Pacenti, &lsquo;Vecchie Vigne&rsquo; Brunello di Montalcino <span class="wine-vintage">2015</span></h3>
-          <p class="wine-producer">Montalcino, Tuscany &middot; old-vine Sangiovese</p>
+          <h3 class="wine-name">Boroli, Barolo &lsquo;Cerequio&rsquo; <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">La Morra, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
-        <span class="tag">Brunello</span>
-        <span class="tag">Sangiovese</span>
-        <span class="tag">Old-vine &middot; Modern</span>
+        <span class="tag">Barolo</span>
+        <span class="tag">La Morra</span>
+        <span class="tag">Grand cru &middot; MGA</span>
+        <span class="tag">Flight I</span>
       </div>
       <div class="wine-body">
         <p>
-          Siro Pacenti&rsquo;s old-vine Brunello, from a warm, celebrated 2015, and the richer, more
-          polished face of Montalcino. Deep ruby, with ripe black cherry, plum, leather, espresso and
-          sweet spice. Full and velvety on the palate, dark fruit and fine oak carried by ripe, dusty
-          tannins to a long, warming close. Powerful but balanced, and built to age a decade or more.
+          From Cerequio, one of the most celebrated MGA crus in the Langhe, on the La Morra side. Youthful
+          and concentrated, with a spiced, woody nose of milk chocolate and nougat over ripe raspberry and
+          tea leaf, then pine forest floor and baked black cherry. The palate is compact and firmly built:
+          prune, roasted coffee and clove framed by close-grained tannins and a dry, serious finish. The
+          grander, more powerful of Boroli&rsquo;s two crus, and one to reward patience.
         </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">CellarTracker <b>93.6</b></span>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Old-vine concentration and modern polish: dark cherry and spice over Sangiovese&rsquo;s firm, dusty tannin.</p>
+        <p>Grand-cru depth and grip: dark fruit, coffee and firm tannin, the more age-worthy Boroli.</p>
+      </div>
+    </article>
+
+    <div class="flight-intro" style="margin:46px 0 4px;">
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; padding-bottom:9px; border-bottom:1px solid var(--line); margin-bottom:16px;">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">II &middot; Castiglione Falletto</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">one vineyard against a blend</span>
+      </div>
+      <span class="lf-label" style="color:var(--gold); text-transform:uppercase; letter-spacing:0.16em; font-size:12.5px; display:block; margin-bottom:8px;">Tasting focus</span>
+      <p style="color:var(--ink-soft); margin:0 0 14px;">Castiglione Falletto sits at the centre of the zone, and its wines are known for balance. Boroli&rsquo;s Brunella is a single small vineyard, the only monopole in Barolo&rsquo;s register of crus: delicate, perfumed, one site speaking. Paolo Scavino&rsquo;s Barolo is the opposite idea, a blend from several of the family&rsquo;s crus across Castiglione Falletto, Barolo and Serralunga d&rsquo;Alba: broader and rounder. Ask which you prefer, the voice of one place or the harmony of several.</p>
+    </div>
+
+    <!-- 3 -->
+    <article class="wine" id="boroli-brunella">
+      <div class="wine-head">
+        <div class="wine-num">3</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Boroli, Barolo &lsquo;Brunella&rsquo; <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Castiglione Falletto, Piedmont &middot; Nebbiolo</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Barolo</span>
+        <span class="tag">Castiglione Falletto</span>
+        <span class="tag">Monopole cru &middot; MGA</span>
+        <span class="tag">Flight II</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          Boroli&rsquo;s Brunella is the only monopole in Barolo&rsquo;s entire MGA system, a tiny cru in
+          Castiglione Falletto they own outright, on the western edge of the Villero subzone. The more
+          delicate face of the house: pale garnet and mid-weight, it opens slowly on wild rose, cherry, blood
+          orange and a ferrous, earthy note, with light toast behind. Finely balanced, with silky tannins and
+          ripe red fruit, plum and gentle spice. Fragrant and elegant, and less marked by oak than its
+          stablemate the Cerequio: one cellar, two crus, side by side.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Barolo&rsquo;s only monopole: perfume and lift, silky tannin under bright red fruit, the gentler Boroli set against its Cerequio.</p>
       </div>
     </article>
 
     <!-- 4 -->
-    <article class="wine" id="canalicchio">
+    <article class="wine" id="scavino-barolo">
       <div class="wine-head">
         <div class="wine-num">4</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Canalicchio di Sopra, Brunello di Montalcino <span class="wine-vintage">2017</span></h3>
-          <p class="wine-producer">Montalcino, Tuscany &middot; Sangiovese</p>
+          <h3 class="wine-name">Paolo Scavino, Barolo <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Castiglione Falletto, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
-        <span class="tag">Brunello</span>
-        <span class="tag">Sangiovese</span>
-        <span class="tag">Classical &middot; Savoury</span>
+        <span class="tag">Barolo</span>
+        <span class="tag">Castiglione Falletto</span>
+        <span class="tag">Estate blend</span>
+        <span class="tag">Flight II</span>
       </div>
       <div class="wine-body">
         <p>
-          One of Montalcino&rsquo;s benchmark traditional estates, from the cooler northern hills. Classically
-          styled and mid-weight: bright red cherry, cranberry, dried rose, tobacco leaf and a savoury,
-          earthy edge. Fresh and taut for a hot 2017, with red fruit, orange peel and a firm, fine-grained
-          tannic frame. Elegant and food-friendly, the more classical of the two Brunellos.
+          Paolo Scavino&rsquo;s Barolo is the estate&rsquo;s classic blend, drawn from several of its crus across
+          Castiglione Falletto, where the family is based, Barolo and Serralunga d&rsquo;Alba. The aim is balance
+          rather than the voice of one site: Castiglione Falletto&rsquo;s precision with a measure of
+          Serralunga&rsquo;s power. Poured after the Brunella, a single monopole vineyard, it shows what
+          blending does to the same year: broader, rounder and more immediately generous, where the cru is more
+          particular.
         </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">Vivino <b>4.3</b><span class="star">&#9733;</span></span>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Sangiovese&rsquo;s savoury red-fruited elegance and firm acid, a classical foil to the richer Siro Pacenti.</p>
+        <p>Blend against cru: a broad, balanced Barolo beside the Brunella&rsquo;s single-vineyard perfume.</p>
       </div>
     </article>
 
+    <div class="flight-intro" style="margin:46px 0 4px;">
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; padding-bottom:9px; border-bottom:1px solid var(--line); margin-bottom:16px;">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">III &middot; Monforte d&rsquo;Alba</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">clay against sand</span>
+      </div>
+      <span class="lf-label" style="color:var(--gold); text-transform:uppercase; letter-spacing:0.16em; font-size:12.5px; display:block; margin-bottom:8px;">Tasting focus</span>
+      <p style="color:var(--ink-soft); margin:0 0 14px;">Two hillsides of Monforte d&rsquo;Alba, two soils. In Barolo, sandier ground is prized for perfume and finesse, clay for body and grip. Poderi Colla&rsquo;s Dardi Le Rose comes from the clay of Bussia Sopra, made traditionally with long maceration and large old casks, and comes out supple, floral and layered. Elio Grasso&rsquo;s Gavarini Chiniera grows higher, around 400 metres, on sand, and gives a lifted, aromatic, finely etched Barolo. Compare the texture as much as the fruit.</p>
+    </div>
+
     <!-- 5 -->
-    <article class="wine" id="cesari-il-bosco-2016">
+    <article class="wine" id="colla-dardi-le-rose">
       <div class="wine-head">
         <div class="wine-num">5</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Cesari, &lsquo;Il Bosco&rsquo; Amarone della Valpolicella Classico <span class="wine-vintage">2016</span></h3>
-          <p class="wine-producer">Single vineyard, the Veneto &middot; Corvina and Rondinella</p>
+          <h3 class="wine-name">Poderi Colla, Barolo Bussia &lsquo;Dardi Le Rose&rsquo; <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Monforte d&rsquo;Alba, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
-        <span class="tag">Amarone Classico</span>
-        <span class="tag">Single vineyard</span>
-        <span class="tag">Rich &middot; Opulent</span>
+        <span class="tag">Barolo</span>
+        <span class="tag">Monforte d&rsquo;Alba</span>
+        <span class="tag">Bussia MGA &middot; Traditional</span>
+        <span class="tag">Flight III</span>
       </div>
       <div class="wine-body">
         <p>
-          Cesari&rsquo;s single-vineyard Amarone from Il Bosco, and the richest wine of the flight at around
-          15.5% alcohol. Dried rose, blackberry confit and baked plum give way to dark dates, chocolate and
-          a smoky, tarry spice. Rich yet surprisingly poised, with a bright berry lift before the classic
-          bittersweet twist and chalky tannins on the close. From a balanced 2016, the grandest glass here.
+          From Poderi Colla&rsquo;s parcel in Bussia Sopra, in the hamlet of Dardi on the Monforte side of the
+          Bussia cru: clay-rich soils facing south-west. The Colla family works traditionally, with about twenty
+          days on the skins and two years in large Slavonian casks, keeping only the best casks for Dardi Le
+          Rose. The 2016 is translucent and mid-weight, with crushed flowers, sweet red berries, mint and spice:
+          supple, layered and inviting, Monforte at its most graceful.
         </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">Vivino <b>4.4</b><span class="star">&#9733;</span></span>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>Concentration and dark dried fruit, with Amarone&rsquo;s hallmark bittersweet finish. The fullest glass of the night.</p>
+        <p>Clay against sand: Bussia&rsquo;s supple, floral style, set against the Grasso that follows.</p>
       </div>
     </article>
 
     <!-- 6 -->
-    <article class="wine" id="cesari-il-bosco-2017">
+    <article class="wine" id="grasso-gavarini-chiniera">
       <div class="wine-head">
         <div class="wine-num">6</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Cesari, &lsquo;Il Bosco&rsquo; Amarone della Valpolicella Classico <span class="wine-vintage">2017</span></h3>
-          <p class="wine-producer">Single vineyard, the Veneto &middot; Corvina and Rondinella</p>
+          <h3 class="wine-name">Elio Grasso, Barolo &lsquo;Gavarini Chiniera&rsquo; <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Monforte d&rsquo;Alba, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
-        <span class="tag">Amarone Classico</span>
-        <span class="tag">Vintage contrast</span>
-        <span class="tag">Ripe &middot; Warm</span>
+        <span class="tag">Barolo</span>
+        <span class="tag">Monforte d&rsquo;Alba</span>
+        <span class="tag">High, sandy site &middot; Classical</span>
+        <span class="tag">Flight III</span>
       </div>
       <div class="wine-body">
         <p>
-          The same single vineyard, one year on, from a hotter and drier 2017. A shade riper and more
-          opulent than the 2016: raisined black cherry, fig, cocoa and warm baking spice, the appassimento
-          sweetness fuller here. Dense and velvety, closing on the estate&rsquo;s signature bittersweet,
-          chalky grip. Poured beside the 2016, a chance to read a whole vintage in a single wine.
+          Elio Grasso is one of Monforte&rsquo;s benchmark estates, and Gavarini Chiniera comes only from the
+          Chiniera plots on the Gavarini hill, within the Ginestra MGA: south-facing, at about 400 metres, on
+          sandy soils. It is aged in large Slavonian casks in a restrained, classical style. Sand and height give
+          a lifted, aromatic and finely etched Barolo, and the great 2016 vintage adds firm, fine tannin and
+          length for the long haul.
         </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">Vivino <b>4.4</b><span class="star">&#9733;</span></span>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>The vintage difference: 2017&rsquo;s extra ripeness and warmth against the 2016&rsquo;s poise.</p>
+        <p>Sand against clay: a lifted, finely etched Monforte beside the Colla&rsquo;s softer, rounder Bussia.</p>
       </div>
     </article>
 
+    <div class="flight-intro" style="margin:46px 0 4px;">
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; padding-bottom:9px; border-bottom:1px solid var(--line); margin-bottom:16px;">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">IV &middot; Serralunga d&rsquo;Alba</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">village wine against Riserva</span>
+      </div>
+      <span class="lf-label" style="color:var(--gold); text-transform:uppercase; letter-spacing:0.16em; font-size:12.5px; display:block; margin-bottom:8px;">Tasting focus</span>
+      <p style="color:var(--ink-soft); margin:0 0 14px;">Serralunga sits on the coolest, most iron- and limestone-rich soils in Barolo, and gives its firmest, longest-lived wines. Barolo must age at least 38 months before release; a Riserva, five years. Luigi Pira&rsquo;s Barolo Serralunga is the family&rsquo;s village wine. Fontanafredda&rsquo;s Riserva, from the historic estate&rsquo;s own vineyards in Serralunga and Barolo, spent three of its five years in barrel and two in bottle. Same grip, same year: taste what the extra time does to the tannin and the aromas.</p>
+    </div>
+
     <!-- 7 -->
-    <article class="wine" id="tinazzi-la-bastia">
+    <article class="wine" id="luigi-pira-serralunga">
       <div class="wine-head">
         <div class="wine-num">7</div>
         <div class="wine-titles">
-          <h3 class="wine-name">Tinazzi, &lsquo;La Bastia&rsquo; Amarone della Valpolicella <span class="wine-vintage">2017</span></h3>
-          <p class="wine-producer">Ca&rsquo; de&rsquo; Rocchi, the Veneto &middot; Corvina and Rondinella</p>
+          <h3 class="wine-name">Luigi Pira, Barolo Serralunga <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Serralunga d&rsquo;Alba, Piedmont &middot; Nebbiolo</p>
         </div>
       </div>
       <div class="meta">
-        <span class="tag">Amarone</span>
-        <span class="tag">Second house</span>
-        <span class="tag">Glossy &middot; Sweet-fruited</span>
+        <span class="tag">Barolo</span>
+        <span class="tag">Serralunga d&rsquo;Alba</span>
+        <span class="tag">Village wine &middot; Powerful</span>
+        <span class="tag">Flight IV</span>
       </div>
       <div class="wine-body">
         <p>
-          A second Amarone house for contrast, from Tinazzi&rsquo;s Ca&rsquo; de&rsquo; Rocchi range. Corvina
-          and Rondinella dried over winter give a dark, glossy wine of raisined plum, cherry liqueur,
-          chocolate and sweet tobacco. Full and warming, with soft tannins and a rounder, more overtly
-          sweet-fruited profile than the Cesari. A different cellar&rsquo;s take on the same idea.
+          Serralunga sits on the coolest, most iron- and limestone-rich soils in Barolo, and gives the
+          zone&rsquo;s firmest, most austere and longest-lived wines. This is Luigi Pira&rsquo;s village Barolo,
+          a blend of their Serralunga parcels rather than a single cru, and it shows the commune&rsquo;s
+          signature: dark cherry, tar, dried rose, liquorice and a stony, savoury edge. Deep and firmly built,
+          with high acid and powerful, fine-grained tannin that a decanter will soften now, and with years
+          still ahead.
         </p>
-      </div>
-      <div class="scores">
-        <span class="sc-label">Community</span>
-        <span class="sc">Vivino <b>4.3</b><span class="star">&#9733;</span></span>
       </div>
       <div class="lookfor">
         <span class="lf-label">Look for</span>
-        <p>How a different house reads Amarone: glossier and sweeter-fruited beside the Cesari pair.</p>
+        <p>Serralunga power: tar, iron and firm tannin, set against the Fontanafredda Riserva&rsquo;s extra years.</p>
       </div>
     </article>
 
     <!-- 8 -->
-    <article class="wine" id="to-source" style="opacity:0.6;">
+    <article class="wine" id="fontanafredda-riserva">
       <div class="wine-head">
-        <div class="wine-num" style="font-size:20px; letter-spacing:0.12em; text-transform:uppercase;">Soon</div>
+        <div class="wine-num">8</div>
         <div class="wine-titles">
-          <h3 class="wine-name" style="font-style:italic; color:var(--gold-soft);">A third Barolo or Brunello</h3>
-          <p class="wine-producer">Piedmont or Tuscany &middot; still being sourced</p>
+          <h3 class="wine-name">Fontanafredda, Barolo Riserva <span class="wine-vintage">2016</span></h3>
+          <p class="wine-producer">Serralunga d&rsquo;Alba, Piedmont &middot; Nebbiolo</p>
         </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Barolo Riserva</span>
+        <span class="tag">Serralunga d&rsquo;Alba</span>
+        <span class="tag">Estate blend &middot; Great vintage</span>
+        <span class="tag">Flight IV</span>
       </div>
       <div class="wine-body">
         <p>
-          Kai is choosing an eighth Italian to round the set, another voice from Piedmont or Tuscany. Its
-          note will appear here once it rests in the cellar.
+          Fontanafredda is the historic Serralunga estate once owned by King Vittorio Emanuele II, and its
+          Barolo Riserva is made only in exceptional years. It is not a single cru but a blend of three estate
+          vineyards: Vigna La Rosa and Vigna La Delizia in Serralunga, with Vigna La Villa across in the commune
+          of Barolo, on limestone and grey marl at 300 to 400 metres. Five years in the cellar before release,
+          three in barrel and two in bottle, from the great 2016 vintage: a deep, structured Barolo of dried
+          rose, tar, red cherry and spice, its tannins firm but softened by time.
         </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>What extra years do: Serralunga grip and dark fruit, with the first savoury, tertiary edge of a Riserva.</p>
       </div>
     </article>
 
@@ -1105,7 +1219,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
   </div>
 
   <p class="page-foot">
-    Notes from producer and critic descriptions; community scores from Vivino (out of 5) and CellarTracker (out of 100).
+    Notes drawn from producer and critic descriptions &middot; Wine with Kai.
   </p>
 </main>
 

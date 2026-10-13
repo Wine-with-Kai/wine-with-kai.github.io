@@ -246,6 +246,36 @@ img { max-width: 100%; display: block; }
   align-self: center;
 }
 
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
+}
+
 /* ---------- CTA ---------- */
 .cta-row { text-align: center; margin: 40px 0 8px; }
 .btn {
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -775,17 +842,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
   max-width: 340px;
 }
 
-/* On phones the densest inset labels render around 6-7px and are illegible;
-   the figure caption already names every region, so drop the smallest tier.
-   Larger orienting labels (inset title, highlighted place) are kept. */
-@media (max-width: 620px) {
-  .map-fig svg text[style*="font-size:5px"],
-  .map-fig svg text[style*="font-size:5.5px"],
-  .map-fig svg text[style*="font-size:6px"],
-  .map-fig svg text[style*="font-size:6.5px"] {
-    display: none;
-  }
-}
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
 
 
 </style>
@@ -798,6 +856,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-word">Wine with Kai</span>
   </a>
     <nav>
+    <a href="barolo-altitude.html">Next dinner</a>
     <a href="margaux-wines.html">Tasting notes</a>
     <a href="upcoming.html">Upcoming</a>
     <a href="archive.html">Past dinners</a>
@@ -877,7 +936,67 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="The eight wines, listed oldest to youngest">
+    <div class="lineup" aria-label="Eight wines, poured in four flights">
+
+      <div class="flight-head">
+        <p class="fh-kick">Flight One</p>
+        <p class="fh-name">The approach</p>
+        <p class="fh-sub">A second label and a cru bourgeois, fresh and supple</p>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2008</div>
+        <div class="flight-main">
+          <p class="flight-name">&lsquo;S&eacute;gla&rsquo;</p>
+          <p class="flight-sub">An underrated, fresh, classic vintage</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2010</div>
+        <div class="flight-main">
+          <p class="flight-name">Ch&acirc;teau Angludet</p>
+          <p class="flight-sub">A legendary vintage, built to age</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:18px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>Two wines from below the classed growths, and a gentle way into Margaux. S&eacute;gla, the second wine of Rauzan-S&eacute;gla, is all supple, early charm; Angludet, the grand vin of a well-run cru bourgeois, is firmer and built to age. Taste how far the commune&rsquo;s violet-scented, silky signature reaches down the hierarchy, and how a fresh 2008 differs from a structured 2010.</p>
+      </div>
+
+      <div class="flight-head">
+        <p class="fh-kick">Flight Two</p>
+        <p class="fh-name">The third growths</p>
+        <p class="fh-sub">Opulent, then finely drawn and perfumed</p>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2009</div>
+        <div class="flight-main">
+          <p class="flight-name">Ch&acirc;teau Malescot St-Exup&eacute;ry</p>
+          <p class="flight-sub">A rich, opulent, sun-filled vintage</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2015</div>
+        <div class="flight-main">
+          <p class="flight-name">Ch&acirc;teau Marquis d&rsquo;Alesme</p>
+          <p class="flight-sub">A charming, Margaux-favoured vintage</p>
+        </div>
+      </div>
+
+      <div class="lookfor" style="padding-left:0; margin:18px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>Two third growths of the same rank, poured oldest first so vintage does the talking. Malescot St-Exup&eacute;ry 2009 is ripe and opulent, deep and velvety; Marquis d&rsquo;Alesme 2015 is finely drawn and floral. Same tier, same commune: set 2009&rsquo;s warmth against 2015&rsquo;s perfume and watch house style and year shape the wine.</p>
+      </div>
+
+      <div class="flight-head">
+        <p class="fh-kick">Flight Three</p>
+        <p class="fh-name">The second growths</p>
+        <p class="fh-sub">A step up in rank, both fully mature</p>
+      </div>
 
       <div class="flight">
         <div class="flight-yr">1984</div>
@@ -890,48 +1009,27 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="flight">
         <div class="flight-yr">1989</div>
         <div class="flight-main">
-          <p class="flight-name">Ch&acirc;teau d&rsquo;Issan</p>
-          <p class="flight-sub">A hot, opulent vintage, now mature</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">1989</div>
-        <div class="flight-main">
           <p class="flight-name">Ch&acirc;teau Brane-Cantenac</p>
           <p class="flight-sub">A hot, ripe vintage, now tertiary</p>
         </div>
       </div>
 
-      <div class="flight">
-        <div class="flight-yr">2008</div>
-        <div class="flight-main">
-          <p class="flight-name">&lsquo;S&eacute;gla&rsquo;</p>
-          <p class="flight-sub">An underrated, fresh, classic vintage</p>
-        </div>
+      <div class="lookfor" style="padding-left:0; margin:18px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>A step up in rank to two second growths, and the two oldest wines of the night. Both are fully mature: Durfort-Vivens 1984, lean and Cabernet-led, has aged into savoury delicacy; Brane-Cantenac 1989, from a hot vintage, is sweeter and more perfumed. This is how classed-growth Margaux grows old, into dried fruit, leather and tertiary grace.</p>
+      </div>
+
+      <div class="flight-head">
+        <p class="fh-kick">Flight Four</p>
+        <p class="fh-name">The d&rsquo;Issan vertical</p>
+        <p class="fh-sub">One house, mature and youthful, to close</p>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2009</div>
+        <div class="flight-yr">1989</div>
         <div class="flight-main">
-          <p class="flight-name">Ch&acirc;teau Malescot St-Exup&eacute;ry</p>
-          <p class="flight-sub">A rich, opulent, sun-filled vintage</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2010</div>
-        <div class="flight-main">
-          <p class="flight-name">Ch&acirc;teau d&rsquo;Angludet</p>
-          <p class="flight-sub">A legendary vintage, built to age</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2015</div>
-        <div class="flight-main">
-          <p class="flight-name">Ch&acirc;teau Marquis d&rsquo;Alesme</p>
-          <p class="flight-sub">A charming, Margaux-favoured vintage</p>
+          <p class="flight-name">Ch&acirc;teau d&rsquo;Issan</p>
+          <p class="flight-sub">A hot, opulent vintage, now mature</p>
         </div>
       </div>
 
@@ -943,6 +1041,11 @@ strong, .b { font-weight: 600; color: var(--ink); }
         </div>
       </div>
 
+      <div class="lookfor" style="padding-left:0; margin:18px 0 0;">
+        <span class="lf-label">Tasting focus</span>
+        <p>One house, two eras. The same estate, terroir and hand, twenty-seven years apart: the mature 1989, tertiary and gentle, against the youthful 2016, classic and at full stretch. Everything is held constant but time and vintage, so the flight reads as a single wine growing up.</p>
+      </div>
+
     </div>
 
     <div class="cta-row">
@@ -950,7 +1053,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      Listed oldest to youngest, from a mature Durfort-Vivens 1984 through the classed growths of Margaux. Seats are kept to no more than twelve.
+      Poured in four flights, building from the approachable wines through the classed growths to a closing d&rsquo;Issan vertical. Seats are kept to no more than twelve.
     </p>
 
 <figure class="map-fig" style="max-width:360px; margin-top:30px;">

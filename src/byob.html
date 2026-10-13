@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bring Your Own Bottle · Wine with Kai</title>
+<meta name="description" content="A Wine with Kai evening where each guest brings a bottle on the theme. The line-up builds as guests add their wines, and the cost is split evenly across the table.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main class="wrap" style="padding:60px 28px; text-align:center;">
+  <p class="muted">This page has moved. <a id="go" href="reserve.html" style="color:var(--gold);">Continue to the evening &rarr;</a></p>
+</main>
+<script>
+(function () {
+  var e = new URLSearchParams(location.search).get("event");
+  var to = "reserve.html" + (e ? "?event=" + encodeURIComponent(e) : "");
+  document.getElementById("go").href = to;
+  location.replace(to);
+})();
+</script>
+</body>
+</html>

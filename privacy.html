@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wines of Israel · Wine with Kai</title>
-<meta name="description" content="An introduction to Israeli wine from two regions: Yarden in the cool Golan Heights and Clos de Gat in the Judean Hills. Nine wines: whites, reds and a mature Merlot bonus.">
+<title>Privacy · Wine with Kai</title>
+<meta name="description" content="What Wine with Kai keeps when you reserve a seat or add a bottle, why, and how to have it removed.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -244,6 +244,36 @@ img { max-width: 100%; display: block; }
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   align-self: center;
+}
+
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
 }
 
 /* ---------- CTA ---------- */
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -775,17 +842,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
   max-width: 340px;
 }
 
-/* On phones the densest inset labels render around 6-7px and are illegible;
-   the figure caption already names every region, so drop the smallest tier.
-   Larger orienting labels (inset title, highlighted place) are kept. */
-@media (max-width: 620px) {
-  .map-fig svg text[style*="font-size:5px"],
-  .map-fig svg text[style*="font-size:5.5px"],
-  .map-fig svg text[style*="font-size:6px"],
-  .map-fig svg text[style*="font-size:6.5px"] {
-    display: none;
-  }
-}
+/* Map inset labels stay visible at every width: they name the highlighted
+   places on the map itself, not only in the caption. */
 
 
 </style>
@@ -797,197 +855,63 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-mark" role="img" aria-label="Kai"></span>
     <span class="mini-word">Wine with Kai</span>
   </a>
-    <nav>
-    <a href="wines-of-israel-wines.html">Tasting notes</a>
+  <nav>
+    <a href="barolo-altitude.html">Next dinner</a>
     <a href="upcoming.html">Upcoming</a>
+    <a href="reserve.html">Reserve</a>
     <a href="archive.html">Past dinners</a>
   </nav>
 </div>
 
-<!-- ============ ATMOSPHERIC HERO (Napa, golden hour) ============ -->
-<header class="hero-scene" aria-hidden="true" style="margin-top:18px;">
-  <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" role="img">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#1b1210"/>
-        <stop offset="42%" stop-color="#3f2c1f"/>
-        <stop offset="70%" stop-color="#7a5636"/>
-        <stop offset="88%" stop-color="#b98a45"/>
-        <stop offset="100%" stop-color="#cfa562"/>
-      </linearGradient>
-      <radialGradient id="sun" cx="50%" cy="96%" r="52%">
-        <stop offset="0%"  stop-color="#f6d99b" stop-opacity="0.95"/>
-        <stop offset="34%" stop-color="#e9ad63" stop-opacity="0.55"/>
-        <stop offset="70%" stop-color="#c07840" stop-opacity="0.12"/>
-        <stop offset="100%" stop-color="#c07840" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3c2321"/>
-        <stop offset="100%" stop-color="#2a1719"/>
-      </linearGradient>
-      <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#22110f"/>
-        <stop offset="100%" stop-color="#190c0d"/>
-      </linearGradient>
-      <linearGradient id="rows" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3a1f1a" stop-opacity="0.0"/>
-        <stop offset="100%" stop-color="#0f0708" stop-opacity="1"/>
-      </linearGradient>
-    </defs>
-    <rect x="0" y="0" width="1200" height="460" fill="url(#sky)"/>
-    <rect x="0" y="0" width="1200" height="460" fill="url(#sun)"/>
-    <path d="M0 250 C 180 210, 330 235, 470 214 C 640 190, 780 236, 940 210 C 1060 191, 1140 214, 1200 205 L1200 460 L0 460 Z"
-          fill="url(#hillFar)" opacity="0.9"/>
-    <path d="M0 300 C 160 270, 300 300, 460 282 C 650 261, 820 305, 1000 284 C 1100 272, 1160 292, 1200 286 L1200 460 L0 460 Z"
-          fill="url(#hillMid)"/>
-    <path d="M0 330 C 250 315, 520 340, 760 330 C 980 321, 1120 342, 1200 335 L1200 460 L0 460 Z" fill="#140a0b"/>
-    <g stroke="#5a352b" stroke-width="2" opacity="0.5">
-      <path d="M600 342 L120 460"/>
-      <path d="M600 342 L300 460"/>
-      <path d="M600 342 L480 460"/>
-      <path d="M600 342 L600 460"/>
-      <path d="M600 342 L720 460"/>
-      <path d="M600 342 L900 460"/>
-      <path d="M600 342 L1080 460"/>
-    </g>
-    <rect x="0" y="330" width="1200" height="130" fill="url(#rows)"/>
-  </svg>
-</header>
+<hr class="rule-crimson" style="margin-top:18px;">
 
-<hr class="rule-crimson">
-
-<!-- ============ MASTHEAD ============ -->
 <main>
-  <section class="wrap hero-body">
-    <div class="masthead">
-      <p class="eyebrow kick">Golan Heights &nbsp;&middot;&nbsp; Judean Hills</p>
+  <header class="page-head wrap">
+    <p class="eyebrow">Wine with Kai &nbsp;&middot;&nbsp; Privacy</p>
+    <h1 class="page-title">Privacy<span class="it">what we keep, and why</span></h1>
+  </header>
 
-      <h1 class="title-display">
-        Wines
-        <span class="title-connector">of</span>
-        Israel
-      </h1>
+  <section class="section wrap">
+    <p>Wine with Kai is a small circle of private wine dinners in Singapore, run by Kai. When you reserve a
+    seat or add a bottle on this site, we keep only what is needed to run the evening. This page explains what
+    that is. Questions, or a request to see or remove your details: <a href="mailto:winewithkai@gmail.com" style="color:var(--gold);">winewithkai@gmail.com</a>.</p>
 
-      <hr class="gold-divider">
+    <h2>What we keep</h2>
+    <p><strong>Your name and email address.</strong> You give these when you sign in, either by email (we send a
+    one-time code) or with Google. Signing in with Google shares only your name, email address and profile
+    picture with us; we do not receive your password or anything else from your Google account.</p>
+    <p><strong>Your mobile number</strong>, only if you choose to add it.</p>
+    <p><strong>Your reservations</strong>: which evenings you reserved, joined the waitlist for, or cancelled.
+    Where a deposit applies, payment is handled by Stripe; we see that it was paid or refunded, never your
+    card or bank details.</p>
+    <p><strong>The bottles you add</strong>: the wine, the price you share it for, a note if you leave one, and the
+    label photo if you take one, together with the short background note our bottle assistant writes.</p>
 
-      <p class="lede">Two regions, side by side.</p>
-      <p class="lede-sub">
-        Yarden, high in the cool Golan Heights, and Clos de Gat in the Judean Hills,<br>a first look at what Israel does with the classic grapes.
-      </p>
-    </div>
+    <h2>How it is used</h2>
+    <p>Only to run the evenings: to hold your seat, to build the line-up, to split the evening&rsquo;s costs
+    fairly, and to contact you about a dinner you have reserved. We do not sell your details, share them for
+    marketing, or send newsletters.</p>
 
-    <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="Nine wines, grouped white then red, with a bonus">
+    <h2>Who sees what</h2>
+    <p>The line-up for an evening is public, showing each bottle with the first name of the guest bringing it,
+    and its label photo. The tally and the prices are shown only to the guests seated that evening. Kai, as
+    host, sees the guest list with names, email addresses and mobile numbers.</p>
 
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">White</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">Clos de Gat &middot; Judean Hills</span>
-      </div>
+    <h2>Where it is kept</h2>
+    <p>Your details are stored with Supabase, in its Singapore region. Sign-in codes are sent by email through
+    Gmail. When you photograph a label, the photo is read by Anthropic&rsquo;s Claude, which also writes the
+    short background note. Label photos are stored at a web address that
+    anyone with the link can open, so they can appear in the line-up.</p>
 
-      <div class="flight">
-        <div class="flight-yr">2019</div>
-        <div class="flight-main">
-          <p class="flight-name">Clos de Gat, Chardonnay</p>
-          <p class="flight-sub">Fresh and citrus-driven, with balanced oak</p>
-        </div>
-      </div>
+    <h2>Keeping and removing</h2>
+    <p>We keep your details while you are part of the dinners. Email
+    <a href="mailto:winewithkai@gmail.com" style="color:var(--gold);">winewithkai@gmail.com</a> at any time and
+    we will show you what we hold, correct it, or delete it.</p>
 
-      <div class="flight">
-        <div class="flight-yr">2020</div>
-        <div class="flight-main">
-          <p class="flight-name">Clos de Gat, Chardonnay</p>
-          <p class="flight-sub">The crisp, most recent release</p>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Red</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">Yarden &middot; Clos de Gat</span>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2017</div>
-        <div class="flight-main">
-          <p class="flight-name">Yarden, Cabernet Sauvignon</p>
-          <p class="flight-sub">Excellent Golan year; the estate Cabernet</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2017</div>
-        <div class="flight-main">
-          <p class="flight-name">Yarden &lsquo;Bar&rsquo;On&rsquo; Cabernet Sauvignon</p>
-          <p class="flight-sub">Excellent Golan year; a single-vineyard</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2018</div>
-        <div class="flight-main">
-          <p class="flight-name">Yarden, Cabernet Sauvignon</p>
-          <p class="flight-sub">Strong, highly rated year; the estate Cabernet</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2018</div>
-        <div class="flight-main">
-          <p class="flight-name">Yarden &lsquo;Allone Habashan&rsquo; Cabernet Sauvignon</p>
-          <p class="flight-sub">Strong, highly rated year; a single-vineyard</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2017</div>
-        <div class="flight-main">
-          <p class="flight-name">Clos de Gat &lsquo;Ayalon Valley&rsquo;</p>
-          <p class="flight-sub">A warm, excellent vintage</p>
-        </div>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2018</div>
-        <div class="flight-main">
-          <p class="flight-name">Clos de Gat &lsquo;Ayalon Valley&rsquo;</p>
-          <p class="flight-sub">An outstanding, top-rated vintage</p>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Special Bonus</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">a mature finale</span>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2006</div>
-        <div class="flight-main">
-          <p class="flight-name">Clos de Gat &lsquo;Sycra&rsquo; Merlot</p>
-          <p class="flight-sub">A finest-vintage selection, now mature</p>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="cta-row">
-      <a class="btn" href="wines-of-israel-wines.html">Read the tasting notes <span class="arw">&rarr;</span></a>
-    </div>
-
-    <p class="note-line">
-      Grouped white, then red (by producer and vintage), with a special bonus to close: the mature Sycra Merlot 2006. Nine wines in all. Seats are kept to no more than twelve.
-    </p>
-
-    <p style="text-align:center; margin:18px 0 8px;">
-      <a href="upcoming.html" style="color:var(--ink-soft); text-decoration:none; letter-spacing:0.08em; font-size:14px;">&larr; All upcoming themes</a>
-    </p>
+    <p class="muted" style="font-size:16px; margin-top:30px;">Last updated 4 October 2026.</p>
   </section>
 
-  <!-- ============ EVENT BAR ============ -->
-  <div class="event-bar">
-    <p class="when">Date &amp; venue to be announced</p>
-    <p class="where">12 seats only &middot; Reserve a seat with Kai</p>
-  </div>
-
-  <p class="page-foot">A curated wine dinner among friends &middot; Wine with Kai</p>
+  <p class="page-foot">Wine with Kai</p>
 </main>
 
 </body>
