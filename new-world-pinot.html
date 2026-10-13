@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>New World Pinot Noir · Wine with Kai</title>
-<meta name="description" content="Pinot Noir from the New World: Central Otago and Carneros, built around two Felton Road single-vineyard verticals, with Gibbston and Californian foils.">
+<title>New Zealand Pinot Noir · Wine with Kai</title>
+<meta name="description" content="New Zealand Pinot Noir from Central Otago and Marlborough, with two Felton Road single vineyards, three from Blank Canvas, a Sato pair from Pisa, and a Gibbston foil.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -244,6 +244,36 @@ img { max-width: 100%; display: block; }
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   align-self: center;
+}
+
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
 }
 
 /* ---------- CTA ---------- */
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -789,6 +856,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-word">Wine with Kai</span>
   </a>
     <nav>
+    <a href="barolo-altitude.html">Next dinner</a>
     <a href="new-world-pinot-wines.html">Tasting notes</a>
     <a href="upcoming.html">Upcoming</a>
     <a href="archive.html">Past dinners</a>
@@ -851,11 +919,11 @@ strong, .b { font-weight: 600; color: var(--ink); }
 <main>
   <section class="wrap hero-body">
     <div class="masthead">
-      <p class="eyebrow kick">Central Otago &nbsp;&middot;&nbsp; Carneros</p>
+      <p class="eyebrow kick">Central Otago &nbsp;&middot;&nbsp; Marlborough</p>
 
       <h1 class="title-display">
-        New World
-        <span class="title-connector">the noble</span>
+        New Zealand
+        <span class="title-connector">the long white cloud</span>
         Pinot Noir
       </h1>
 
@@ -863,12 +931,12 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
       <p class="lede">The noble grape, new frontiers.</p>
       <p class="lede-sub">
-        From Central Otago to Carneros, poured with each wine&rsquo;s flag,<br>around a pair of Felton Road single-vineyard verticals.
+        From Central Otago to Marlborough, poured under New Zealand&rsquo;s flag,<br>around Felton Road&rsquo;s Block 3 and Block 5, three Blank Canvas single vineyards<br>and two natural Pinots from Sato on Mount Pisa.
       </p>
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="Seven New World Pinot Noirs, with country flags">
+    <div class="lineup" aria-label="Eight New Zealand Pinot Noirs, with flags">
 
       <div class="flight">
         <div class="flight-yr">2015
@@ -876,17 +944,17 @@ strong, .b { font-weight: 600; color: var(--ink); }
         </div>
         <div class="flight-main">
           <p class="flight-name">Felton Road &lsquo;Block 3&rsquo;</p>
-          <p class="flight-sub">A warm, ripe Otago vintage; nine years on</p>
+          <p class="flight-sub">A warm, ripe Otago vintage; eleven years on</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2018
-          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="United States">🇺🇸</span>
+        <div class="flight-yr">2015
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
         <div class="flight-main">
-          <p class="flight-name">HDV &lsquo;Ygnacia&rsquo;</p>
-          <p class="flight-sub">A warm, generous Carneros foil</p>
+          <p class="flight-name">Sato &lsquo;Pisa Terrace&rsquo;</p>
+          <p class="flight-sub">The same warm 2015, from Pisa; natural and organic</p>
         </div>
       </div>
 
@@ -905,8 +973,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
           <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
         <div class="flight-main">
-          <p class="flight-name">Felton Road &lsquo;Calvert&rsquo;</p>
-          <p class="flight-sub">An outstanding Otago vintage; the Calvert vineyard</p>
+          <p class="flight-name">Two Paddocks &lsquo;First Paddock&rsquo;</p>
+          <p class="flight-sub">The Gibbston foil; the same 2021</p>
         </div>
       </div>
 
@@ -915,28 +983,38 @@ strong, .b { font-weight: 600; color: var(--ink); }
           <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
         <div class="flight-main">
-          <p class="flight-name">Two Paddocks &lsquo;First Paddock&rsquo;</p>
-          <p class="flight-sub">The Gibbston foil; the same 2021</p>
+          <p class="flight-name">Blank Canvas &lsquo;Anthem&rsquo;</p>
+          <p class="flight-sub">A second Gibbston 2021, from a Marlborough hand</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2024
+        <div class="flight-yr">2021
           <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
         <div class="flight-main">
-          <p class="flight-name">Felton Road &lsquo;Block 3&rsquo;</p>
-          <p class="flight-sub">A superb young vintage; Block 3 today</p>
+          <p class="flight-name">Blank Canvas &lsquo;Escaroth&rsquo;</p>
+          <p class="flight-sub">Marlborough: a steep, dry-farmed clay slope</p>
         </div>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2024
+        <div class="flight-yr">2023
           <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
         </div>
         <div class="flight-main">
-          <p class="flight-name">Felton Road &lsquo;Block 5&rsquo;</p>
-          <p class="flight-sub">A superb young vintage; Block 5 today</p>
+          <p class="flight-name">La Ferme de Sato &lsquo;Sur Les Nuages&rsquo;</p>
+          <p class="flight-sub">Sato&rsquo;s own vineyard, just above Pisa Terrace</p>
+        </div>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2023
+          <span style="display:block; font-size:22px; line-height:1; margin-top:6px;" role="img" aria-label="New Zealand">🇳🇿</span>
+        </div>
+        <div class="flight-main">
+          <p class="flight-name">Blank Canvas &lsquo;Upton Downs&rsquo;</p>
+          <p class="flight-sub">Upper Awatere, Marlborough; closing the flight</p>
         </div>
       </div>
 
@@ -947,7 +1025,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     </div>
 
     <p class="note-line">
-      Listed oldest to youngest, the flag marking each wine&rsquo;s country: two Felton Road verticals (Block 3 and Block 5), with Two Paddocks and HDV as foils. Seats are kept to no more than twelve.
+      Listed oldest to youngest: two Felton Road single vineyards (Block 3 and Block 5), three from Blank Canvas (Anthem, Escaroth and Upton Downs), a Sato pair from neighbouring Pisa sites, with Two Paddocks as the Gibbston foil. Seats are kept to no more than twelve.
     </p>
 
     <p style="text-align:center; margin:18px 0 8px;">

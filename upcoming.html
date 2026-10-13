@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Upcoming Themes · Wine with Kai</title>
-<meta name="description" content="Ten wine themes taking shape for the dinners ahead: Barolo: The 2016 Vintage, The Hill of Corton, Burgundy Village &amp; Premier Cru, New World Pinot Noir, French Left / French Right, Super Tuscans, Wines of Israel, The Great Pauillacs, The Margaux Table and Ch&acirc;teauneuf-du-Pape.">
+<meta name="description" content="Wine themes taking shape for the dinners ahead: Barolo: The 2016 Vintage, The Hill of Corton, Burgundy Village &amp; Premier Cru, New Zealand Pinot Noir, French Left / French Right, Super Tuscans, Clos de Gat, Yarden, The Great Pauillacs, The Margaux Table and Ch&acirc;teauneuf-du-Pape.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -244,6 +244,36 @@ img { max-width: 100%; display: block; }
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   align-self: center;
+}
+
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
 }
 
 /* ---------- CTA ---------- */
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -789,7 +856,8 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-word">Wine with Kai</span>
   </a>
     <nav>
-    <a href="wines.html">Tasting notes</a>
+    <a href="barolo-altitude.html">Next dinner</a>
+    <a href="barolo-altitude-wines.html">Tasting notes</a>
     <a href="upcoming.html" aria-current="page">Upcoming</a>
     <a href="archive.html">Past dinners</a>
   </nav>
@@ -844,14 +912,14 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <article class="theme">
       <div class="t-index">
         Corton
-        <span>Aloxe-Corton &middot; Burgundy</span>
+        <span>C&ocirc;te de Beaune &middot; Burgundy</span>
       </div>
       <div class="t-body">
         <p class="t-title">The Hill of Corton</p>
-        <p class="t-sub">Grand Cru &middot; Premier Cru</p>
+        <p class="t-sub">Corton &middot; Grand Cru</p>
         <p class="t-desc">
-          A Grand Cru masterclass on one Burgundian hillside: six Corton Grand Crus and the premier cru
-          just below, across climats, producers and a decade, with two producer verticals.
+          A Grand Cru masterclass on one Burgundian hillside: six Corton Grand Crus
+          across climats, producers and a decade, with two producer verticals.
         </p>
         <div class="t-meta">
           <span class="tag">Corton</span>
@@ -859,7 +927,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
           <span class="tag">Burgundy</span>
         </div>
         <p style="margin:6px 0 0;">
-          <a href="hill-of-corton.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the seven wines &rarr;</a>
+          <a href="hill-of-corton.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the six wines &rarr;</a>
         </p>
       </div>
     </article>
@@ -883,7 +951,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
           <span class="tag">Burgundy</span>
         </div>
         <p style="margin:6px 0 0;">
-          <a href="burgundy-villages.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the seven wines &rarr;</a>
+          <a href="burgundy-villages.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the nine wines &rarr;</a>
         </p>
       </div>
     </article>
@@ -891,23 +959,23 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <!-- 2c -->
     <article class="theme">
       <div class="t-index">
-        New World
-        <span>Central Otago &middot; Carneros</span>
+        New Zealand
+        <span>Central Otago &middot; Marlborough</span>
       </div>
       <div class="t-body">
-        <p class="t-title">New World Pinot Noir</p>
-        <p class="t-sub">New Zealand &middot; United States</p>
+        <p class="t-title">New Zealand Pinot Noir</p>
+        <p class="t-sub">New Zealand</p>
         <p class="t-desc">
-          Pinot Noir from the New World, built around two Felton Road single-vineyard verticals, with
-          Gibbston and Californian foils. Each wine poured under its country&rsquo;s flag.
+          New Zealand Pinot Noir, built around single vineyards from Felton Road and
+          Blank Canvas, with a Sato pair from Pisa and a Gibbston foil. Poured under New Zealand&rsquo;s flag.
         </p>
         <div class="t-meta">
-          <span class="tag">New World</span>
+          <span class="tag">New Zealand</span>
           <span class="tag">Pinot Noir</span>
-          <span class="tag">Verticals</span>
+          <span class="tag">Single vineyards</span>
         </div>
         <p style="margin:6px 0 0;">
-          <a href="new-world-pinot.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the seven wines &rarr;</a>
+          <a href="new-world-pinot.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the eight wines &rarr;</a>
         </p>
       </div>
     </article>
@@ -962,27 +1030,52 @@ strong, .b { font-weight: 600; color: var(--ink); }
       </div>
     </article>
 
-    <!-- 5 -->
+    <!-- 5a -->
     <article class="theme">
       <div class="t-index">
         Israel
-        <span>Golan Heights &middot; Judean Hills</span>
+        <span>Judean Hills</span>
       </div>
       <div class="t-body">
-        <p class="t-title">Wines of Israel</p>
-        <p class="t-sub">Yarden &middot; Clos de Gat</p>
+        <p class="t-title">Clos de Gat</p>
+        <p class="t-sub">One estate, every grape</p>
         <p class="t-desc">
-          A perfect introduction to Israeli wine, from two very different regions: Yarden, high in the
-          cool Golan Heights, and Clos de Gat in the Judean Hills. Single-varietal Merlot, Cabernet
-          Sauvignon and Syrah, with a Chardonnay alongside, set side by side for comparison.
+          A single Judean Hills domaine read from top to bottom: two barrel-fermented Chardonnays,
+          the Har&rsquo;el Syrah and Cabernet, the estate&rsquo;s Ayalon Valley Bordeaux blend in a three-vintage
+          vertical, and the rare Sycra Merlot 2006 to close. Nine wines from one house.
+        </p>
+        <div class="t-meta">
+          <span class="tag">Clos de Gat</span>
+          <span class="tag">Judean Hills</span>
+          <span class="tag">Vertical</span>
+        </div>
+        <p style="margin:6px 0 0;">
+          <a href="clos-de-gat.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the nine wines &rarr;</a>
+        </p>
+      </div>
+    </article>
+
+    <!-- 5b -->
+    <article class="theme">
+      <div class="t-index">
+        Israel
+        <span>Golan Heights</span>
+      </div>
+      <div class="t-body">
+        <p class="t-title">Yarden</p>
+        <p class="t-sub">Estate &amp; single vineyard</p>
+        <p class="t-desc">
+          The flagship of the Golan Heights Winery, high on the cool, volcanic Golan, and its central
+          question: what does a single vineyard add? Eight reds, from an Allone Habashan Merlot pair
+          through two single-vineyard Syrahs to a Cabernet flight of estate, Bar&rsquo;On and Allone Habashan.
         </p>
         <div class="t-meta">
           <span class="tag">Yarden</span>
-          <span class="tag">Clos de Gat</span>
-          <span class="tag">Israel</span>
+          <span class="tag">Golan Heights</span>
+          <span class="tag">Single-vineyard</span>
         </div>
         <p style="margin:6px 0 0;">
-          <a href="wines-of-israel.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the nine wines &rarr;</a>
+          <a href="yarden.html" style="color:var(--gold); text-decoration:none; text-transform:uppercase; letter-spacing:0.14em; font-size:13px;">See the eight wines &rarr;</a>
         </p>
       </div>
     </article>

@@ -246,6 +246,36 @@ img { max-width: 100%; display: block; }
   align-self: center;
 }
 
+/* ---------- Flight headers (grouping) ---------- */
+.flight-head {
+  margin: 40px 0 2px;
+}
+.flight-head:first-child { margin-top: 10px; }
+.fh-kick {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.fh-name {
+  font-family: var(--display);
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+.fh-sub {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.4;
+  margin: 3px 0 0;
+}
+
 /* ---------- CTA ---------- */
 .cta-row { text-align: center; margin: 40px 0 8px; }
 .btn {
@@ -693,6 +723,43 @@ strong, .b { font-weight: 600; color: var(--ink); }
   margin: 0 0 12px;
 }
 .theme .t-desc { color: var(--ink); margin: 0 0 14px; }
+.theme .t-pairs {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line);
+}
+.theme .tp-row {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.theme .tp-row > span:last-child { text-align: right; }
+.theme .tp-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
+.theme .tp-also {
+  display: block;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 13px;
+}
+.theme .tp-vs {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 14px;
+}
+.theme .tp-head {
+  color: var(--crimson);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 0 6px;
+}
 .theme .t-meta {
   display: flex;
   flex-wrap: wrap;
@@ -739,9 +806,9 @@ strong, .b { font-weight: 600; color: var(--ink); }
   .site-top nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 13px;
   }
-  .site-top nav a { font-size: 13.5px; white-space: nowrap; }
+  .site-top nav a { font-size: 13px; letter-spacing: 0.02em; white-space: nowrap; }
 }
 
 /* =========================================================
@@ -789,6 +856,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
     <span class="mini-word">Wine with Kai</span>
   </a>
     <nav>
+    <a href="barolo-altitude.html">Next dinner</a>
     <a href="burgundy-villages-wines.html" aria-current="page">Tasting notes</a>
     <a href="upcoming.html">Upcoming</a>
     <a href="archive.html">Past dinners</a>
@@ -808,12 +876,12 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
   <section class="section wrap">
     <hr class="tick">
-    <h2>Why these seven</h2>
-    <p>Burgundy off the Grand Cru path, across three districts. A 2017 Chambolle pair opens the Côte de Nuits; an old-vine village Chambolle and a Morey premier cru follow; a rare red Blagny stands in for the Côte de Beaune; and two vintages of Thénard&rsquo;s Givry close from the Côte Chalonnaise.</p>
+    <h2>Why these nine</h2>
+    <p>Burgundy off the Grand Cru path, across three districts. A 2017 Chambolle pair opens the Côte de Nuits; an old-vine village Chambolle, a walled Fixin monopole and a Morey premier cru follow; an Aloxe-Corton premier cru and a rare red Blagny stand in for the Côte de Beaune; and two vintages of Thénard&rsquo;s Givry close from the Côte Chalonnaise.</p>
 
     <hr class="tick" style="margin-top:34px;">
     <h2>What to look for</h2>
-    <p>Pinot Noir is transparent to place, and this flight is a lesson in it. Chambolle-Musigny is the perfumed, silky voice of the Côte de Nuits; Morey firmer and darker; Blagny a wild, rustic red from the Beaune hills; Givry earthier and better value from the Chalonnaise.</p>
+    <p>Pinot Noir is transparent to place, and this flight is a lesson in it. Chambolle-Musigny is the perfumed, silky voice of the Côte de Nuits; Fixin wilder and more muscular in the far north; Morey firmer and darker; Aloxe-Corton supple and sunny at the foot of the Corton hill; Blagny a wild, rustic red from the Beaune hills; Givry earthier and better value from the Chalonnaise.</p>
     <p>Watch how commune and climat move the wine more than the grape does, and follow the two verticals (the 2017 Chambolle pair, the 2013 and 2018 Givrys) for the swing of the seasons.</p>
     <p class="muted">Each note is drawn from the producer&rsquo;s own description and critics&rsquo; published tasting notes. The community scores are the crowd&rsquo;s verdict, not ours: <em>Vivino</em> on a five-point scale, <em>CellarTracker</em> out of a hundred. Signposts, not a script; trust your own glass first.</p>
   </section>
@@ -896,6 +964,30 @@ strong, .b { font-weight: 600; color: var(--ink); }
       <div class="wine-head">
         <div class="wine-num">4</div>
         <div class="wine-titles">
+          <h3 class="wine-name">Albert Bichot, Fixin 1er &lsquo;Clos de la Perri&egrave;re&rsquo; Monopole <span class="wine-vintage">2019</span></h3>
+          <p class="wine-producer">Côte de Nuits · Pinot Noir</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Fixin 1er</span>
+        <span class="tag">Monopole</span>
+        <span class="tag">Dark-fruited</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          Fixin lies in the far north of the Côte de Nuits, just above Gevrey-Chambertin, and the Clos de la Perrière is its most storied site: a walled premier cru of around five hectares, first planted by Cistercian monks in the twelfth century and held as a monopole. From the ripe 2019: black cherry, wild strawberry and blackcurrant, a lift of violet, then liquorice and juniper over silky, firm tannin and a mineral line. Ample and fine, with the frame to age.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>Gevrey&rsquo;s neighbour: darker fruit and a wilder, more muscular frame than the Chambolles, with liquorice on the finish.</p>
+      </div>
+    </article>
+
+    <article class="wine">
+      <div class="wine-head">
+        <div class="wine-num">5</div>
+        <div class="wine-titles">
           <h3 class="wine-name">Lignier-Michelot, Morey-St-Denis 1er &lsquo;En la Rue de Vergy&rsquo; <span class="wine-vintage">2020</span></h3>
           <p class="wine-producer">Côte de Nuits · Pinot Noir</p>
         </div>
@@ -918,7 +1010,31 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
     <article class="wine">
       <div class="wine-head">
-        <div class="wine-num">5</div>
+        <div class="wine-num">6</div>
+        <div class="wine-titles">
+          <h3 class="wine-name">Albert Bichot, Aloxe-Corton 1er &lsquo;Clos des Mar&eacute;chaudes&rsquo; <span class="wine-vintage">2022</span></h3>
+          <p class="wine-producer">Côte de Beaune · Pinot Noir</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Aloxe-Corton 1er</span>
+        <span class="tag">Monopole</span>
+        <span class="tag">Supple</span>
+      </div>
+      <div class="wine-body">
+        <p>
+          Aloxe-Corton opens the Côte de Beaune at the foot of the great Corton hill, and the Clos des Maréchaudes is a walled monopole of Bichot&rsquo;s Domaine du Pavillon, facing east-southeast and among the sunniest, earliest-ripening climats on the hill. From the outstanding 2022: blackberry, strawberry and red cherry, mild spice, tea and a touch of cocoa, supple and velvety with fine tannin and real freshness. Approachable now, and a step toward Grand Cru weight.
+        </p>
+      </div>
+      <div class="lookfor">
+        <span class="lf-label">Look for</span>
+        <p>The Côte de Beaune&rsquo;s riper, rounder voice: dark-and-red fruit and velvet tannin after the Côte de Nuits.</p>
+      </div>
+    </article>
+
+    <article class="wine">
+      <div class="wine-head">
+        <div class="wine-num">7</div>
         <div class="wine-titles">
           <h3 class="wine-name">Joseph Drouhin, Blagny 1er &lsquo;La Pi&egrave;ce sous le Bois&rsquo; <span class="wine-vintage">2022</span></h3>
           <p class="wine-producer">Côte de Beaune · Pinot Noir</p>
@@ -942,7 +1058,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
     <article class="wine">
       <div class="wine-head">
-        <div class="wine-num">6</div>
+        <div class="wine-num">8</div>
         <div class="wine-titles">
           <h3 class="wine-name">Domaine Th&eacute;nard, Givry 1er &lsquo;Clos Saint Pierre&rsquo; <span class="wine-vintage">2013</span></h3>
           <p class="wine-producer">Côte Chalonnaise · Pinot Noir</p>
@@ -966,7 +1082,7 @@ strong, .b { font-weight: 600; color: var(--ink); }
 
     <article class="wine">
       <div class="wine-head">
-        <div class="wine-num">7</div>
+        <div class="wine-num">9</div>
         <div class="wine-titles">
           <h3 class="wine-name">Domaine Th&eacute;nard, Givry 1er &lsquo;Clos Saint Pierre&rsquo; <span class="wine-vintage">2018</span></h3>
           <p class="wine-producer">Côte Chalonnaise · Pinot Noir</p>
