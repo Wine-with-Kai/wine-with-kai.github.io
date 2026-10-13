@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Barolo Table · Wine with Kai</title>
-<meta name="description" content="Eight Barolos side by side: one grape, Nebbiolo, read across four communes of the Langhe, from La Morra to Serralunga d'Alba, with a Boroli cru pair among them.">
+<title>Barolo: The 2016 Vintage · Wine with Kai</title>
+<meta name="description" content="Barolo: The 2016 Vintage. Eight Barolos from one great year, poured in four flights of two across the communes of the Langhe, from La Morra to Serralunga d'Alba.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23160a0c'/%3E%3Cpath d='M11 5h10c0 5-2 8-4 9v9h3v2h-8v-2h3v-9c-2-1-4-4-4-9z' fill='%23c9a24b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,53 +25,80 @@
   </nav>
 </div>
 
-<!-- ============ ATMOSPHERIC HERO (Langhe hills, golden hour) ============ -->
+<!-- ============ ATMOSPHERIC HERO (the four villages on the ridge, dusk) ============ -->
 <header class="hero-scene" aria-hidden="true" style="margin-top:18px;">
   <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" role="img">
     <defs>
       <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#1b1210"/>
-        <stop offset="42%" stop-color="#3f2c1f"/>
-        <stop offset="70%" stop-color="#7a5636"/>
-        <stop offset="88%" stop-color="#b98a45"/>
-        <stop offset="100%" stop-color="#cfa562"/>
+        <stop offset="0%"  stop-color="#170c11"/>
+        <stop offset="38%" stop-color="#3d1720"/>
+        <stop offset="58%" stop-color="#76302f"/>
+        <stop offset="70%" stop-color="#b8703f"/>
+        <stop offset="80%" stop-color="#d79a5a"/>
+        <stop offset="100%" stop-color="#d79a5a"/>
       </linearGradient>
-      <radialGradient id="sun" cx="50%" cy="96%" r="52%">
-        <stop offset="0%"  stop-color="#f6d99b" stop-opacity="0.95"/>
-        <stop offset="34%" stop-color="#e9ad63" stop-opacity="0.55"/>
-        <stop offset="70%" stop-color="#c07840" stop-opacity="0.12"/>
-        <stop offset="100%" stop-color="#c07840" stop-opacity="0"/>
+      <radialGradient id="glow" cx="50%" cy="66%" r="42%">
+        <stop offset="0%"  stop-color="#f7d79a" stop-opacity="0.85"/>
+        <stop offset="40%" stop-color="#e9a45e" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#e9a45e" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3c2321"/>
-        <stop offset="100%" stop-color="#2a1719"/>
-      </linearGradient>
-      <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#22110f"/>
-        <stop offset="100%" stop-color="#190c0d"/>
-      </linearGradient>
-      <linearGradient id="rows" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#3a1f1a" stop-opacity="0.0"/>
-        <stop offset="100%" stop-color="#0f0708" stop-opacity="1"/>
-      </linearGradient>
     </defs>
     <rect x="0" y="0" width="1200" height="460" fill="url(#sky)"/>
-    <rect x="0" y="0" width="1200" height="460" fill="url(#sun)"/>
-    <path d="M0 250 C 180 210, 330 235, 470 214 C 640 190, 780 236, 940 210 C 1060 191, 1140 214, 1200 205 L1200 460 L0 460 Z"
-          fill="url(#hillFar)" opacity="0.9"/>
-    <path d="M0 300 C 160 270, 300 300, 460 282 C 650 261, 820 305, 1000 284 C 1100 272, 1160 292, 1200 286 L1200 460 L0 460 Z"
-          fill="url(#hillMid)"/>
-    <path d="M0 330 C 250 315, 520 340, 760 330 C 980 321, 1120 342, 1200 335 L1200 460 L0 460 Z" fill="#140a0b"/>
-    <g stroke="#5a352b" stroke-width="2" opacity="0.5">
-      <path d="M600 342 L120 460"/>
-      <path d="M600 342 L300 460"/>
-      <path d="M600 342 L480 460"/>
-      <path d="M600 342 L600 460"/>
-      <path d="M600 342 L720 460"/>
-      <path d="M600 342 L900 460"/>
-      <path d="M600 342 L1080 460"/>
+    <rect x="0" y="0" width="1200" height="460" fill="url(#glow)"/>
+    <!-- far hills -->
+    <path d="M0 268 C120 250 230 262 330 252 C430 242 520 258 620 250 C740 240 860 256 980 246 C1080 238 1150 250 1200 246 L1200 460 L0 460 Z" fill="#5c2a2e" opacity="0.75"/>
+    <!-- the ridge and its four villages, west to east -->
+    <g fill="#120a0e">
+      <path d="M0 330 C110 320 220 306 300 296 C360 289 400 284 435 282 C475 284 505 292 545 290 C590 288 620 290 655 286 C690 283 730 281 765 276 C810 280 870 292 940 302 C1040 314 1130 322 1200 326 L1200 460 L0 460 Z"/>
+      <!-- La Morra: houses and bell tower -->
+      <g transform="translate(35 0)">
+      <rect x="366" y="262" width="24" height="24"/><polygon points="364,262 378,252 392,262"/>
+      <rect x="412" y="266" width="30" height="20"/><polygon points="410,266 427,256 444,266"/>
+      <rect x="440" y="272" width="16" height="14"/>
+      <rect x="391" y="206" width="18" height="80"/><polygon points="389,206 400,186 411,206"/>
+      </g>
+      <!-- Castiglione Falletto: castle with round tower -->
+      <g transform="translate(10 0)">
+      <rect x="490" y="272" width="22" height="20"/>
+      <rect x="512" y="238" width="40" height="56"/>
+      <rect x="512" y="231" width="7" height="8"/><rect x="522" y="231" width="7" height="8"/><rect x="532" y="231" width="7" height="8"/><rect x="542" y="231" width="7" height="8"/>
+      <rect x="548" y="216" width="22" height="78"/>
+      <rect x="548" y="209" width="6" height="8"/><rect x="556" y="209" width="6" height="8"/><rect x="564" y="209" width="6" height="8"/>
+      </g>
+      <!-- Monforte d'Alba: church and campanile -->
+      <g transform="translate(-15 0)">
+      <rect x="622" y="270" width="18" height="18"/>
+      <rect x="640" y="258" width="40" height="30"/><polygon points="636,258 660,240 684,258"/>
+      <rect x="684" y="222" width="16" height="66"/><polygon points="682,222 692,204 702,222"/>
+      <rect x="700" y="268" width="26" height="20"/>
+      </g>
+      <!-- Serralunga d'Alba: the tall castle keep -->
+      <g transform="translate(-40 0)">
+      <rect x="764" y="256" width="26" height="24"/>
+      <rect x="790" y="176" width="30" height="104"/>
+      <rect x="790" y="168" width="8" height="9"/><rect x="800" y="168" width="8" height="9"/><rect x="810" y="168" width="8" height="9"/>
+      <rect x="820" y="200" width="14" height="80"/><polygon points="818,200 827,186 836,200"/>
+      <rect x="836" y="262" width="24" height="20"/>
+      </g>
     </g>
-    <rect x="0" y="330" width="1200" height="130" fill="url(#rows)"/>
+    <!-- flight numbers and village names, in the sky above each -->
+    <g font-family="EB Garamond, Georgia, serif" text-anchor="middle">
+      <g fill="#c9a24b" font-size="24" letter-spacing="4">
+        <text x="435" y="128">I</text><text x="545" y="128">II</text><text x="655" y="128">III</text><text x="765" y="128">IV</text>
+      </g>
+      <g fill="#e2c88f" font-size="12" letter-spacing="1.4">
+        <text x="435" y="150">LA MORRA</text>
+        <text x="545" y="150">CASTIGLIONE</text><text x="545" y="164">FALLETTO</text>
+        <text x="655" y="150">MONFORTE</text>
+        <text x="765" y="150">SERRALUNGA</text>
+      </g>
+    </g>
+    <!-- foreground slope and vine rows -->
+    <path d="M0 360 C200 346 420 366 640 356 C860 346 1040 364 1200 356 L1200 460 L0 460 Z" fill="#0d0708"/>
+    <g stroke="#3a1d1c" stroke-width="2" opacity="0.5">
+      <path d="M600 360 L120 460"/><path d="M600 360 L300 460"/><path d="M600 360 L480 460"/>
+      <path d="M600 360 L600 460"/><path d="M600 360 L720 460"/><path d="M600 360 L900 460"/><path d="M600 360 L1080 460"/>
+    </g>
   </svg>
 </header>
 
@@ -81,35 +108,35 @@
 <main>
   <section class="wrap hero-body">
     <div class="masthead">
-      <p class="eyebrow kick">Piedmont &nbsp;&middot;&nbsp; Nebbiolo &nbsp;&middot;&nbsp; the Langhe</p>
+      <p class="eyebrow kick">Piedmont &nbsp;&middot;&nbsp; Nebbiolo &nbsp;&middot;&nbsp; Four flights</p>
 
       <h1 class="title-display">
-        The Barolo
-        <span class="title-connector">table</span>
-        Four Communes
+        Barolo
+        <span class="title-connector">the</span>
+        2016 Vintage
       </h1>
 
       <hr class="gold-divider">
 
-      <p class="lede">Eight Barolos, side by side.</p>
+      <p class="lede">Same year, different ground.</p>
       <p class="lede-sub">
-        One grape, Nebbiolo, read across the hills of the Langhe:<br>from La Morra&rsquo;s perfume, through Castiglione Falletto and Monforte, to the firm frame of Serralunga.
+        Hold the vintage still and the hills do the talking.<br>Eight Barolos from 2016, poured in pairs: La Morra&rsquo;s perfume, Castiglione Falletto&rsquo;s balance, Monforte&rsquo;s depth and Serralunga&rsquo;s grip.
       </p>
     </div>
 
     <!-- ============ THE LINEUP ============ -->
-    <div class="lineup" aria-label="Eight Barolos, grouped by commune from west to east">
+    <div class="lineup" aria-label="Eight Barolos from 2016, in four flights of two, west to east">
 
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">La Morra</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">the west &middot; perfume and lift</span>
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; column-gap:12px; row-gap:2px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">I &middot; La Morra</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">altitude against grand cru</span>
       </div>
 
       <div class="flight">
-        <div class="flight-yr">2015</div>
+        <div class="flight-yr">2016</div>
         <div class="flight-main">
-          <p class="flight-name">Ballarin &lsquo;Tre Ciabot&rsquo;</p>
-          <p class="flight-sub">A warm, generous, approachable vintage</p>
+          <p class="flight-name">Giulia Negri &lsquo;Serradenari&rsquo;</p>
+          <p class="flight-sub">Barolo&rsquo;s highest vineyard, lifted and fresh</p>
         </div>
       </div>
 
@@ -117,62 +144,62 @@
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Boroli &lsquo;Cerequio&rsquo;</p>
-          <p class="flight-sub">A grand cru of the Langhe, deep and age-worthy</p>
+          <p class="flight-sub">A grand cru, deeper and firmer</p>
         </div>
       </div>
 
-      <div class="flight">
-        <div class="flight-yr">2016</div>
-        <div class="flight-main">
-          <p class="flight-name">Giulia Negri &lsquo;Serradenari&rsquo;</p>
-          <p class="flight-sub">A great, classical vintage from La Morra&rsquo;s heights</p>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Castiglione Falletto</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">the centre &middot; the balanced heart</span>
-      </div>
-
-      <div class="flight">
-        <div class="flight-yr">2007</div>
-        <div class="flight-main">
-          <p class="flight-name">Paolo Scavino &lsquo;Bric del Fiasc&rsquo;</p>
-          <p class="flight-sub">A warm, mature vintage from a landmark cru, now at its peak</p>
-        </div>
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; column-gap:12px; row-gap:2px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">II &middot; Castiglione Falletto</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">one vineyard against a blend</span>
       </div>
 
       <div class="flight">
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Boroli &lsquo;Brunella&rsquo;</p>
-          <p class="flight-sub">The estate cru, delicate and perfumed</p>
+          <p class="flight-sub">Barolo&rsquo;s only monopole, delicate and perfumed</p>
         </div>
       </div>
 
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Monforte d&rsquo;Alba</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">the south &middot; power and structure</span>
+      <div class="flight">
+        <div class="flight-yr">2016</div>
+        <div class="flight-main">
+          <p class="flight-name">Paolo Scavino, Barolo</p>
+          <p class="flight-sub">The estate blend, from crus across the zone</p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; column-gap:12px; row-gap:2px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">III &middot; Monforte d&rsquo;Alba</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">clay against sand</span>
+      </div>
+
+      <div class="flight">
+        <div class="flight-yr">2016</div>
+        <div class="flight-main">
+          <p class="flight-name">Poderi Colla &lsquo;Dardi Le Rose&rsquo; Bussia</p>
+          <p class="flight-sub">Traditional Bussia from clay, supple and floral</p>
+        </div>
       </div>
 
       <div class="flight">
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Elio Grasso &lsquo;Gavarini Chiniera&rsquo;</p>
-          <p class="flight-sub">A great vintage, all depth and fine tannin</p>
+          <p class="flight-sub">A high, sandy hillside, lifted and finely etched</p>
         </div>
       </div>
 
-      <div style="display:flex; align-items:baseline; gap:12px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
-        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">Serralunga d&rsquo;Alba</span>
-        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">the east &middot; the firmest frame</span>
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; column-gap:12px; row-gap:2px; margin:32px 0 2px; padding-bottom:9px; border-bottom:1px solid var(--line);">
+        <span style="font-family:var(--display); color:var(--gold); font-size:19px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase;">IV &middot; Serralunga d&rsquo;Alba</span>
+        <span style="color:var(--ink-faint); font-style:italic; font-size:14.5px;">village wine against Riserva</span>
       </div>
 
       <div class="flight">
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Luigi Pira, Serralunga</p>
-          <p class="flight-sub">A great vintage from the zone&rsquo;s sternest soils</p>
+          <p class="flight-sub">Village Barolo from the sternest soils</p>
         </div>
       </div>
 
@@ -180,7 +207,7 @@
         <div class="flight-yr">2016</div>
         <div class="flight-main">
           <p class="flight-name">Fontanafredda Riserva</p>
-          <p class="flight-sub">A great vintage, five years in the cellar before release</p>
+          <p class="flight-sub">Five years in the cellar before release</p>
         </div>
       </div>
 
@@ -191,7 +218,7 @@
     </div>
 
     <p class="note-line">
-      Grouped by commune, west to east: La Morra, then Castiglione Falletto, Monforte and Serralunga, and by vintage within each. Boroli pours two crus, Cerequio in La Morra and Brunella in Castiglione Falletto, one cellar reading two terroirs, and six of the eight come from the great 2016 vintage, so the year holds still while the ground changes. Seats are kept to no more than twelve.
+      Four flights of two, west to east, every wine from 2016. Each pair asks its own question: altitude against grand cru, one vineyard against a blend, clay against sand, and village wine against Riserva. Seats are kept to no more than twelve.
     </p>
 
 <figure class="map-fig" style="max-width:360px; margin-top:30px;">
@@ -266,7 +293,7 @@
         </g>
         <text x="100" y="570" text-anchor="end" style="font-family:var(--display); font-size:7px; font-style:italic; fill:#d8c79a;">Barolo</text>
       </svg>
-      <figcaption class="map-cap">The whole night sits in the <b>Barolo</b> zone of the Langhe, south of Alba in Piedmont. The inset zooms in on the four communes poured tonight, west to east: <b>La Morra</b>, <b>Castiglione Falletto</b>, <b>Monforte d&rsquo;Alba</b> and <b>Serralunga d&rsquo;Alba</b>, gathered around the village of Barolo itself.</figcaption>
+      <figcaption class="map-cap">The whole night sits in the <b>Barolo</b> zone of the Langhe, south of Alba in Piedmont. The inset zooms in on the four communes, one flight from each, west to east: <b>La Morra</b>, <b>Castiglione Falletto</b>, <b>Monforte d&rsquo;Alba</b> and <b>Serralunga d&rsquo;Alba</b>, gathered around the village of Barolo itself.</figcaption>
     </figure>
 
     <p style="text-align:center; margin:18px 0 8px;">
