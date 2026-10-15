@@ -49,6 +49,9 @@
 
       <p class="nc-alt"><a href="barolo-altitude-wines.html">Or read the tasting notes &rarr;</a></p>
 
+      <!-- the next open bring-your-own-bottle evening, filled in from the database -->
+      <div id="byob-card"></div>
+
       <div class="home-actions">
         <a class="btn" href="upcoming.html">Upcoming themes</a>
         <a class="btn" href="archive.html">Past dinners</a>
@@ -60,5 +63,44 @@
   <p class="page-foot">Wine with Kai</p>
 </main>
 
+<script src="../assets/wwk-config.js"></script>
+<script>
+// Shows the next open bring-your-own-bottle evening, so a new one appears here
+// as soon as it is set to Open on the host page. Nothing shows when none is open.
+(function () {
+  const c = window.WWK_CONFIG || {};
+  const box = document.getElementById("byob-card");
+  if (!box || !c.supabaseUrl || !c.supabaseAnonKey) return;
+  const q = new URLSearchParams({
+    select: "slug,title,starts_at,venue,price_min_cents,price_max_cents,currency",
+    format: "eq.byob", status: "eq.open", starts_at: `gte.${new Date().toISOString()}`,
+    order: "starts_at", limit: "1",
+  });
+  fetch(`${c.supabaseUrl}/rest/v1/events?${q}`, { headers: { apikey: c.supabaseAnonKey } })
+    .then((r) => (r.ok ? r.json() : []))
+    .then(([ev]) => {
+      if (!ev) return;
+      const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (ch) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+      const fmt = (o) => new Intl.DateTimeFormat("en-GB", Object.assign({ timeZone: "Asia/Singapore" }, o)).format(new Date(ev.starts_at));
+      const day = fmt({ weekday: "long", day: "numeric", month: "long", year: "numeric" }).replace(",", "");
+      const time = fmt({ hour: "numeric", minute: "2-digit", hour12: true }).replace(/\s?([ap])m$/i, (m, x) => ` ${x.toLowerCase()}m`);
+      const sym = (ev.currency || "sgd").toLowerCase() === "sgd" ? "S$" : `${(ev.currency || "").toUpperCase()} `;
+      const amt = (v) => sym + (v / 100).toLocaleString("en-SG", { maximumFractionDigits: v % 100 ? 2 : 0 });
+      const range = ev.price_min_cents != null && ev.price_max_cents != null
+        ? `Suggested bottle price ${amt(ev.price_min_cents)} to ${amt(ev.price_max_cents)}` : "";
+      const place = (ev.venue || "").split(",")[0].trim();
+      box.innerHTML = `
+        <a class="next-card" href="reserve.html?event=${encodeURIComponent(ev.slug)}" style="margin-top:22px;">
+          <p class="nc-kick">Bring your own bottle</p>
+          <p class="nc-title">${esc(ev.title)}</p>
+          ${range ? `<p class="nc-meta">${esc(range)}</p>` : ""}
+          <p class="nc-meta">${esc(day)}, ${esc(time)}${place ? ` &middot; ${esc(place)}, Singapore` : ""}</p>
+          <p class="nc-go">Reserve a seat &rarr;</p>
+        </a>`;
+    })
+    .catch(() => {});
+})();
+</script>
 </body>
 </html>

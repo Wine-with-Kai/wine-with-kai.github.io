@@ -207,6 +207,37 @@
     if (current) { renderInvite(); renderEditor(false); renderDetail(); }
   }
 
+  // ---------- copy an evening ----------
+  // A new draft with the same format, price range, description, seats and
+  // deadlines, four weeks later. Nothing about the old evening's guests,
+  // bottles or seat code comes across; the draft stays hidden until it is Open.
+  async function copyEvening(e, msg) {
+    const week = 7 * 86400000;
+    const start = new Date(new Date(e.starts_at).getTime() + 4 * week);
+    const lock = e.bottle_lock_at
+      ? new Date(start.getTime() - (new Date(e.starts_at) - new Date(e.bottle_lock_at))) : null;
+    const taken = new Set(events.map((x) => x.slug));
+    const base = `${e.slug.replace(/-copy(-\d+)?$/, "")}-copy`;
+    let slug = base;
+    for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+    const row = {
+      slug, title: `${e.title} (copy)`, subtitle: e.subtitle, description: e.description, format: e.format,
+      starts_at: start.toISOString(), venue: e.venue, seats: e.seats, deposit_cents: e.deposit_cents,
+      currency: e.currency, refund_days: e.refund_days, shared_costs_cents: e.shared_costs_cents,
+      shared_costs_note: e.shared_costs_note, price_min_cents: e.price_min_cents, price_max_cents: e.price_max_cents,
+      price_note: e.price_note, bottle_lock_at: lock ? lock.toISOString() : null, invite_only: e.invite_only,
+      status: "draft",
+    };
+    const { data, error } = await W.client.from("events").insert(row).select().single();
+    if (error) { msg.className = "msg err"; msg.textContent = error.message; return; }
+    await loadEvents(data.id);
+    const m = document.querySelector("#ev-form [data-msg]");
+    if (m) {
+      m.className = "msg ok";
+      m.textContent = "Copied as a hidden draft. Change the title, page address, date and venue, set a new seat code, then set it to Open.";
+    }
+  }
+
   // ---------- create / edit an evening ----------
   function renderEditor(isNew) {
     const e = isNew ? { format: "byob", seats: 12, refund_days: 14, currency: "sgd", status: "draft", shared_costs_cents: 0 } : current;
@@ -263,12 +294,15 @@
           </div>
           <div class="actions">
             <button class="btn small solid" type="submit">${isNew ? "Create evening" : "Save changes"}</button>
-            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Open the evening page</a>`}
+            ${isNew ? "" : `<a class="linkish" href="reserve.html?event=${encodeURIComponent(e.slug)}" target="_blank">Open the evening page</a>
+            <button class="linkish" type="button" id="copy-ev">Copy to a new evening</button>`}
           </div>
           <p class="msg" data-msg aria-live="polite"></p>
         </form>
       </div>`;
     const f = $("ev-form");
+    const copy = $("copy-ev");
+    if (copy) copy.addEventListener("click", () => copyEvening(e, f.querySelector("[data-msg]")));
     if (!isNew) W.client.from("event_codes").select("code").eq("event_id", e.id).maybeSingle()
       .then(({ data }) => { if (data) f.seat_code.value = data.code; });
     f.addEventListener("submit", async (ev) => {
